@@ -5,7 +5,7 @@ namespace MangaScrapeLib.Models
 {
     public class SeriesInfo
     {
-        public MangaRepository ParentRepository { get; set; }
+        public IMangaRepository ParentRepository { get; set; }
 
         public string Name { get; set; }
         public Uri SeriesPageUri { get; set; }

@@ -40,9 +40,10 @@
     <Compile Include="Models\SeriesInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\EatMangaRepository.cs" />
+    <Compile Include="Repositories\IMangaRepository.cs" />
     <Compile Include="Repositories\MangaFoxRepository.cs" />
     <Compile Include="Repositories\MangaHereRepository.cs" />
-    <Compile Include="Repositories\MangaRepository.cs" />
+    <Compile Include="Repositories\MangaRepositoryBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, processorArchitecture=MSIL">

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Repositories
 {
-    public class MangaHereRepository : MangaRepository
+    public class MangaHereRepository : MangaRepositoryBase
     {
         public MangaHereRepository() : base("Manga Here", "http://www.mangahere.com/", "mangalist/") { }
 

@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Repositories
 {
-    public abstract class MangaRepository
+    public abstract class MangaRepositoryBase : IMangaRepository
     {
         protected string name;
         public string Name { get { return name; } }
@@ -17,22 +17,11 @@ namespace MangaScrapeLib.Repositories
         protected Uri mangaIndexPage;
         public Uri MangaIndexPage { get { return mangaIndexPage; } }
 
-        public MangaRepository(string Name, string UriString, string MangaIndexPageStr)
+        public MangaRepositoryBase(string Name, string UriString, string MangaIndexPageStr)
         {
             name = Name;
             rootUri = new Uri(UriString, UriKind.Absolute);
             mangaIndexPage = new Uri(rootUri, MangaIndexPageStr);
-        }
-
-        public static List<MangaRepository> GetAllRepositories()
-        {
-            var Output = new List<MangaRepository>()
-            {
-                new EatMangaRepository(),
-                new MangaFoxRepository(),
-                new MangaHereRepository()
-            };
-            return Output;
         }
 
         public abstract IEnumerable<SeriesInfo> GetSeriesList(string MangaIndexPageHtml);

@@ -19,11 +19,11 @@ namespace MangaScrapeLib.Models
             string Output = null;
             if (ParentChapter.ChapterNo >= 0)
             {
-                Output = string.Format("{0} C{1} P{2}", MangaRepository.MakeValidPathName(ParentSeries.Name), ParentChapter.ChapterNo.ToString("000"), PageNo.ToString("000"));
+                Output = string.Format("{0} C{1} P{2}", MangaRepositoryBase.MakeValidPathName(ParentSeries.Name), ParentChapter.ChapterNo.ToString("000"), PageNo.ToString("000"));
             }
             else
             {
-                Output = string.Format("{0} P{1}", MangaRepository.MakeValidPathName(ParentChapter.Title), PageNo.ToString("000"));
+                Output = string.Format("{0} P{1}", MangaRepositoryBase.MakeValidPathName(ParentChapter.Title), PageNo.ToString("000"));
             }
 
             return Output;
