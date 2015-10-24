@@ -23,7 +23,7 @@ namespace MangaScrapeLib.Repositories
             var Output = Nodes.Select(d => new SeriesInfo()
             {
                 ParentRepository = this,
-                Name = WebUtility.HtmlDecode(d.InnerText),
+                Name = WebUtility.HtmlDecode(d.InnerText).Trim(),
                 SeriesPageUri = new Uri(RootUri, d.Attributes["href"].Value)
             });
             Output = Output.OrderBy(d => d.Name);
@@ -35,13 +35,13 @@ namespace MangaScrapeLib.Repositories
             var Document = new HtmlDocument();
             Document.LoadHtml(SeriesPageHtml);
 
-            var TopTextNode = Document.DocumentNode.ChildNodes.First(d => d.HasNameAttributeValue("ul", "class", "detail_topText"));
-            var Node = TopTextNode.ChildNodes.Where(d => d.Name == "li").ElementAt(3);
-            Node.RemoveChild(Node.FirstChild);
-            Series.Tags = Node.InnerText;
+            var TopTextNode = Document.GetElementbyId("mangaproperties");
+            var Node = TopTextNode.Descendants().First(d => d.InnerText == "Genre:");
+            Node = Node.ParentNode;
+            var Nodes = Node.Descendants().Where(d => d.Name == "a");
+            Series.Tags = string.Join(", ", Nodes.Select(d => d.Attributes["href"].Value.Replace("/popular/", string.Empty)));
 
-            Node = TopTextNode.ChildNodes.Where(d => d.Name == "li").ElementAt(7).ChildNodes.Where(d => d.Name == "p").ElementAt(1);
-            Node.RemoveChild(Node.ChildNodes[1]);
+            Node = TopTextNode.ChildNodes.First(d => d.Name == "h1");
             Series.Description = WebUtility.HtmlDecode(Node.InnerText);
         }
 
@@ -50,28 +50,16 @@ namespace MangaScrapeLib.Repositories
             var Document = new HtmlDocument();
             Document.LoadHtml(SeriesPageHtml);
 
-            var Node = Document.DocumentNode.ChildNodes.First(d => d.HasNameAttributeValue("div", "class", "manga_detail"));
-            Node = Node.ChildNodes.First(d => d.HasNameAttributeValue("div", "class", "detail_list"));
-            Node = Node.ChildNodes.First(d => d.Name == "ul");
-            var Nodes = Node.ChildNodes.Where(d => d.HasNameAttributeValue("a", "class", "color_0077"));
+            var Node = Document.GetElementbyId("listing");
+            var Nodes = Node.Descendants().Where(d => d.Name == "a");
 
-            var Output = Nodes.Select(d =>
+            var Output = Nodes.Select(d => new ChapterInfo()
             {
-                string Title = d.InnerText;
-                Title = Regex.Replace(Title, @"^[\r\n\s\t]+", string.Empty);
-                Title = Regex.Replace(Title, @"[\r\n\s\t]+$", string.Empty);
-                var Chapter = new ChapterInfo()
-                {
-                    ParentSeries = Series,
-                    Title = Title,
-                    FirstPageUri = new Uri(RootUri, d.Attributes["href"].Value)
-                };
-
-                Chapter.DetectChapterNo();
-                return Chapter;
+                ParentSeries = Series,
+                Title = WebUtility.HtmlDecode(d.InnerText),
+                FirstPageUri = new Uri(RootUri, d.Attributes["href"].Value)
             });
 
-            Output.Reverse();
             return Output;
         }
 
@@ -80,9 +68,7 @@ namespace MangaScrapeLib.Repositories
             var Document = new HtmlDocument();
             Document.LoadHtml(MangaPageHtml);
 
-            var Node = Document.DocumentNode.ChildNodes.First(d => d.HasNameAttributeValue("section", "class", "readpage_top"));
-            Node = Node.ChildNodes.First(d => d.HasNameAttributeValue("span", "class", "right"));
-            Node = Node.ChildNodes.First(d => d.Name == "select");
+            var Node = Document.GetElementbyId("pageMenu");
             var Nodes = Node.ChildNodes.Where(d => d.Name == "option");
 
             var Output = Nodes.Select((d, e) => new PageInfo()
@@ -99,7 +85,7 @@ namespace MangaScrapeLib.Repositories
             var Document = new HtmlDocument();
             Document.LoadHtml(MangaPageHtml);
 
-            var Node = Document.DocumentNode.ChildNodes.Where(d => d.Name == "img").First(d => d.HasAttributeValue("id", "image"));
+            var Node = Document.GetElementbyId("img");
 
             var Output = new Uri(Node.Attributes["src"].Value);
             return Output;
