@@ -32,18 +32,7 @@ namespace MangaScrapeLib.Repositories
 
         public override void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml)
         {
-            var Document = new HtmlDocument();
-            Document.LoadHtml(SeriesPageHtml);
-
-            var Node = Document.GetElementbyId("info_summary");
-            Node = Node.ChildNodes.First(d => d.Name == "tbody");
-            Node = Node.ChildNodes.Where(d => d.Name == "tr").ElementAt(1);
-            Node = Node.ChildNodes.First(d => d.Name == "td");
-            Series.Tags = Node.InnerText;
-
-            Node = Document.GetElementbyId("info");
-            Node = Node.ChildNodes.First(d => d.Name == "p");
-            Series.Description = Node.InnerText;
+            Series.Description = Series.Tags = string.Empty;
         }
 
         public override IEnumerable<ChapterInfo> GetChaptersList(SeriesInfo Series, string SeriesPageHtml)
@@ -77,10 +66,7 @@ namespace MangaScrapeLib.Repositories
             var Document = new HtmlDocument();
             Document.LoadHtml(MangaPageHtml);
 
-            var Node = Document.GetElementbyId("main_content");
-            Node = Node.ChildNodes.Where(d => d.Name == "div").ElementAt(2);
-            Node = Node.ChildNodes.Where(d => d.Name == "div").ElementAt(2);
-            Node = Node.ChildNodes.Where(d => d.Name == "select").ElementAt(2);
+            var Node = Document.GetElementbyId("pages");
             var Nodes = Node.ChildNodes.Where(d => d.Name == "option");
 
             var Output = Nodes.Select((d, e) => new PageInfo

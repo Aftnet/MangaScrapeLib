@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Test
 {
@@ -34,78 +35,20 @@ namespace MangaScrapeLib.Test
             }
         }
 
-        #region Additional test attributes
-        // 
-        //You can use the following additional attributes as you write your tests:
-        //
-        //Use ClassInitialize to run code before running the first test in the class
-        //[ClassInitialize()]
-        //public static void MyClassInitialize(TestContext testContext)
-        //{
-        //}
-        //
-        //Use ClassCleanup to run code after all tests in a class have run
-        //[ClassCleanup()]
-        //public static void MyClassCleanup()
-        //{
-        //}
-        //
-        //Use TestInitialize to run code before running each test
-        //[TestInitialize()]
-        //public void MyTestInitialize()
-        //{
-        //}
-        //
-        //Use TestCleanup to run code after each test has run
-        //[TestCleanup()]
-        //public void MyTestCleanup()
-        //{
-        //}
-        //
-        #endregion
-
-
-        internal virtual MangaRepository CreateMangaRepository()
-        {
-            // TODO: Instantiate an appropriate concrete class.
-            MangaRepository target = null;
-            return target;
-        }
-
-        internal WebClient GetWebClient()
-        {
-            return new CompressionWebClient();
-        }
-
-        internal SeriesInfo PickSeries(IEnumerable<SeriesInfo> Input)
-        {
-            return Input.First();
-        }
-
-        internal ChapterInfo PickChapter(IEnumerable<ChapterInfo> Input)
-        {
-            return Input.First();
-        }
-
-        internal PageInfo PickPage(IEnumerable<PageInfo> Input)
-        {
-            return Input.First();
-        }
-
         /// <summary>
         ///A test for GetChapterPagesList
         ///</summary>
         [TestMethod()]
-        public void GetChapterPagesListTest()
+        public async Task GetChapterPagesListTest()
         {
             MangaRepository target = CreateMangaRepository();
             using (var Client = GetWebClient())
             {
-                var SeriesList = GetSeriesList(target, Client);
+                var SeriesList = await GetSeriesListAsync(target, Client);
                 var SelectedSeries = PickSeries(SeriesList);
-                var ChaptersList = GetChaptersList(target, SelectedSeries, Client);
+                var ChaptersList = await GetChaptersListAsync(target, SelectedSeries, Client);
                 var SelectedChapter = PickChapter(ChaptersList);
-                var PagesList = GetPagesList(target, SelectedChapter, Client);
+                var PagesList = await GetPagesListAsync(target, SelectedChapter, Client);
                 foreach (var i in PagesList)
                 {
                     Assert.IsNotNull(i.PageUri);
@@ -115,26 +58,18 @@ namespace MangaScrapeLib.Test
             }
         }
 
-        internal IEnumerable<PageInfo> GetPagesList(MangaRepository Repository, ChapterInfo Chapter, WebClient Client)
-        {
-            string PageHTML = Client.DownloadString(Chapter.FirstPageUri);
-            Assert.IsNotNull(PageHTML);
-            var ChaptersList = Repository.GetChapterPagesList(Chapter, PageHTML);
-            return ChaptersList;
-        }
-
         /// <summary>
         ///A test for GetChaptersList
         ///</summary>
         [TestMethod()]
-        public void GetChaptersListTest()
+        public async Task GetChaptersListTest()
         {
             MangaRepository target = CreateMangaRepository();
             using (var Client = GetWebClient())
             {
-                var SeriesList = GetSeriesList(target, Client);
+                var SeriesList = await GetSeriesListAsync(target, Client);
                 var SelectedSeries = PickSeries(SeriesList);
-                var ChaptersList = GetChaptersList(target, SelectedSeries, Client);
+                var ChaptersList = await GetChaptersListAsync(target, SelectedSeries, Client);
                 foreach (var i in ChaptersList)
                 {
                     Assert.IsNotNull(i.Title);
@@ -144,28 +79,20 @@ namespace MangaScrapeLib.Test
             }
         }
 
-        internal IEnumerable<ChapterInfo> GetChaptersList(MangaRepository Repository, SeriesInfo Series, WebClient Client)
-        {
-            string PageHTML = Client.DownloadString(Series.SeriesPageUri);
-            Assert.IsNotNull(PageHTML);
-            var ChaptersList = Repository.GetChaptersList(Series, PageHTML);
-            return ChaptersList;
-        }
-
         /// <summary>
         ///A test for GetImageUri
         ///</summary>
         [TestMethod()]
-        public void GetImageUriTest()
+        public async Task GetImageUriTest()
         {
             MangaRepository target = CreateMangaRepository();
             using (var Client = GetWebClient())
             {
-                var SeriesList = GetSeriesList(target, Client);
+                var SeriesList = await GetSeriesListAsync(target, Client);
                 var SelectedSeries = PickSeries(SeriesList);
-                var ChaptersList = GetChaptersList(target, SelectedSeries, Client);
+                var ChaptersList = await GetChaptersListAsync(target, SelectedSeries, Client);
                 var SelectedChapter = PickChapter(ChaptersList);
-                var PagesList = GetPagesList(target, SelectedChapter, Client);
+                var PagesList = await GetPagesListAsync(target, SelectedChapter, Client);
                 var SelectedPage = PickPage(PagesList);
                 string PageHTML = Client.DownloadString(SelectedPage.PageUri);
                 Assert.IsNotNull(PageHTML);
@@ -182,12 +109,12 @@ namespace MangaScrapeLib.Test
         ///A test for GetSeriesInfo
         ///</summary>
         [TestMethod()]
-        public void GetSeriesInfoTest()
+        public async Task GetSeriesInfoTest()
         {
             MangaRepository target = CreateMangaRepository(); // TODO: Initialize to an appropriate value
             using (var Client = GetWebClient())
             {
-                var SeriesList = GetSeriesList(target, Client);
+                var SeriesList = await GetSeriesListAsync(target, Client);
                 var TestSeries = PickSeries(SeriesList);
                 Assert.IsNull(TestSeries.Description);
                 Assert.IsNull(TestSeries.Tags);
@@ -203,12 +130,12 @@ namespace MangaScrapeLib.Test
         ///A test for GetSeriesList
         ///</summary>
         [TestMethod()]
-        public void GetSeriesListTest()
+        public async Task GetSeriesListTest()
         {
             MangaRepository target = CreateMangaRepository();
             using (var Client = GetWebClient())
             {
-                var SeriesList = GetSeriesList(target, Client);
+                var SeriesList = await GetSeriesListAsync(target, Client);
                 Assert.IsNotNull(SeriesList);
                 Assert.IsFalse(SeriesList.Count() == 0);
                 foreach (var i in SeriesList)
@@ -218,13 +145,6 @@ namespace MangaScrapeLib.Test
                     Assert.IsNotNull(i.SeriesPageUri);
                 }
             }
-        }
-
-        internal IEnumerable<SeriesInfo> GetSeriesList(MangaRepository Repository, WebClient Client)
-        {
-            string PageHTML = Client.DownloadString(Repository.MangaIndexPage);
-            var SeriesList = Repository.GetSeriesList(PageHTML);
-            return SeriesList;
         }
 
         /// <summary>
@@ -261,6 +181,56 @@ namespace MangaScrapeLib.Test
             Uri actual;
             actual = target.RootUri;
             Assert.IsNotNull(actual);
+        }
+
+        internal async Task<IEnumerable<SeriesInfo>> GetSeriesListAsync(MangaRepository Repository, WebClient Client)
+        {
+            string PageHTML = await Client.DownloadStringTaskAsync(Repository.MangaIndexPage);
+            var SeriesList = Repository.GetSeriesList(PageHTML);
+            return SeriesList;
+        }
+
+        internal async Task<IEnumerable<ChapterInfo>> GetChaptersListAsync(MangaRepository Repository, SeriesInfo Series, WebClient Client)
+        {
+            string PageHTML = await Client.DownloadStringTaskAsync(Series.SeriesPageUri);
+            Assert.IsNotNull(PageHTML);
+            var ChaptersList = Repository.GetChaptersList(Series, PageHTML);
+            return ChaptersList;
+        }
+
+        internal async Task<IEnumerable<PageInfo>> GetPagesListAsync(MangaRepository Repository, ChapterInfo Chapter, WebClient Client)
+        {
+            var PageHTML = await Client.DownloadStringTaskAsync(Chapter.FirstPageUri);
+            Assert.IsNotNull(PageHTML);
+            var ChaptersList = Repository.GetChapterPagesList(Chapter, PageHTML);
+            return ChaptersList;
+        }
+
+        internal virtual MangaRepository CreateMangaRepository()
+        {
+            // TODO: Instantiate an appropriate concrete class.
+            MangaRepository target = null;
+            return target;
+        }
+
+        internal WebClient GetWebClient()
+        {
+            return new CompressionWebClient();
+        }
+
+        internal SeriesInfo PickSeries(IEnumerable<SeriesInfo> Input)
+        {
+            return Input.First();
+        }
+
+        internal ChapterInfo PickChapter(IEnumerable<ChapterInfo> Input)
+        {
+            return Input.First();
+        }
+
+        internal PageInfo PickPage(IEnumerable<PageInfo> Input)
+        {
+            return Input.First();
         }
     }
 }
