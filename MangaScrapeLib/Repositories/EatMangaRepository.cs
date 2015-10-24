@@ -1,10 +1,10 @@
 ﻿using HtmlAgilityPack;
-using MangaScrapeLibPortable.Models;
+using MangaScrapeLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MangaScrapeLibPortable.Repositories
+namespace MangaScrapeLib.Repositories
 {
     public class EatMangaRepository : MangaRepository
     {

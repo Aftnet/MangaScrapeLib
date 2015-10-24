@@ -1,12 +1,12 @@
-﻿using MangaScrapeLibPortable.Models;
-using MangaScrapeLibPortable.Repositories;
+﻿using MangaScrapeLib.Models;
+using MangaScrapeLib.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace MangaScrapeLibPortable.Test
+namespace MangaScrapeLib.Test
 {
     /// <summary>
     ///This is a test class for MangaRepositoryTest and is intended

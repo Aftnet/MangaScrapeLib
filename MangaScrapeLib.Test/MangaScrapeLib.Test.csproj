@@ -6,8 +6,8 @@
     <ProjectGuid>{18C0FB19-9893-4C68-A52A-7D6AF6B60C1C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MangaScrapeLibPortable.Test</RootNamespace>
-    <AssemblyName>MangaScrapeLibPortable.Test</AssemblyName>
+    <RootNamespace>MangaScrapeLib.Test</RootNamespace>
+    <AssemblyName>MangaScrapeLib.Test</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

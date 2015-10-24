@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 
-namespace MangaScrapeLibPortable.Models
+namespace MangaScrapeLib.Models
 {
     public class ChapterInfo
     {

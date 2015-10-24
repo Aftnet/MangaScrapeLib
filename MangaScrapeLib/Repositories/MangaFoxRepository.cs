@@ -1,13 +1,13 @@
 ﻿using HtmlAgilityPack;
-using MangaScrapeLibPortable.ExtensionMethods;
-using MangaScrapeLibPortable.Models;
+using MangaScrapeLib.ExtensionMethods;
+using MangaScrapeLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace MangaScrapeLibPortable.Repositories
+namespace MangaScrapeLib.Repositories
 {
     public class MangaFoxRepository : MangaRepository
     {

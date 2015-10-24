@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 
-namespace MangaScrapeLibPortable.ExtensionMethods
+namespace MangaScrapeLib.ExtensionMethods
 {
     public static class HtmlNodeExtensionMethods
     {

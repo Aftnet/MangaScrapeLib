@@ -1,10 +1,10 @@
-﻿using MangaScrapeLibPortable.Models;
+﻿using MangaScrapeLib.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
-namespace MangaScrapeLibPortable.Repositories
+namespace MangaScrapeLib.Repositories
 {
     public abstract class MangaRepository
     {

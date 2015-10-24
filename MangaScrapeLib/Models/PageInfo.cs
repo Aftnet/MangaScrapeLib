@@ -1,7 +1,7 @@
-﻿using MangaScrapeLibPortable.Repositories;
+﻿using MangaScrapeLib.Repositories;
 using System;
 
-namespace MangaScrapeLibPortable.Models
+namespace MangaScrapeLib.Models
 {
     public class PageInfo
     {

@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Net;
 
-namespace MangaScrapeLibPortable.Test
+namespace MangaScrapeLib.Test
 {
     [DesignerCategory("Code")]
     public class CompressionWebClient : WebClient
