@@ -13,7 +13,7 @@ namespace MangaScrapeLib.Test
     ///This is a test class for MangaRepositoryTest and is intended
     ///to contain all MangaRepositoryTest Unit Tests
     ///</summary>
-    [TestClass()]
+    [TestClass]
     public abstract class MangaRepositoryTestBase
     {
         protected IMangaRepository Repository { get; set; }
@@ -39,7 +39,7 @@ namespace MangaScrapeLib.Test
         /// <summary>
         ///A test for GetChapterPagesList
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public async Task GetChapterPagesListTest()
         {
             using (var Client = GetWebClient())
@@ -61,7 +61,7 @@ namespace MangaScrapeLib.Test
         /// <summary>
         ///A test for GetChaptersList
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public async Task GetChaptersListTest()
         {
             using (var Client = GetWebClient())
@@ -81,7 +81,7 @@ namespace MangaScrapeLib.Test
         /// <summary>
         ///A test for GetImageUri
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public async Task GetImageUriTest()
         {
             using (var Client = GetWebClient())
@@ -106,7 +106,7 @@ namespace MangaScrapeLib.Test
         /// <summary>
         ///A test for GetSeriesInfo
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public async Task GetSeriesInfoTest()
         {
             using (var Client = GetWebClient())
@@ -126,7 +126,7 @@ namespace MangaScrapeLib.Test
         /// <summary>
         ///A test for GetSeriesList
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public async Task GetSeriesListTest()
         {
             using (var Client = GetWebClient())
@@ -146,7 +146,7 @@ namespace MangaScrapeLib.Test
         /// <summary>
         ///A test for MangaIndexPage
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void MangaIndexPageTest()
         {
             Uri actual;
@@ -157,7 +157,7 @@ namespace MangaScrapeLib.Test
         /// <summary>
         ///A test for Name
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void NameTest()
         {
             string actual;
@@ -168,7 +168,7 @@ namespace MangaScrapeLib.Test
         /// <summary>
         ///A test for RootUri
         ///</summary>
-        [TestMethod()]
+        [TestMethod]
         public void RootUriTest()
         {
             Uri actual;

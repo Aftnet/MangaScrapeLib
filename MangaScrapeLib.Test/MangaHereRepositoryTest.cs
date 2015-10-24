@@ -5,9 +5,9 @@ namespace MangaScrapeLib.Test
 {
     /// <summary>
     ///This is a test class for EatMangaRepositoryTest and is intended
-    ///to contain all EatMangaRepositoryTest Unit Tests
+    ///to contain all EatMangaRepositoryTest Unit Tests.
     ///</summary>
-    [TestClass()]
+    //[TestClass] Disabled since I can't access that server
     public class MangaHereRepositoryTest : MangaRepositoryTestBase
     {
         internal override IMangaRepository GetRepository()
