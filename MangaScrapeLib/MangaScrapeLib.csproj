@@ -43,6 +43,7 @@
     <Compile Include="Repositories\IMangaRepository.cs" />
     <Compile Include="Repositories\MangaFoxRepository.cs" />
     <Compile Include="Repositories\MangaHereRepository.cs" />
+    <Compile Include="Repositories\MangaReaderRepository.cs" />
     <Compile Include="Repositories\MangaRepositoryBase.cs" />
   </ItemGroup>
   <ItemGroup>

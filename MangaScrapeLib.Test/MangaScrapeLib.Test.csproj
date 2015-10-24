@@ -53,6 +53,7 @@
     <Compile Include="CompressionWebClient.cs" />
     <Compile Include="EatMangaRepositoryTest.cs" />
     <Compile Include="MangaFoxRepositoryTest.cs" />
+    <Compile Include="MangaReaderRepositoryTest .cs" />
     <Compile Include="MangaHereRepositoryTest.cs" />
     <Compile Include="MangaRepositoryTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
