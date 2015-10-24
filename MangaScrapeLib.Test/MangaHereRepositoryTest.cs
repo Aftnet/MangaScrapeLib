@@ -8,9 +8,9 @@ namespace MangaScrapeLib.Test
     ///to contain all EatMangaRepositoryTest Unit Tests
     ///</summary>
     [TestClass()]
-    public class MangaHereRepositoryTest : MangaRepositoryTest
+    public class MangaHereRepositoryTest : MangaRepositoryTestBase
     {
-        internal override MangaRepositoryBase CreateMangaRepository()
+        internal override IMangaRepository GetRepository()
         {
             return new MangaHereRepository();
         }

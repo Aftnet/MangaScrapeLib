@@ -54,7 +54,7 @@
     <Compile Include="EatMangaRepositoryTest.cs" />
     <Compile Include="MangaFoxRepositoryTest.cs" />
     <Compile Include="MangaHereRepositoryTest.cs" />
-    <Compile Include="MangaRepositoryTest.cs" />
+    <Compile Include="MangaRepositoryTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
