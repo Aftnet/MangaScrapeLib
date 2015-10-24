@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaScrapeLib", "MangaScrapeLib\MangaScrapeLib.csproj", "{6E6A8D08-26F5-451D-98E2-3B4D941726F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaScrapeLib.Test", "MangaScrapeLib.Test\MangaScrapeLib.Test.csproj", "{18C0FB19-9893-4C68-A52A-7D6AF6B60C1C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6E6A8D08-26F5-451D-98E2-3B4D941726F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E6A8D08-26F5-451D-98E2-3B4D941726F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E6A8D08-26F5-451D-98E2-3B4D941726F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E6A8D08-26F5-451D-98E2-3B4D941726F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18C0FB19-9893-4C68-A52A-7D6AF6B60C1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18C0FB19-9893-4C68-A52A-7D6AF6B60C1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18C0FB19-9893-4C68-A52A-7D6AF6B60C1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18C0FB19-9893-4C68-A52A-7D6AF6B60C1C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
