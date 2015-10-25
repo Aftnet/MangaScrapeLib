@@ -1,4 +1,5 @@
 $NugetPath =  Get-ChildItem -Recurse -Path ".\packages" -Filter "NuGet.exe";
+$NugetPath = $NugetPath.FullName;
 
 $OutputDir = ".\GeneratedPackages";
 New-Item "$OutputDir" -type directory -Force;
@@ -9,7 +10,7 @@ foreach($i in $ProjectPaths)
     $NuspecExists = (Get-ChildItem -Path $i.Directory -Filter "*.nuspec").Count -gt 0;
     if($NuspecExists)
     {
-        &$NugetPath.FullName pack "$i" -IncludeReferencedProjects -Symbol -Prop Configuration=Release -OutputDirectory "$OutputDir";
+        &$NugetPath pack "$i" -IncludeReferencedProjects -Symbol -Prop Configuration=Release -OutputDirectory "$OutputDir";
     }
 }
 
