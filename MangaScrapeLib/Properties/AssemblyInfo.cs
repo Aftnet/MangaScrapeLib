@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("MangaScrapeLib")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A library to scrape publicly available manga repositories")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Alberto Fustinoni")]
 [assembly: AssemblyProduct("MangaScrapeLib")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]

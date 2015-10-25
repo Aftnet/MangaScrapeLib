@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaScrapeLib.Test", "Mang
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{16219D45-0DFD-44E7-B945-52C15477D951}"
 	ProjectSection(SolutionItems) = preProject
+		Generate nuget packages.ps1 = Generate nuget packages.ps1
+		License.txt = License.txt
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject
