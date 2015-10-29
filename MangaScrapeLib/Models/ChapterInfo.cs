@@ -26,5 +26,19 @@ namespace MangaScrapeLib.Models
                 ChapterNo = int.Parse(NumStr);
             }
         }
+
+        public string SuggestPath(string RootDirectoryPath)
+        {
+            var ParentSeriesPath = ParentSeries.SuggestPath(RootDirectoryPath);
+            var Output = string.Format("{0}{1}{2} {3}", ParentSeriesPath, SeriesInfo.PathSeparator, ParentSeries.Name, ChapterNo.ToString("000"));
+            if (ChapterNo < 0)
+            {
+                Output = string.Format("{0}{2}Extra{2}{1}", ParentSeriesPath, Title, SeriesInfo.PathSeparator);
+            }
+
+            Output = SeriesInfo.MakeValidPathName(Output);
+            return Output;
+        }
+
     }
 }

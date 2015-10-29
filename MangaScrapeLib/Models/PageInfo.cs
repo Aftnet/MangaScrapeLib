@@ -1,5 +1,6 @@
 ﻿using MangaScrapeLib.Repositories;
 using System;
+using System.IO;
 
 namespace MangaScrapeLib.Models
 {
@@ -16,16 +17,21 @@ namespace MangaScrapeLib.Models
         {
             SeriesInfo ParentSeries = ParentChapter.ParentSeries;
 
-            string Output = null;
-            if (ParentChapter.ChapterNo >= 0)
+            var Output = string.Format("{0} C{1} P{2}", ParentSeries.Name, ParentChapter.ChapterNo.ToString("000"), PageNo.ToString("000"));
+            if (ParentChapter.ChapterNo < 0)
             {
-                Output = string.Format("{0} C{1} P{2}", MangaRepositoryBase.MakeValidPathName(ParentSeries.Name), ParentChapter.ChapterNo.ToString("000"), PageNo.ToString("000"));
-            }
-            else
-            {
-                Output = string.Format("{0} P{1}", MangaRepositoryBase.MakeValidPathName(ParentChapter.Title), PageNo.ToString("000"));
+                Output = string.Format("{0} P{1}", ParentChapter.Title, PageNo.ToString("000"));
             }
 
+            return Output;
+        }
+
+        public string SuggestPath(string RootDirectoryPath)
+        {
+            string PathStr = String.Format("{0}{1}{2}{3}", ImageUri.Scheme, "://", ImageUri.Authority, ImageUri.AbsolutePath);
+            string Extension = Path.GetExtension(PathStr);
+            string Output = string.Format("{0}{1}{2}{3}", ParentChapter.SuggestPath(RootDirectoryPath), SeriesInfo.PathSeparator, SuggestFileName(), Extension);
+            Output = SeriesInfo.MakeValidPathName(Output);
             return Output;
         }
     }
