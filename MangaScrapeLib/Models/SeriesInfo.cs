@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Models
 {
-    public class SeriesInfo
+    public class SeriesInfo : IPathSuggester
     {
         public const string PathSeparator = @"\";
 

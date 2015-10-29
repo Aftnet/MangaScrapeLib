@@ -4,7 +4,7 @@ using System.IO;
 
 namespace MangaScrapeLib.Models
 {
-    public class PageInfo
+    public class PageInfo : IPathSuggester
     {
         public ChapterInfo ParentChapter { get; set; }
 

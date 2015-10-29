@@ -39,6 +39,7 @@
     </Compile>
     <Compile Include="ExtensionMethods\HtmlNodeExtensionMethods.cs" />
     <Compile Include="Models\ChapterInfo.cs" />
+    <Compile Include="Models\IPathSuggester.cs" />
     <Compile Include="Models\PageInfo.cs" />
     <Compile Include="Models\SeriesInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

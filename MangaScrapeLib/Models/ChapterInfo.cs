@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Models
 {
-    public class ChapterInfo
+    public class ChapterInfo : IPathSuggester
     {
         public SeriesInfo ParentSeries { get; set; }
 
