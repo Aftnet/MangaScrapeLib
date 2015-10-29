@@ -21,12 +21,14 @@ namespace MangaScrapeLib.Models
 
         public string SuggestFileName()
         {
+            const string NumberFormatString = "000";
+
             SeriesInfo ParentSeries = ParentChapter.ParentSeries;
 
-            var Output = string.Format("{0} C{1} P{2}", ParentSeries.Name, ParentChapter.ChapterNo.ToString("000"), PageNo.ToString("000"));
+            var Output = string.Format("{0} C{1} P{2}", ParentSeries.Name, ParentChapter.ChapterNo.ToString(NumberFormatString), PageNo.ToString(NumberFormatString));
             if (ParentChapter.ChapterNo < 0)
             {
-                Output = string.Format("{0} P{1}", ParentChapter.Title, PageNo.ToString("000"));
+                Output = string.Format("{0} P{1}", ParentChapter.Title, PageNo.ToString(NumberFormatString));
             }
 
             return Output;
