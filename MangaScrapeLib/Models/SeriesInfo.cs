@@ -13,16 +13,17 @@ namespace MangaScrapeLib.Models
         public const string PathSeparator = @"\";
 
         public readonly IMangaRepository ParentRepository;
+        public readonly Uri SeriesPageUri;
 
         public string Name { get; set; }
-        public Uri SeriesPageUri { get; set; }
 
         public string Tags { get; set; }
         public string Description { get; set; }
 
-        public SeriesInfo(IMangaRepository Parent)
+        public SeriesInfo(IMangaRepository Parent, Uri SeriesPageUri)
         {
             ParentRepository = Parent;
+            this.SeriesPageUri = SeriesPageUri;
         }
 
         public async Task<IEnumerable<ChapterInfo>> GetChaptersAsync(bool ParseHtmlAsynchronously = true)

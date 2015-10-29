@@ -25,10 +25,9 @@ namespace MangaScrapeLib.Repositories
                 return (AttrValue == "series_preview manga_open" || AttrValue == "series_preview manga_close");
             });
 
-            var Output = Nodes.Select(d => new SeriesInfo(this)
+            var Output = Nodes.Select(d => new SeriesInfo(this, new Uri(RootUri, d.Attributes["href"].Value))
             {
-                Name = WebUtility.HtmlDecode(d.InnerText),
-                SeriesPageUri = new Uri(RootUri, d.Attributes["href"].Value)
+                Name = WebUtility.HtmlDecode(d.InnerText)
             });
 
             Output = Output.OrderBy(d => d.Name);
@@ -50,10 +49,9 @@ namespace MangaScrapeLib.Repositories
 
             var Output = Nodes.Select(d =>
             {
-                var Chapter = new ChapterInfo(Series)
+                var Chapter = new ChapterInfo(Series, new Uri(RootUri, d.Attributes["href"].Value))
                 {
-                    Title = WebUtility.HtmlDecode(d.InnerText),
-                    FirstPageUri = new Uri(RootUri, d.Attributes["href"].Value)
+                    Title = WebUtility.HtmlDecode(d.InnerText)
                 };
 
                 Chapter.DetectChapterNo();
@@ -72,10 +70,9 @@ namespace MangaScrapeLib.Repositories
             var Nodes = Document.DocumentNode.ChildNodes.Where(d => d.HasNameAttributeValue("div", "id", "top_center_bar"));
             Nodes = Nodes.SelectMany(d => d.ChildNodes.Where(e => e.HasNameAttributeValue("div", "m", "option")));
 
-            var Output = Nodes.Select((d, e) => new PageInfo(Chapter)
+            var Output = Nodes.Select((d, e) => new PageInfo(Chapter, new Uri(Regex.Replace(Chapter.FirstPageUri.AbsoluteUri, @"1\.html$", string.Format("{0}.html", d))))
             {
-                PageNo = e + 1,
-                PageUri = new Uri(Regex.Replace(Chapter.FirstPageUri.AbsoluteUri, @"1\.html$", string.Format("{0}.html", d)))
+                PageNo = e + 1
             });
             return Output;
         }

@@ -10,13 +10,15 @@ namespace MangaScrapeLib.Models
     {
         public readonly SeriesInfo ParentSeries;
 
+        public readonly Uri FirstPageUri;
+
         public int ChapterNo { get; set; }
         public string Title { get; set; }
-        public Uri FirstPageUri { get; set; }
 
-        public ChapterInfo(SeriesInfo Parent)
+        public ChapterInfo(SeriesInfo Parent, Uri FirstPageUri)
         {
             ParentSeries = Parent;
+            this.FirstPageUri = FirstPageUri;
         }
 
         public async Task<IEnumerable<PageInfo>> GetPagesAsync(bool ParseHtmlAsynchronously = true)
@@ -33,6 +35,7 @@ namespace MangaScrapeLib.Models
                 return Output;
             }
         }
+
         public void DetectChapterNo()
         {
             var SeriesNameLowercase = ParentSeries.Name.ToLowerInvariant();

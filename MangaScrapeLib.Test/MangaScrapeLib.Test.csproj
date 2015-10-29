@@ -53,7 +53,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="CompressionWebClient.cs" />
+    <Compile Include="Services\CompressionWebClient.cs" />
     <Compile Include="EatMangaRepositoryTest.cs" />
     <Compile Include="MangaFoxRepositoryTest.cs" />
     <Compile Include="MangaReaderRepositoryTest .cs" />

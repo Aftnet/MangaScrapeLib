@@ -19,10 +19,9 @@ namespace MangaScrapeLib.Repositories
             var Nodes = Node.ChildNodes.Where(d => d.Name == "tr");
             Nodes = Nodes.Select(d => d.FirstChild).Where(d => d.Name == "th");
             Nodes = Nodes.Select(d => d.FirstChild);
-            var Output = Nodes.Select(d => new SeriesInfo(this)
+            var Output = Nodes.Select(d => new SeriesInfo(this, new Uri(RootUri, d.Attributes["href"].Value))
             {
-                Name = d.InnerText,
-                SeriesPageUri = new Uri(RootUri, d.Attributes["href"].Value)
+                Name = d.InnerText
             });
             
             Output = Output.OrderBy(d => d.Name).ToList();
@@ -44,11 +43,10 @@ namespace MangaScrapeLib.Repositories
             var Output = Nodes.Select(d =>
             {
                 var AnchorNode = d.FirstChild.FirstChild;
-                var NewChapterInfo = new ChapterInfo(Series)
+                var NewChapterInfo = new ChapterInfo(Series, new Uri(RootUri, AnchorNode.Attributes["href"].Value))
                 {
                     ChapterNo = -1,
-                    Title = AnchorNode.InnerText,
-                    FirstPageUri = new Uri(RootUri, AnchorNode.Attributes["href"].Value)
+                    Title = AnchorNode.InnerText
                 };
                 return NewChapterInfo;
             });
@@ -67,10 +65,9 @@ namespace MangaScrapeLib.Repositories
             var Node = Document.GetElementbyId("pages");
             var Nodes = Node.ChildNodes.Where(d => d.Name == "option");
 
-            var Output = Nodes.Select((d, e) => new PageInfo(Chapter)
+            var Output = Nodes.Select((d, e) => new PageInfo(Chapter, new Uri(RootUri, d.Attributes["value"].Value))
             {
-                PageNo = e + 1,
-                PageUri = new Uri(RootUri, d.Attributes["value"].Value)
+                PageNo = e + 1
             });
             Output = Output.OrderBy(d => d.PageNo);
             return Output;

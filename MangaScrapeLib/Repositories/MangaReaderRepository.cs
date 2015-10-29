@@ -20,10 +20,9 @@ namespace MangaScrapeLib.Repositories
 
             var Nodes = Document.DocumentNode.Descendants().Where(d => d.HasNameAttributeValue("ul", "class", "series_alpha"));
             Nodes = Nodes.SelectMany(d => d.ChildNodes.Where(e => e.Name == "li")).Select(d => d.ChildNodes.First(e => e.Name == "a"));
-            var Output = Nodes.Select(d => new SeriesInfo(this)
+            var Output = Nodes.Select(d => new SeriesInfo(this, new Uri(RootUri, d.Attributes["href"].Value))
             {
-                Name = WebUtility.HtmlDecode(d.InnerText).Trim(),
-                SeriesPageUri = new Uri(RootUri, d.Attributes["href"].Value)
+                Name = WebUtility.HtmlDecode(d.InnerText).Trim()
             });
             Output = Output.OrderBy(d => d.Name);
             return Output;
@@ -52,10 +51,9 @@ namespace MangaScrapeLib.Repositories
             var Node = Document.GetElementbyId("listing");
             var Nodes = Node.Descendants().Where(d => d.Name == "a");
 
-            var Output = Nodes.Select(d => new ChapterInfo(Series)
+            var Output = Nodes.Select(d => new ChapterInfo(Series, new Uri(RootUri, d.Attributes["href"].Value))
             {
-                Title = WebUtility.HtmlDecode(d.InnerText),
-                FirstPageUri = new Uri(RootUri, d.Attributes["href"].Value)
+                Title = WebUtility.HtmlDecode(d.InnerText)
             });
 
             return Output;
@@ -69,10 +67,9 @@ namespace MangaScrapeLib.Repositories
             var Node = Document.GetElementbyId("pageMenu");
             var Nodes = Node.ChildNodes.Where(d => d.Name == "option");
 
-            var Output = Nodes.Select((d, e) => new PageInfo(Chapter)
+            var Output = Nodes.Select((d, e) => new PageInfo(Chapter, new Uri(RootUri, d.Attributes["value"].Value))
             {
-                PageNo = e + 1,
-                PageUri = new Uri(RootUri, d.Attributes["value"].Value)
+                PageNo = e + 1
             });
             return Output;
         }

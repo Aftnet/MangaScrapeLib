@@ -1,7 +1,7 @@
 ﻿using MangaScrapeLib.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MangaScrapeLib.Test
+namespace MangaScrapeLib.TestServices
 {
     /// <summary>
     ///This is a test class for EatMangaRepositoryTest and is intended

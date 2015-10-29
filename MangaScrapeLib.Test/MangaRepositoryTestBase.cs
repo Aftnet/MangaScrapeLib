@@ -1,5 +1,6 @@
 ﻿using MangaScrapeLib.Models;
 using MangaScrapeLib.Repositories;
+using MangaScrapeLib.Test.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace MangaScrapeLib.Test
+namespace MangaScrapeLib.TestServices
 {
     /// <summary>
     ///This is a test class for MangaRepositoryTest and is intended
