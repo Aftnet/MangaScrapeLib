@@ -1,7 +1,10 @@
 ﻿using MangaScrapeLib.Repositories;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
@@ -9,13 +12,33 @@ namespace MangaScrapeLib.Models
     {
         public const string PathSeparator = @"\";
 
-        public IMangaRepository ParentRepository { get; set; }
+        public readonly IMangaRepository ParentRepository;
 
         public string Name { get; set; }
         public Uri SeriesPageUri { get; set; }
 
         public string Tags { get; set; }
         public string Description { get; set; }
+
+        public SeriesInfo(IMangaRepository Parent)
+        {
+            ParentRepository = Parent;
+        }
+
+        public async Task<IEnumerable<ChapterInfo>> GetChaptersAsync(bool ParseHtmlAsynchronously = true)
+        {
+            using (var Client = new HttpClient())
+            {
+                var PageHtml = await Client.GetStringAsync(SeriesPageUri);
+                if (ParseHtmlAsynchronously)
+                {
+                    return await Task.Run(() => ParentRepository.GetChapters(this, PageHtml));
+                }
+
+                var Output = ParentRepository.GetChapters(this, PageHtml);
+                return Output;
+            }
+        }
 
         public string SuggestPath(string RootDirectoryPath)
         {

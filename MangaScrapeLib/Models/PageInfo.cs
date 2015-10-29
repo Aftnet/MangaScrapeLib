@@ -6,12 +6,17 @@ namespace MangaScrapeLib.Models
 {
     public class PageInfo : IPathSuggester
     {
-        public ChapterInfo ParentChapter { get; set; }
+        public readonly ChapterInfo ParentChapter;
 
         public int PageNo { get; set; }
         public Uri PageUri { get; set; }
         public Uri ImageUri { get; set; }
         public byte[] ImageData { get; set; }
+
+        public PageInfo(ChapterInfo Parent)
+        {
+            ParentChapter = Parent;
+        }
 
         public string SuggestFileName()
         {

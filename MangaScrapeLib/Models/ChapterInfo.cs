@@ -1,16 +1,38 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
     public class ChapterInfo : IPathSuggester
     {
-        public SeriesInfo ParentSeries { get; set; }
+        public readonly SeriesInfo ParentSeries;
 
         public int ChapterNo { get; set; }
         public string Title { get; set; }
         public Uri FirstPageUri { get; set; }
 
+        public ChapterInfo(SeriesInfo Parent)
+        {
+            ParentSeries = Parent;
+        }
+
+        public async Task<IEnumerable<PageInfo>> GetPagesAsync(bool ParseHtmlAsynchronously = true)
+        {
+            using (var Client = new HttpClient())
+            {
+                var PageHtml = await Client.GetStringAsync(FirstPageUri);
+                if (ParseHtmlAsynchronously)
+                {
+                    return await Task.Run(() => ParentSeries.ParentRepository.GetPages(this, PageHtml));
+                }
+
+                var Output = ParentSeries.ParentRepository.GetPages(this, PageHtml);
+                return Output;
+            }
+        }
         public void DetectChapterNo()
         {
             var SeriesNameLowercase = ParentSeries.Name.ToLowerInvariant();

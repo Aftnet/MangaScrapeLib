@@ -185,7 +185,7 @@ namespace MangaScrapeLib.Test
         internal async Task<IEnumerable<SeriesInfo>> GetSeriesListAsync(IMangaRepository Repository, WebClient Client)
         {
             string PageHTML = await Client.DownloadStringTaskAsync(Repository.MangaIndexPage);
-            var SeriesList = Repository.GetSeriesList(PageHTML);
+            var SeriesList = Repository.GetSeries(PageHTML);
             return SeriesList;
         }
 
@@ -193,7 +193,7 @@ namespace MangaScrapeLib.Test
         {
             string PageHTML = await Client.DownloadStringTaskAsync(Series.SeriesPageUri);
             Assert.IsNotNull(PageHTML);
-            var ChaptersList = Repository.GetChaptersList(Series, PageHTML);
+            var ChaptersList = Repository.GetChapters(Series, PageHTML);
             return ChaptersList;
         }
 
@@ -201,7 +201,7 @@ namespace MangaScrapeLib.Test
         {
             var PageHTML = await Client.DownloadStringTaskAsync(Chapter.FirstPageUri);
             Assert.IsNotNull(PageHTML);
-            var ChaptersList = Repository.GetChapterPagesList(Chapter, PageHTML);
+            var ChaptersList = Repository.GetPages(Chapter, PageHTML);
             return ChaptersList;
         }
 

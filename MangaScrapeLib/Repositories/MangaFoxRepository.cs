@@ -13,7 +13,7 @@ namespace MangaScrapeLib.Repositories
     {
         public MangaFoxRepository() : base("Manga Fox", "http://mangafox.me/", "manga/") { }
 
-        public override IEnumerable<SeriesInfo> GetSeriesList(string MangaIndexPageHtml)
+        public override IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml)
         {
             var Document = new HtmlDocument();
             Document.LoadHtml(MangaIndexPageHtml);
@@ -25,9 +25,8 @@ namespace MangaScrapeLib.Repositories
                 return (AttrValue == "series_preview manga_open" || AttrValue == "series_preview manga_close");
             });
 
-            var Output = Nodes.Select(d => new SeriesInfo
+            var Output = Nodes.Select(d => new SeriesInfo(this)
             {
-                ParentRepository = this,
                 Name = WebUtility.HtmlDecode(d.InnerText),
                 SeriesPageUri = new Uri(RootUri, d.Attributes["href"].Value)
             });
@@ -41,7 +40,7 @@ namespace MangaScrapeLib.Repositories
             Series.Description = Series.Tags = string.Empty;
         }
 
-        public override IEnumerable<ChapterInfo> GetChaptersList(SeriesInfo Series, string SeriesPageHtml)
+        public override IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml)
         {
             var Document = new HtmlDocument();
             Document.LoadHtml(SeriesPageHtml);
@@ -51,9 +50,8 @@ namespace MangaScrapeLib.Repositories
 
             var Output = Nodes.Select(d =>
             {
-                var Chapter = new ChapterInfo()
+                var Chapter = new ChapterInfo(Series)
                 {
-                    ParentSeries = Series,
                     Title = WebUtility.HtmlDecode(d.InnerText),
                     FirstPageUri = new Uri(RootUri, d.Attributes["href"].Value)
                 };
@@ -66,7 +64,7 @@ namespace MangaScrapeLib.Repositories
             return Output;
         }
 
-        public override IEnumerable<PageInfo> GetChapterPagesList(ChapterInfo Chapter, string MangaPageHtml)
+        public override IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml)
         {
             var Document = new HtmlDocument();
             Document.LoadHtml(MangaPageHtml);
@@ -74,9 +72,8 @@ namespace MangaScrapeLib.Repositories
             var Nodes = Document.DocumentNode.ChildNodes.Where(d => d.HasNameAttributeValue("div", "id", "top_center_bar"));
             Nodes = Nodes.SelectMany(d => d.ChildNodes.Where(e => e.HasNameAttributeValue("div", "m", "option")));
 
-            var Output = Nodes.Select((d, e) => new PageInfo()
+            var Output = Nodes.Select((d, e) => new PageInfo(Chapter)
             {
-                ParentChapter = Chapter,
                 PageNo = e + 1,
                 PageUri = new Uri(Regex.Replace(Chapter.FirstPageUri.AbsoluteUri, @"1\.html$", string.Format("{0}.html", d)))
             });

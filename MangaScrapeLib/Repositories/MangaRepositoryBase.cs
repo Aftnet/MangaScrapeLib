@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories
 {
@@ -24,46 +26,26 @@ namespace MangaScrapeLib.Repositories
             mangaIndexPage = new Uri(rootUri, MangaIndexPageStr);
         }
 
-        public abstract IEnumerable<SeriesInfo> GetSeriesList(string MangaIndexPageHtml);
+        public abstract IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml);
         public abstract void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml);
-        public abstract IEnumerable<ChapterInfo> GetChaptersList(SeriesInfo Series, string SeriesPageHtml);
-        public abstract IEnumerable<PageInfo> GetChapterPagesList(ChapterInfo Chapter, string MangaPageHtml);
+        public abstract IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml);
+        public abstract IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml);
         public abstract Uri GetImageUri(string MangaPageHtml);
 
-        /*protected static HtmlAgilityPack.HtmlNode GetElement(string PageHtml, string XPath)
+        public virtual async Task<IEnumerable<SeriesInfo>> GetSeriesAsync(bool ParseHtmlAsynchronously = true)
         {
-            HtmlDocument PageDocument = new HtmlDocument();
-            PageDocument.LoadHtml(PageHtml);
-            var SelectedNode = PageDocument.SelectSingleNode(XPath);
+            using (var Client = new HttpClient())
+            {
+                var PageHtml = await Client.GetStringAsync(MangaIndexPage);
+                if(ParseHtmlAsynchronously)
+                {
+                    return await Task.Run(() => GetSeries(PageHtml));
+                }
 
-            return SelectedNode;
+                var Output = GetSeries(PageHtml);
+                return Output;
+            }
         }
-
-        protected static HtmlAgilityPack.HtmlNodeCollection GetElements(string PageHtml, string XPath)
-        {
-            HtmlDocument PageDocument = new HtmlDocument();
-            PageDocument.LoadHtml(PageHtml);
-            var SelectedNode = PageDocument.DocumentNode.SelectNodes(XPath);
-
-            return SelectedNode;
-        }
-
-        protected static string GetElementAttributeVal(string PageHtml, string XPath, string AttributeName)
-        {
-            var SelectedNode = GetElement(PageHtml, XPath);
-
-            if (SelectedNode == null) return null;
-            if (SelectedNode.Attributes[AttributeName] == null) return null;
-
-            return SelectedNode.Attributes[AttributeName].Value;
-        }
-
-        protected Uri GetElementAttributeUri(string PageHtml, string XPath, string AttributeName)
-        {
-            string AttributeVal = GetElementAttributeVal(PageHtml, XPath, AttributeName);
-            if (AttributeVal == null) return null;
-            return new Uri(RootUri, AttributeVal);
-        }*/
 
         public override string ToString()
         {

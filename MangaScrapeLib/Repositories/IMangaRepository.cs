@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MangaScrapeLib.Models;
+using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories
 {
@@ -10,10 +11,11 @@ namespace MangaScrapeLib.Repositories
         string Name { get; }
         Uri RootUri { get; }
 
-        IEnumerable<PageInfo> GetChapterPagesList(ChapterInfo Chapter, string MangaPageHtml);
-        IEnumerable<ChapterInfo> GetChaptersList(SeriesInfo Series, string SeriesPageHtml);
+        IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml);
+        IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml);
         Uri GetImageUri(string MangaPageHtml);
         void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml);
-        IEnumerable<SeriesInfo> GetSeriesList(string MangaIndexPageHtml);
+        IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml);
+        Task<IEnumerable<SeriesInfo>> GetSeriesAsync(bool ParseHtmlAsynchronously = true);
     }
 }
