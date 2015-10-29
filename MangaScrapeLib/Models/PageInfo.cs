@@ -28,9 +28,9 @@ namespace MangaScrapeLib.Models
 
         public string SuggestPath(string RootDirectoryPath)
         {
-            string PathStr = String.Format("{0}{1}{2}{3}", ImageUri.Scheme, "://", ImageUri.Authority, ImageUri.AbsolutePath);
-            string Extension = Path.GetExtension(PathStr);
-            string Output = string.Format("{0}{1}{2}{3}", ParentChapter.SuggestPath(RootDirectoryPath), SeriesInfo.PathSeparator, SuggestFileName(), Extension);
+            var PathStr = String.Format("{0}{1}{2}{3}", ImageUri.Scheme, "://", ImageUri.Authority, ImageUri.AbsolutePath);
+            var Extension = Path.GetExtension(PathStr);
+            var Output = string.Format("{0}{1}{2}{3}", ParentChapter.SuggestPath(RootDirectoryPath), SeriesInfo.PathSeparator, SuggestFileName(), Extension);
             Output = SeriesInfo.MakeValidPathName(Output);
             return Output;
         }

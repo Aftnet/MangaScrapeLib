@@ -13,12 +13,12 @@ namespace MangaScrapeLib.Models
 
         public void DetectChapterNo()
         {
-            string SeriesNameLowercase = ParentSeries.Name.ToLowerInvariant();
-            Regex ChapterTitleNoRegex = new Regex(string.Format(@"{0} [\d]+$|{0} [\d]+ ", SeriesNameLowercase));
+            var SeriesNameLowercase = ParentSeries.Name.ToLowerInvariant();
+            var ChapterTitleNoRegex = new Regex(string.Format(@"{0} [\d]+$|{0} [\d]+ ", SeriesNameLowercase));
 
             //Try to detect chapter number
             ChapterNo = -1;
-            string TitleLowercase = Title.ToLowerInvariant();
+            var TitleLowercase = Title.ToLowerInvariant();
             var Match = ChapterTitleNoRegex.Match(TitleLowercase);
             if (Match.Success == true)
             {
