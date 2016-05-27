@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
@@ -38,11 +38,10 @@ namespace MangaScrapeLib.Models
         public string SuggestPath(string RootDirectoryPath)
         {
             var ParentSeriesPath = ParentSeries.SuggestPath(RootDirectoryPath);
-            var Output = string.Format("{0}{2}{1}", ParentSeriesPath, Title, SeriesInfo.PathSeparator);
+            var Output = Path.Combine(ParentSeries.SuggestPath(RootDirectoryPath), SeriesInfo.MakeValidPathName(Title));
 
             Output = SeriesInfo.MakeValidPathName(Output);
             return Output;
         }
-
     }
 }

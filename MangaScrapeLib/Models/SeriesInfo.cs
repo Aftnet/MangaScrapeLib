@@ -10,8 +10,6 @@ namespace MangaScrapeLib.Models
 {
     public class SeriesInfo : IPathSuggester
     {
-        public const string PathSeparator = @"\";
-
         public readonly IMangaRepository ParentRepository;
         public readonly Uri SeriesPageUri;
 
@@ -43,8 +41,7 @@ namespace MangaScrapeLib.Models
 
         public string SuggestPath(string RootDirectoryPath)
         {
-            var Output = string.Format("{0}{1}{2}", RootDirectoryPath, PathSeparator, Name);
-            Output = MakeValidPathName(Output);
+            var Output = Path.Combine(RootDirectoryPath, MakeValidPathName(Name));
             return Output;
         }
 
