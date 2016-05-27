@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using MangaScrapeLib.ExtensionMethods;
-using MangaScrapeLib.Models;
+﻿using MangaScrapeLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +13,9 @@ namespace MangaScrapeLib.Repositories
 
         public override IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml)
         {
-            var Document = new HtmlDocument();
-            Document.LoadHtml(MangaIndexPageHtml);
+            var Document = Parser.Parse(MangaIndexPageHtml);
 
-            var Nodes = Document.DocumentNode.ChildNodes.Where(d => d.HasNameAttributeValue("a", "class", "manga_info"));
+            var Nodes = Document.QuerySelectorAll("a.manga_info");
 
             var Output = Nodes.Select(d => new SeriesInfo(this, new Uri(RootUri, d.Attributes["href"].Value))
             {
@@ -30,32 +27,20 @@ namespace MangaScrapeLib.Repositories
 
         public override void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml)
         {
-            var Document = new HtmlDocument();
-            Document.LoadHtml(SeriesPageHtml);
-
-            var TopTextNode = Document.DocumentNode.ChildNodes.First(d => d.HasNameAttributeValue("ul", "class", "detail_topText"));
-            var Node = TopTextNode.ChildNodes.Where(d => d.Name == "li").ElementAt(3);
-            Node.RemoveChild(Node.FirstChild);
-            Series.Tags = Node.InnerText;
-
-            Node = TopTextNode.ChildNodes.Where(d => d.Name == "li").ElementAt(7).ChildNodes.Where(d => d.Name == "p").ElementAt(1);
-            Node.RemoveChild(Node.ChildNodes[1]);
-            Series.Description = WebUtility.HtmlDecode(Node.InnerText);
+            Series.Description = Series.Tags = string.Empty;
         }
 
         public override IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml)
         {
-            var Document = new HtmlDocument();
-            Document.LoadHtml(SeriesPageHtml);
+            var Document = Parser.Parse(SeriesPageHtml);
 
-            var Node = Document.DocumentNode.ChildNodes.First(d => d.HasNameAttributeValue("div", "class", "manga_detail"));
-            Node = Node.ChildNodes.First(d => d.HasNameAttributeValue("div", "class", "detail_list"));
-            Node = Node.ChildNodes.First(d => d.Name == "ul");
-            var Nodes = Node.ChildNodes.Where(d => d.HasNameAttributeValue("a", "class", "color_0077"));
+            var Node = Document.QuerySelector("div.manga_detail");
+            Node = Node.QuerySelector("div.detail_list ul");
+            var Nodes = Node.QuerySelectorAll("a.color_0077");
 
             var Output = Nodes.Select(d =>
             {
-                string Title = d.InnerText;
+                string Title = d.TextContent;
                 Title = Regex.Replace(Title, @"^[\r\n\s\t]+", string.Empty);
                 Title = Regex.Replace(Title, @"[\r\n\s\t]+$", string.Empty);
                 var Chapter = new ChapterInfo(Series, new Uri(RootUri, d.Attributes["href"].Value))
@@ -63,7 +48,6 @@ namespace MangaScrapeLib.Repositories
                     Title = Title
                 };
 
-                Chapter.DetectChapterNo();
                 return Chapter;
             });
 
@@ -73,13 +57,11 @@ namespace MangaScrapeLib.Repositories
 
         public override IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml)
         {
-            var Document = new HtmlDocument();
-            Document.LoadHtml(MangaPageHtml);
+            var Document = Parser.Parse(MangaPageHtml);
 
-            var Node = Document.DocumentNode.ChildNodes.First(d => d.HasNameAttributeValue("section", "class", "readpage_top"));
-            Node = Node.ChildNodes.First(d => d.HasNameAttributeValue("span", "class", "right"));
-            Node = Node.ChildNodes.First(d => d.Name == "select");
-            var Nodes = Node.ChildNodes.Where(d => d.Name == "option");
+            var Node = Document.QuerySelector("section.readpage_top");
+            Node = Node.QuerySelector("span.right select");
+            var Nodes = Node.QuerySelectorAll("option");
 
             var Output = Nodes.Select((d, e) => new PageInfo(Chapter, new Uri(RootUri, d.Attributes["value"].Value))
             {
@@ -90,10 +72,9 @@ namespace MangaScrapeLib.Repositories
 
         public override Uri GetImageUri(string MangaPageHtml)
         {
-            var Document = new HtmlDocument();
-            Document.LoadHtml(MangaPageHtml);
+            var Document = Parser.Parse(MangaPageHtml);
 
-            var Node = Document.DocumentNode.ChildNodes.Where(d => d.Name == "img").First(d => d.HasAttributeValue("id", "image"));
+            var Node = Document.QuerySelector("img#image");
 
             var Output = new Uri(Node.Attributes["src"].Value);
             return Output;
