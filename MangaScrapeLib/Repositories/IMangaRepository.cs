@@ -16,6 +16,5 @@ namespace MangaScrapeLib.Repositories
         Uri GetImageUri(string MangaPageHtml);
         void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml);
         IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml);
-        Task<IEnumerable<SeriesInfo>> GetSeriesAsync(bool ParseHtmlAsynchronously = true);
     }
 }

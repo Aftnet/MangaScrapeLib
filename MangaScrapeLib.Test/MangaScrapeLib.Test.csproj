@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AngleSharp, Version=0.9.6.41832, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
+      <HintPath>..\packages\AngleSharp.0.9.6\lib\net45\AngleSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -55,9 +59,6 @@
     </Compile>
     <Compile Include="Services\CompressionWebClient.cs" />
     <Compile Include="EatMangaRepositoryTest.cs" />
-    <Compile Include="MangaFoxRepositoryTest.cs" />
-    <Compile Include="MangaReaderRepositoryTest .cs" />
-    <Compile Include="MangaHereRepositoryTest.cs" />
     <Compile Include="MangaRepositoryTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -66,6 +67,9 @@
       <Project>{6e6a8d08-26f5-451d-98e2-3b4d941726f9}</Project>
       <Name>MangaScrapeLibPortable</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

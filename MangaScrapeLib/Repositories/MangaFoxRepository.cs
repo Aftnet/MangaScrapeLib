@@ -1,5 +1,4 @@
-﻿using HtmlAgilityPack;
-using MangaScrapeLib.ExtensionMethods;
+﻿using MangaScrapeLib.ExtensionMethods;
 using MangaScrapeLib.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +14,7 @@ namespace MangaScrapeLib.Repositories
 
         public override IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml)
         {
+            ang
             var Document = new HtmlDocument();
             Document.LoadHtml(MangaIndexPageHtml);
 

@@ -3,6 +3,6 @@
     ".NETPortable,Version=v4.5,Profile=Profile111": {}
   },
   "dependencies": {
-    "HtmlAgilityPack": "1.4.9"
+    "AngleSharp": "0.9.6"
   }
 }
