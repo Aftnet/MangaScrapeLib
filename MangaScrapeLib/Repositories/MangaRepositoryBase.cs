@@ -3,7 +3,9 @@ using MangaScrapeLib.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories
 {
@@ -11,14 +13,21 @@ namespace MangaScrapeLib.Repositories
     {
         protected static readonly HtmlParser Parser = new HtmlParser();
 
-        protected string name;
+        protected readonly string name;
         public string Name { get { return name; } }
 
-        protected Uri rootUri;
+        protected readonly Uri rootUri;
         public Uri RootUri { get { return rootUri; } }
 
-        protected Uri mangaIndexPage;
+        protected readonly Uri mangaIndexPage;
         public Uri MangaIndexPage { get { return mangaIndexPage; } }
+
+        public abstract IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml);
+        public abstract void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml);
+        public abstract IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml);
+        public abstract IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml);
+        public abstract Uri GetImageUri(string MangaPageHtml);
+
 
         public MangaRepositoryBase(string Name, string UriString, string MangaIndexPageStr)
         {
@@ -27,11 +36,12 @@ namespace MangaScrapeLib.Repositories
             mangaIndexPage = new Uri(rootUri, MangaIndexPageStr);
         }
 
-        public abstract IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml);
-        public abstract void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml);
-        public abstract IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml);
-        public abstract IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml);
-        public abstract Uri GetImageUri(string MangaPageHtml);
+        public async Task<IEnumerable<SeriesInfo>> GetSeriesAsync(HttpClient Client)
+        {
+            var PageHtml = await Client.GetStringAsync(MangaIndexPage);
+            var Output = GetSeries(PageHtml);
+            return Output;
+        }
 
         public override string ToString()
         {
