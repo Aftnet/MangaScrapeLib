@@ -13,14 +13,9 @@ namespace MangaScrapeLib.Repositories
     {
         protected static readonly HtmlParser Parser = new HtmlParser();
 
-        protected readonly string name;
-        public string Name { get { return name; } }
-
-        protected readonly Uri rootUri;
-        public Uri RootUri { get { return rootUri; } }
-
-        protected readonly Uri mangaIndexPage;
-        public Uri MangaIndexPage { get { return mangaIndexPage; } }
+        public string Name { get; private set; }
+        public Uri RootUri { get; private set; }
+        public Uri MangaIndexPage { get; private set; }
 
         public abstract IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml);
         public abstract void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml);
@@ -31,9 +26,9 @@ namespace MangaScrapeLib.Repositories
 
         public MangaRepositoryBase(string Name, string UriString, string MangaIndexPageStr)
         {
-            name = Name;
-            rootUri = new Uri(UriString, UriKind.Absolute);
-            mangaIndexPage = new Uri(rootUri, MangaIndexPageStr);
+            this.Name = Name;
+            RootUri = new Uri(UriString, UriKind.Absolute);
+            MangaIndexPage = new Uri(RootUri, MangaIndexPageStr);
         }
 
         public async Task<IEnumerable<SeriesInfo>> GetSeriesAsync(HttpClient Client)

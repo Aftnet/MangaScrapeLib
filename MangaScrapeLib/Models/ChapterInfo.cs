@@ -20,19 +20,11 @@ namespace MangaScrapeLib.Models
             this.FirstPageUri = FirstPageUri;
         }
 
-        public async Task<IEnumerable<PageInfo>> GetPagesAsync(bool ParseHtmlAsynchronously = true)
+        public async Task<IEnumerable<PageInfo>> GetPagesAsync(HttpClient Client)
         {
-            using (var Client = new HttpClient())
-            {
-                var PageHtml = await Client.GetStringAsync(FirstPageUri);
-                if (ParseHtmlAsynchronously)
-                {
-                    return await Task.Run(() => ParentSeries.ParentRepository.GetPages(this, PageHtml));
-                }
-
-                var Output = ParentSeries.ParentRepository.GetPages(this, PageHtml);
-                return Output;
-            }
+            var PageHtml = await Client.GetStringAsync(FirstPageUri);
+            var Output = ParentSeries.ParentRepository.GetPages(this, PageHtml);
+            return Output;
         }
 
         public string SuggestPath(string RootDirectoryPath)
