@@ -1,11 +1,11 @@
 ﻿using MangaScrapeLib.Models;
 using MangaScrapeLib.Repositories;
-using MangaScrapeLib.Test.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.TestServices
@@ -93,13 +93,13 @@ namespace MangaScrapeLib.TestServices
                 var SelectedChapter = PickChapter(ChaptersList);
                 var PagesList = await GetPagesListAsync(Repository, SelectedChapter, Client);
                 var SelectedPage = PickPage(PagesList);
-                string PageHTML = Client.DownloadString(SelectedPage.PageUri);
+                string PageHTML = await Client.GetStringAsync(SelectedPage.PageUri);
                 Assert.IsNotNull(PageHTML);
                 SelectedPage.ImageUri = Repository.GetImageUri(PageHTML);
                 Assert.IsNotNull(SelectedPage.ImageUri);
                 Assert.IsTrue(System.IO.Path.HasExtension(SelectedPage.ImageUri.AbsoluteUri));
                 string Extension = System.IO.Path.GetExtension(SelectedPage.ImageUri.AbsoluteUri);
-                var ImageData = Client.DownloadData(SelectedPage.ImageUri);
+                var ImageData = await Client.GetStringAsync(SelectedPage.ImageUri);
                 Assert.IsNotNull(ImageData);
             }
         }
@@ -116,7 +116,7 @@ namespace MangaScrapeLib.TestServices
                 var TestSeries = PickSeries(SeriesList);
                 Assert.IsNull(TestSeries.Description);
                 Assert.IsNull(TestSeries.Tags);
-                string PageHTML = Client.DownloadString(TestSeries.SeriesPageUri);
+                string PageHTML = await Client.GetStringAsync(TestSeries.SeriesPageUri);
                 Assert.IsNotNull(PageHTML);
                 Repository.GetSeriesInfo(TestSeries, PageHTML);
                 Assert.IsNotNull(TestSeries.Description);
@@ -183,32 +183,32 @@ namespace MangaScrapeLib.TestServices
             Repository = GetRepository();
         }
 
-        internal async Task<IEnumerable<SeriesInfo>> GetSeriesListAsync(IMangaRepository Repository, WebClient Client)
+        internal async Task<IEnumerable<SeriesInfo>> GetSeriesListAsync(IMangaRepository Repository, HttpClient Client)
         {
-            string PageHTML = await Client.DownloadStringTaskAsync(Repository.MangaIndexPage);
+            string PageHTML = await Client.GetStringAsync(Repository.MangaIndexPage);
             var SeriesList = Repository.GetSeries(PageHTML);
             return SeriesList;
         }
 
-        internal async Task<IEnumerable<ChapterInfo>> GetChaptersListAsync(IMangaRepository Repository, SeriesInfo Series, WebClient Client)
+        internal async Task<IEnumerable<ChapterInfo>> GetChaptersListAsync(IMangaRepository Repository, SeriesInfo Series, HttpClient Client)
         {
-            string PageHTML = await Client.DownloadStringTaskAsync(Series.SeriesPageUri);
+            string PageHTML = await Client.GetStringAsync(Series.SeriesPageUri);
             Assert.IsNotNull(PageHTML);
             var ChaptersList = Repository.GetChapters(Series, PageHTML);
             return ChaptersList;
         }
 
-        internal async Task<IEnumerable<PageInfo>> GetPagesListAsync(IMangaRepository Repository, ChapterInfo Chapter, WebClient Client)
+        internal async Task<IEnumerable<PageInfo>> GetPagesListAsync(IMangaRepository Repository, ChapterInfo Chapter, HttpClient Client)
         {
-            var PageHTML = await Client.DownloadStringTaskAsync(Chapter.FirstPageUri);
+            var PageHTML = await Client.GetStringAsync(Chapter.FirstPageUri);
             Assert.IsNotNull(PageHTML);
             var ChaptersList = Repository.GetPages(Chapter, PageHTML);
             return ChaptersList;
         }
 
-        internal WebClient GetWebClient()
+        internal HttpClient GetWebClient()
         {
-            return new CompressionWebClient();
+            return new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip });
         }
 
         internal SeriesInfo PickSeries(IEnumerable<SeriesInfo> Input)
