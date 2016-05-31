@@ -13,5 +13,10 @@
     <releaseNotes></releaseNotes>
     <copyright>Copyright 2015</copyright>
     <tags></tags>
+    <dependencies>
+      <group>
+        <dependency id="AngleSharp" version="0.9.6"/>
+      </group>
+    </dependencies>
   </metadata>
 </package>
