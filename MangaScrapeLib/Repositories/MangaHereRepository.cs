@@ -9,7 +9,7 @@ namespace MangaScrapeLib.Repositories
 {
     public class MangaHereRepository : MangaRepositoryBase, IMangaRepository
     {
-        public MangaHereRepository() : base("Manga Here", "http://www.mangahere.com/", "mangalist/") { }
+        public MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/") { }
 
         public IEnumerable<SeriesInfo> GetDefaultSeries(string MangaIndexPageHtml)
         {
