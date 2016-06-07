@@ -186,7 +186,7 @@ namespace MangaScrapeLib.TestServices
         internal async Task<IEnumerable<SeriesInfo>> GetSeriesListAsync(IMangaRepository Repository, HttpClient Client)
         {
             string PageHTML = await Client.GetStringAsync(Repository.MangaIndexPage);
-            var SeriesList = Repository.GetSeries(PageHTML);
+            var SeriesList = Repository.GetDefaultSeries(PageHTML);
             return SeriesList;
         }
 

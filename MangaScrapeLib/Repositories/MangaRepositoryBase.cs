@@ -1,28 +1,17 @@
 ﻿using AngleSharp.Parser.Html;
-using MangaScrapeLib.Models;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories
 {
-    public abstract class MangaRepositoryBase : IMangaRepository
+    public abstract class MangaRepositoryBase
     {
         protected static readonly HtmlParser Parser = new HtmlParser();
 
         public string Name { get; private set; }
         public Uri RootUri { get; private set; }
         public Uri MangaIndexPage { get; private set; }
-
-        public abstract IEnumerable<SeriesInfo> GetSeries(string mangaIndexPageHtml);
-        public abstract void GetSeriesInfo(SeriesInfo series, string seriesPageHtml);
-        public abstract IEnumerable<ChapterInfo> GetChapters(SeriesInfo series, string seriesPageHtml);
-        public abstract IEnumerable<PageInfo> GetPages(ChapterInfo chapter, string mangaPageHtml);
-        public abstract Uri GetImageUri(string mangaPageHtml);
-
 
         public MangaRepositoryBase(string name, string uriString, string mangaIndexPageStr)
         {

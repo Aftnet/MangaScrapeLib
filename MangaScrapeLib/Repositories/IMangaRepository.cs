@@ -14,6 +14,6 @@ namespace MangaScrapeLib.Repositories
         IEnumerable<ChapterInfo> GetChapters(SeriesInfo series, string seriesPageHtml);
         Uri GetImageUri(string mangaPageHtml);
         void GetSeriesInfo(SeriesInfo series, string seriesPageHtml);
-        IEnumerable<SeriesInfo> GetSeries(string mangaIndexPageHtml);
+        IEnumerable<SeriesInfo> GetDefaultSeries(string mangaIndexPageHtml);
     }
 }

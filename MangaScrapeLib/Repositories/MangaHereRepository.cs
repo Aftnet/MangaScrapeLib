@@ -7,11 +7,11 @@ using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Repositories
 {
-    public class MangaHereRepository : MangaRepositoryBase
+    public class MangaHereRepository : MangaRepositoryBase, IMangaRepository
     {
         public MangaHereRepository() : base("Manga Here", "http://www.mangahere.com/", "mangalist/") { }
 
-        public override IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml)
+        public IEnumerable<SeriesInfo> GetDefaultSeries(string MangaIndexPageHtml)
         {
             var Document = Parser.Parse(MangaIndexPageHtml);
 
@@ -25,12 +25,12 @@ namespace MangaScrapeLib.Repositories
             return Output;
         }
 
-        public override void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml)
+        public void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml)
         {
             Series.Description = Series.Tags = string.Empty;
         }
 
-        public override IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml)
+        public IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml)
         {
             var Document = Parser.Parse(SeriesPageHtml);
 
@@ -55,7 +55,7 @@ namespace MangaScrapeLib.Repositories
             return Output;
         }
 
-        public override IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml)
+        public IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml)
         {
             var Document = Parser.Parse(MangaPageHtml);
 
@@ -70,7 +70,7 @@ namespace MangaScrapeLib.Repositories
             return Output;
         }
 
-        public override Uri GetImageUri(string MangaPageHtml)
+        public Uri GetImageUri(string MangaPageHtml)
         {
             var Document = Parser.Parse(MangaPageHtml);
 
