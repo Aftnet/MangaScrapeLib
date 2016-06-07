@@ -10,10 +10,10 @@ namespace MangaScrapeLib.Repositories
         string Name { get; }
         Uri RootUri { get; }
 
-        IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml);
-        IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml);
-        Uri GetImageUri(string MangaPageHtml);
-        void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml);
-        IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml);
+        IEnumerable<PageInfo> GetPages(ChapterInfo chapter, string mangaPageHtml);
+        IEnumerable<ChapterInfo> GetChapters(SeriesInfo series, string seriesPageHtml);
+        Uri GetImageUri(string mangaPageHtml);
+        void GetSeriesInfo(SeriesInfo series, string seriesPageHtml);
+        IEnumerable<SeriesInfo> GetSeries(string mangaIndexPageHtml);
     }
 }

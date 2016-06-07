@@ -11,26 +11,26 @@ namespace MangaScrapeLib.Models
         public int PageNo { get; set; }
         public Uri ImageUri { get; set; }
 
-        public PageInfo(ChapterInfo Parent, Uri PageUri)
+        public PageInfo(ChapterInfo parent, Uri pageUri)
         {
-            ParentChapter = Parent;
-            this.PageUri = PageUri;
+            ParentChapter = parent;
+            PageUri = pageUri;
         }
 
-        public string SuggestPath(string RootDirectoryPath)
+        public string SuggestPath(string rootDirectoryPath)
         {
-            var PathStr = String.Format("{0}{1}{2}{3}", ImageUri.Scheme, "://", ImageUri.Authority, ImageUri.AbsolutePath);
-            var Extension = Path.GetExtension(PathStr);
-            var Output = Path.Combine(ParentChapter.SuggestPath(RootDirectoryPath), SeriesInfo.MakeValidPathName(SuggestFileName()), Extension);
-            return Output;
+            var pathStr = String.Format("{0}{1}{2}{3}", ImageUri.Scheme, "://", ImageUri.Authority, ImageUri.AbsolutePath);
+            var extension = Path.GetExtension(pathStr);
+            var output = Path.Combine(ParentChapter.SuggestPath(rootDirectoryPath), SeriesInfo.MakeValidPathName(SuggestFileName()), extension);
+            return output;
         }
 
         public string SuggestFileName()
         {
-            const string NumberFormatString = "000";
-            SeriesInfo ParentSeries = ParentChapter.ParentSeries;
-            var Output = string.Format("{0} P{1}", ParentChapter.Title, PageNo.ToString(NumberFormatString));
-            return Output;
+            const string numberFormatString = "000";
+            var parentSeries = ParentChapter.ParentSeries;
+            var output = string.Format("{0} P{1}", ParentChapter.Title, PageNo.ToString(numberFormatString));
+            return output;
         }
     }
 }

@@ -15,28 +15,28 @@ namespace MangaScrapeLib.Models
         public string Tags { get; set; }
         public string Description { get; set; }
 
-        public SeriesInfo(IMangaRepository Parent, Uri SeriesPageUri)
+        public SeriesInfo(IMangaRepository parent, Uri seriesPageUri)
         {
-            ParentRepository = Parent;
-            this.SeriesPageUri = SeriesPageUri;
+            ParentRepository = parent;
+            SeriesPageUri = seriesPageUri;
         }
 
-        public string SuggestPath(string RootDirectoryPath)
+        public string SuggestPath(string rootDirectoryPath)
         {
-            var Output = Path.Combine(RootDirectoryPath, MakeValidPathName(Name));
-            return Output;
+            var output = Path.Combine(rootDirectoryPath, MakeValidPathName(Name));
+            return output;
         }
 
-        public static string MakeValidPathName(string Name)
+        public static string MakeValidPathName(string name)
         {
             var invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
             var invalidReStr = string.Format(@"[{0}]+", invalidChars);
-            Name = Regex.Replace(Name, invalidReStr, " ");
-            Name = Regex.Replace(Name, @"\s{2,}", " ");
-            Name = Regex.Replace(Name, @"^[\s]+", "");
-            Name = Regex.Replace(Name, @"[\s]+$", "");
-            Name = Regex.Replace(Name, @"[\s]+", " ");
-            return Name;
+            name = Regex.Replace(name, invalidReStr, " ");
+            name = Regex.Replace(name, @"\s{2,}", " ");
+            name = Regex.Replace(name, @"^[\s]+", "");
+            name = Regex.Replace(name, @"[\s]+$", "");
+            name = Regex.Replace(name, @"[\s]+", " ");
+            return name;
         }
 
     }

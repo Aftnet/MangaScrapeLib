@@ -11,19 +11,19 @@ namespace MangaScrapeLib.Models
 
         public string Title { get; set; }
 
-        public ChapterInfo(SeriesInfo Parent, Uri FirstPageUri)
+        public ChapterInfo(SeriesInfo parent, Uri firstPageUri)
         {
-            ParentSeries = Parent;
-            this.FirstPageUri = FirstPageUri;
+            ParentSeries = parent;
+            FirstPageUri = firstPageUri;
         }
 
-        public string SuggestPath(string RootDirectoryPath)
+        public string SuggestPath(string rootDirectoryPath)
         {
-            var ParentSeriesPath = ParentSeries.SuggestPath(RootDirectoryPath);
-            var Output = Path.Combine(ParentSeries.SuggestPath(RootDirectoryPath), SeriesInfo.MakeValidPathName(Title));
+            var parentSeriesPath = ParentSeries.SuggestPath(rootDirectoryPath);
+            var output = Path.Combine(ParentSeries.SuggestPath(rootDirectoryPath), SeriesInfo.MakeValidPathName(Title));
 
-            Output = SeriesInfo.MakeValidPathName(Output);
-            return Output;
+            output = SeriesInfo.MakeValidPathName(output);
+            return output;
         }
     }
 }

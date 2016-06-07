@@ -17,18 +17,18 @@ namespace MangaScrapeLib.Repositories
         public Uri RootUri { get; private set; }
         public Uri MangaIndexPage { get; private set; }
 
-        public abstract IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml);
-        public abstract void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml);
-        public abstract IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml);
-        public abstract IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml);
-        public abstract Uri GetImageUri(string MangaPageHtml);
+        public abstract IEnumerable<SeriesInfo> GetSeries(string mangaIndexPageHtml);
+        public abstract void GetSeriesInfo(SeriesInfo series, string seriesPageHtml);
+        public abstract IEnumerable<ChapterInfo> GetChapters(SeriesInfo series, string seriesPageHtml);
+        public abstract IEnumerable<PageInfo> GetPages(ChapterInfo chapter, string mangaPageHtml);
+        public abstract Uri GetImageUri(string mangaPageHtml);
 
 
-        public MangaRepositoryBase(string Name, string UriString, string MangaIndexPageStr)
+        public MangaRepositoryBase(string name, string uriString, string mangaIndexPageStr)
         {
-            this.Name = Name;
-            RootUri = new Uri(UriString, UriKind.Absolute);
-            MangaIndexPage = new Uri(RootUri, MangaIndexPageStr);
+            Name = name;
+            RootUri = new Uri(uriString, UriKind.Absolute);
+            MangaIndexPage = new Uri(RootUri, mangaIndexPageStr);
         }
 
         public override string ToString()
@@ -36,16 +36,16 @@ namespace MangaScrapeLib.Repositories
             return Name;
         }
 
-        public static string MakeValidPathName(string Name)
+        public static string MakeValidPathName(string name)
         {
-            string invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
-            string invalidReStr = string.Format(@"[{0}]+", invalidChars);
-            Name = Regex.Replace(Name, invalidReStr, " ");
-            Name = Regex.Replace(Name, @"\s{2,}", " ");
-            Name = Regex.Replace(Name, @"^[\s]+", "");
-            Name = Regex.Replace(Name, @"[\s]+$", "");
-            Name = Regex.Replace(Name, @"[\s]+", " ");
-            return Name;
+            var invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
+            var invalidReStr = string.Format(@"[{0}]+", invalidChars);
+            name = Regex.Replace(name, invalidReStr, " ");
+            name = Regex.Replace(name, @"\s{2,}", " ");
+            name = Regex.Replace(name, @"^[\s]+", "");
+            name = Regex.Replace(name, @"[\s]+$", "");
+            name = Regex.Replace(name, @"[\s]+", " ");
+            return name;
         }
     }
 }
