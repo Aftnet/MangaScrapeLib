@@ -1,10 +1,7 @@
 ﻿using MangaScrapeLib.Repositories;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
@@ -22,14 +19,6 @@ namespace MangaScrapeLib.Models
         {
             ParentRepository = Parent;
             this.SeriesPageUri = SeriesPageUri;
-        }
-
-        public async Task<IEnumerable<ChapterInfo>> GetChaptersAsync(HttpClient Client)
-        {
-            var PageHtml = await Client.GetStringAsync(SeriesPageUri);
-            ParentRepository.GetSeriesInfo(this, PageHtml);
-            var Output = ParentRepository.GetChapters(this, PageHtml);
-            return Output;
         }
 
         public string SuggestPath(string RootDirectoryPath)

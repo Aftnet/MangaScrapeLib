@@ -1,8 +1,6 @@
-﻿using System;
+﻿using MangaScrapeLib.Models;
+using System;
 using System.Collections.Generic;
-using MangaScrapeLib.Models;
-using System.Threading.Tasks;
-using System.Net.Http;
 
 namespace MangaScrapeLib.Repositories
 {
@@ -17,7 +15,5 @@ namespace MangaScrapeLib.Repositories
         Uri GetImageUri(string MangaPageHtml);
         void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml);
         IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml);
-
-        Task<IEnumerable<SeriesInfo>> GetSeriesAsync(HttpClient Client);
     }
 }

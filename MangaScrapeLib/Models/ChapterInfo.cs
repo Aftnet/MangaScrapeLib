@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
@@ -18,13 +15,6 @@ namespace MangaScrapeLib.Models
         {
             ParentSeries = Parent;
             this.FirstPageUri = FirstPageUri;
-        }
-
-        public async Task<IEnumerable<PageInfo>> GetPagesAsync(HttpClient Client)
-        {
-            var PageHtml = await Client.GetStringAsync(FirstPageUri);
-            var Output = ParentSeries.ParentRepository.GetPages(this, PageHtml);
-            return Output;
         }
 
         public string SuggestPath(string RootDirectoryPath)

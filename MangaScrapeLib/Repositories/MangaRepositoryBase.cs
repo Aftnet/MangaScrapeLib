@@ -31,13 +31,6 @@ namespace MangaScrapeLib.Repositories
             MangaIndexPage = new Uri(RootUri, MangaIndexPageStr);
         }
 
-        public async Task<IEnumerable<SeriesInfo>> GetSeriesAsync(HttpClient Client)
-        {
-            var PageHtml = await Client.GetStringAsync(MangaIndexPage);
-            var Output = GetSeries(PageHtml);
-            return Output;
-        }
-
         public override string ToString()
         {
             return Name;

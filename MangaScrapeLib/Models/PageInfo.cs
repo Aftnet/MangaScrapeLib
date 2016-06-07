@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
@@ -17,14 +15,6 @@ namespace MangaScrapeLib.Models
         {
             ParentChapter = Parent;
             this.PageUri = PageUri;
-        }
-
-        public async Task<byte[]> GetImageBytesAsync(HttpClient Client)
-        {
-            var PageHtml = await Client.GetStringAsync(PageUri);
-            ImageUri = ParentChapter.ParentSeries.ParentRepository.GetImageUri(PageHtml);
-            var Output = await Client.GetByteArrayAsync(ImageUri);
-            return Output;
         }
 
         public string SuggestPath(string RootDirectoryPath)
