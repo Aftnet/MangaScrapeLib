@@ -33,20 +33,31 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>StrongNameKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Models\ChapterInfo.cs" />
+    <Compile Include="Models\Chapter.cs" />
     <Compile Include="Models\IPathSuggester.cs" />
-    <Compile Include="Models\PageInfo.cs" />
-    <Compile Include="Models\SeriesInfo.cs" />
+    <Compile Include="Models\Page.cs" />
+    <Compile Include="Models\Series.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\EatMangaRepository.cs" />
-    <Compile Include="Repositories\IMangaRepository.cs" />
     <Compile Include="Repositories\MangaHereRepository.cs" />
-    <Compile Include="Repositories\MangaRepositoryBase.cs" />
+    <Compile Include="Repositories\NoFullListRepository.cs" />
+    <Compile Include="Repositories\Repository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MangaScrapeLib.nuspec" />
     <None Include="project.json" />
+    <None Include="StrongNameKey.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\EatManga.png" />
+    <EmbeddedResource Include="Resources\MangaHere.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

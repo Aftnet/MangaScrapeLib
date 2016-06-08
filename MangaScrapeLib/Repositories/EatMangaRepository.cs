@@ -1,72 +1,59 @@
 ﻿using MangaScrapeLib.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace MangaScrapeLib.Repositories
 {
-    public class EatMangaRepository : MangaRepositoryBase
+    public sealed class EatMangaRepository : Repository
     {
-        public EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", "Manga-Scan/") { }
+        private static readonly EatMangaRepository instance = new EatMangaRepository();
+        public static EatMangaRepository Instance { get { return instance; } }
 
-        public override IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml)
+        private EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", "Manga-Scan/", "EatManga.png") { }
+
+        internal override Series[] GetDefaultSeries(string MangaIndexPageHtml)
         {
             var Document = Parser.Parse(MangaIndexPageHtml);
 
             var Node = Document.QuerySelector("#updates");
             var Nodes = Node.QuerySelectorAll("th a");
 
-            var Output = Nodes.Select(d => new SeriesInfo(this, new Uri(RootUri, d.Attributes["href"].Value))
-            {
-                Name = d.TextContent
-            });
-            
-            Output = Output.OrderBy(d => d.Name).ToList();
-            return Output;
+            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value), Name)).OrderBy(d => d.Name);
+
+            return Output.ToArray();
         }
 
-        public override void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml)
+        internal override void GetSeriesInfo(Series Series, string SeriesPageHtml)
         {
             Series.Description = Series.Tags = string.Empty;
         }
 
-        public override IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml)
+        internal override Chapter[] GetChapters(Series Series, string SeriesPageHtml)
         {
             var Document = Parser.Parse(SeriesPageHtml);
 
             var Node = Document.QuerySelector("#updates");
             var Nodes = Node.QuerySelectorAll("tr a");
-            var Output = Nodes.Select(d =>
-            {
-                var NewChapterInfo = new ChapterInfo(Series, new Uri(RootUri, d.Attributes["href"].Value))
-                {
-                    Title = d.TextContent
-                };
-                return NewChapterInfo;
-            });
+            var Output = Nodes.Select(d => new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value), d.TextContent));
 
             //Eatmanga has dummy entries for not yet released chapters, prune them.
             Output = Output.Where(d => d.FirstPageUri.ToString().Contains("http://eatmanga.com/upcoming/") == false).Reverse();
 
-            return Output;
+            return Output.ToArray();
         }
 
-        public override IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml)
+        internal override Page[] GetPages(Chapter Chapter, string MangaPageHtml)
         {
             var Document = Parser.Parse(MangaPageHtml);
 
             var Node = Document.QuerySelector("#pages");
             var Nodes = Node.QuerySelectorAll("option");
 
-            var Output = Nodes.Select((d, e) => new PageInfo(Chapter, new Uri(RootUri, d.Attributes["value"].Value))
-            {
-                PageNo = e + 1
-            });
-            Output = Output.OrderBy(d => d.PageNo);
-            return Output;
+            var Output = Nodes.Select((d, e) => new Page(Chapter, new Uri(RootUri, d.Attributes["value"].Value), e + 1)).OrderBy(d => d.PageNo);
+            return Output.ToArray();
         }
 
-        public override Uri GetImageUri(string MangaPageHtml)
+        internal override Uri GetImageUri(string MangaPageHtml)
         {
             var IDs = new string[]
             {

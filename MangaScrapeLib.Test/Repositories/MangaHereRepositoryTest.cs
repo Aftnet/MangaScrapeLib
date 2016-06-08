@@ -1,7 +1,7 @@
 ﻿using MangaScrapeLib.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace MangaScrapeLib.TestServices
+namespace MangaScrapeLib.Test.Repositories
 {
     /// <summary>
     ///This is a test class for EatMangaRepositoryTest and is intended
@@ -10,9 +10,9 @@ namespace MangaScrapeLib.TestServices
     [TestClass]
     public class MangaHereRepositoryTest : MangaRepositoryTestBase
     {
-        internal override IMangaRepository GetRepository()
+        internal override Repository GetRepository()
         {
-            return new MangaHereRepository();
+            return MangaHereRepository.Instance;
         }
     }
 }

@@ -2,6 +2,6 @@
 {
     public interface IPathSuggester
     {
-        string SuggestPath(string RootDirectoryPath);
+        string SuggestPath(string rootDirectoryPath);
     }
 }

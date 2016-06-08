@@ -1,36 +1,34 @@
 ﻿using MangaScrapeLib.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Repositories
 {
-    public class MangaHereRepository : MangaRepositoryBase
+    public sealed class MangaHereRepository : Repository
     {
-        public MangaHereRepository() : base("Manga Here", "http://www.mangahere.com/", "mangalist/") { }
+        private static readonly MangaHereRepository instance = new MangaHereRepository();
+        public static MangaHereRepository Instance { get { return instance; } }
 
-        public override IEnumerable<SeriesInfo> GetSeries(string MangaIndexPageHtml)
+        private MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/", "MangaHere.jpg") { }
+
+        internal override Series[] GetDefaultSeries(string MangaIndexPageHtml)
         {
             var Document = Parser.Parse(MangaIndexPageHtml);
 
             var Nodes = Document.QuerySelectorAll("a.manga_info");
 
-            var Output = Nodes.Select(d => new SeriesInfo(this, new Uri(RootUri, d.Attributes["href"].Value))
-            {
-                Name = WebUtility.HtmlDecode(d.Attributes["rel"].Value)
-            });
-            Output = Output.OrderBy(d => d.Name);
-            return Output;
+            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value), WebUtility.HtmlDecode(d.Attributes["rel"].Value))).OrderBy(d => d.Name);
+            return Output.ToArray();
         }
 
-        public override void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml)
+        internal override void GetSeriesInfo(Series Series, string SeriesPageHtml)
         {
             Series.Description = Series.Tags = string.Empty;
         }
 
-        public override IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml)
+        internal override Chapter[] GetChapters(Series Series, string SeriesPageHtml)
         {
             var Document = Parser.Parse(SeriesPageHtml);
 
@@ -43,19 +41,15 @@ namespace MangaScrapeLib.Repositories
                 string Title = d.TextContent;
                 Title = Regex.Replace(Title, @"^[\r\n\s\t]+", string.Empty);
                 Title = Regex.Replace(Title, @"[\r\n\s\t]+$", string.Empty);
-                var Chapter = new ChapterInfo(Series, new Uri(RootUri, d.Attributes["href"].Value))
-                {
-                    Title = Title
-                };
-
+                var Chapter = new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value), Title);
                 return Chapter;
             });
 
             Output.Reverse();
-            return Output;
+            return Output.ToArray();
         }
 
-        public override IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml)
+        internal override Page[] GetPages(Chapter Chapter, string MangaPageHtml)
         {
             var Document = Parser.Parse(MangaPageHtml);
 
@@ -63,14 +57,11 @@ namespace MangaScrapeLib.Repositories
             Node = Node.QuerySelector("span.right select");
             var Nodes = Node.QuerySelectorAll("option");
 
-            var Output = Nodes.Select((d, e) => new PageInfo(Chapter, new Uri(RootUri, d.Attributes["value"].Value))
-            {
-                PageNo = e + 1
-            });
-            return Output;
+            var Output = Nodes.Select((d, e) => new Page(Chapter, new Uri(RootUri, d.Attributes["value"].Value), e + 1));
+            return Output.ToArray();
         }
 
-        public override Uri GetImageUri(string MangaPageHtml)
+        internal override Uri GetImageUri(string MangaPageHtml)
         {
             var Document = Parser.Parse(MangaPageHtml);
 
