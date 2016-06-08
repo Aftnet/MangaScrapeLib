@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -23,8 +24,12 @@ namespace MangaScrapeLib.Repositories
         public readonly string Name;
         public readonly Uri RootUri;
         public readonly Uri MangaIndexPage;
+        public readonly string IconFileName;
 
         private Series[] DefaultSeries = null;
+
+        private readonly Lazy<byte[]> icon;
+        public byte[] Icon { get { return icon.Value; } }
 
         internal abstract Series[] GetDefaultSeries(string mangaIndexPageHtml);
         internal abstract void GetSeriesInfo(Series series, string seriesPageHtml);
@@ -32,11 +37,14 @@ namespace MangaScrapeLib.Repositories
         internal abstract Page[] GetPages(Chapter chapter, string mangaPageHtml);
         internal abstract Uri GetImageUri(string mangaPageHtml);
 
-        protected Repository(string name, string uriString, string mangaIndexPageStr)
+        protected Repository(string name, string uriString, string mangaIndexPageStr, string iconFileName)
         {
             Name = name;
             RootUri = new Uri(uriString, UriKind.Absolute);
             MangaIndexPage = new Uri(RootUri, mangaIndexPageStr);
+            IconFileName = iconFileName;
+
+            icon = new Lazy<byte[]>(LoadIcon);
         }
 
         public override string ToString()
@@ -94,6 +102,18 @@ namespace MangaScrapeLib.Repositories
             name = Regex.Replace(name, @"[\s]+$", "");
             name = Regex.Replace(name, @"[\s]+", " ");
             return name;
+        }
+
+        private byte[] LoadIcon()
+        {
+            var iconPath = string.Format("MangaScrapeLib.Resources.{0}", IconFileName);
+            var currentAssembly = typeof(Repository).GetTypeInfo().Assembly;
+            using (var stream = currentAssembly.GetManifestResourceStream(iconPath))
+            using (var memStream = new MemoryStream())
+            {
+                stream.CopyTo(memStream);
+                return memStream.ToArray();
+            }
         }
     }
 }

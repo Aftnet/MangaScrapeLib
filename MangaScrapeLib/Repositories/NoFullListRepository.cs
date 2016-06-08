@@ -10,7 +10,7 @@ namespace MangaScrapeLib.Repositories
         protected abstract Uri GetSearchUri(string query);
         protected abstract Series[] GetSeriesFromSearch(string searchPageHtml);
 
-        public NoFullListRepository(string name, string uriString, string mangaIndexPageStr) : base(name, uriString, mangaIndexPageStr)
+        public NoFullListRepository(string name, string uriString, string mangaIndexPageStr, string iconFileName) : base(name, uriString, mangaIndexPageStr, iconFileName)
         {
         }
 

@@ -95,5 +95,11 @@ namespace MangaScrapeLib.Test.Repositories
         {
             Assert.IsNotNull(Repository.RootUri);
         }
+
+        [TestMethod]
+        public void IconLoadingWorks()
+        {
+            Assert.IsNotNull(Repository.Icon);
+        }
     }
 }
