@@ -9,13 +9,13 @@ namespace MangaScrapeLib.Models
     {
         public readonly Series ParentSeries;
         public readonly Uri FirstPageUri;
+        public readonly string Title;
 
-        public string Title { get; internal set; }
-
-        internal Chapter(Series parent, Uri firstPageUri)
+        internal Chapter(Series parent, Uri firstPageUri, string title)
         {
             ParentSeries = parent;
             FirstPageUri = firstPageUri;
+            Title = title;
         }
 
         public Task<Page[]> GetPagesAsync()

@@ -34,14 +34,7 @@ namespace MangaScrapeLib.Repositories
 
             var Node = Document.QuerySelector("#updates");
             var Nodes = Node.QuerySelectorAll("tr a");
-            var Output = Nodes.Select(d =>
-            {
-                var NewChapterInfo = new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value))
-                {
-                    Title = d.TextContent
-                };
-                return NewChapterInfo;
-            });
+            var Output = Nodes.Select(d => new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value), d.TextContent));
 
             //Eatmanga has dummy entries for not yet released chapters, prune them.
             Output = Output.Where(d => d.FirstPageUri.ToString().Contains("http://eatmanga.com/upcoming/") == false).Reverse();
@@ -56,7 +49,7 @@ namespace MangaScrapeLib.Repositories
             var Node = Document.QuerySelector("#pages");
             var Nodes = Node.QuerySelectorAll("option");
 
-            var Output = Nodes.Select((d, e) => new Page(Chapter, new Uri(RootUri, d.Attributes["value"].Value), e)).OrderBy(d => d.PageNo);
+            var Output = Nodes.Select((d, e) => new Page(Chapter, new Uri(RootUri, d.Attributes["value"].Value), e + 1)).OrderBy(d => d.PageNo);
             return Output.ToArray();
         }
 

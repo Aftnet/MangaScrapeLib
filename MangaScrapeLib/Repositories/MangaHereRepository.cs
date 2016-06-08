@@ -41,11 +41,7 @@ namespace MangaScrapeLib.Repositories
                 string Title = d.TextContent;
                 Title = Regex.Replace(Title, @"^[\r\n\s\t]+", string.Empty);
                 Title = Regex.Replace(Title, @"[\r\n\s\t]+$", string.Empty);
-                var Chapter = new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value))
-                {
-                    Title = Title
-                };
-
+                var Chapter = new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value), Title);
                 return Chapter;
             });
 
@@ -61,7 +57,7 @@ namespace MangaScrapeLib.Repositories
             Node = Node.QuerySelector("span.right select");
             var Nodes = Node.QuerySelectorAll("option");
 
-            var Output = Nodes.Select((d, e) => new Page(Chapter, new Uri(RootUri, d.Attributes["value"].Value), e));
+            var Output = Nodes.Select((d, e) => new Page(Chapter, new Uri(RootUri, d.Attributes["value"].Value), e + 1));
             return Output.ToArray();
         }
 
