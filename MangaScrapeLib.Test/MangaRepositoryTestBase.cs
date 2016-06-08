@@ -183,14 +183,14 @@ namespace MangaScrapeLib.TestServices
             Repository = GetRepository();
         }
 
-        internal async Task<IEnumerable<SeriesInfo>> GetSeriesListAsync(IRepository Repository, HttpClient Client)
+        internal async Task<IEnumerable<Series>> GetSeriesListAsync(IRepository Repository, HttpClient Client)
         {
             string PageHTML = await Client.GetStringAsync(Repository.MangaIndexPage);
             var SeriesList = Repository.GetDefaultSeries(PageHTML);
             return SeriesList;
         }
 
-        internal async Task<IEnumerable<ChapterInfo>> GetChaptersListAsync(IRepository Repository, SeriesInfo Series, HttpClient Client)
+        internal async Task<IEnumerable<Chapter>> GetChaptersListAsync(IRepository Repository, Series Series, HttpClient Client)
         {
             string PageHTML = await Client.GetStringAsync(Series.SeriesPageUri);
             Assert.IsNotNull(PageHTML);
@@ -198,7 +198,7 @@ namespace MangaScrapeLib.TestServices
             return ChaptersList;
         }
 
-        internal async Task<IEnumerable<PageInfo>> GetPagesListAsync(IRepository Repository, ChapterInfo Chapter, HttpClient Client)
+        internal async Task<IEnumerable<Page>> GetPagesListAsync(IRepository Repository, Chapter Chapter, HttpClient Client)
         {
             var PageHTML = await Client.GetStringAsync(Chapter.FirstPageUri);
             Assert.IsNotNull(PageHTML);
@@ -211,17 +211,17 @@ namespace MangaScrapeLib.TestServices
             return new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip });
         }
 
-        internal SeriesInfo PickSeries(IEnumerable<SeriesInfo> Input)
+        internal Series PickSeries(IEnumerable<Series> Input)
         {
             return Input.First();
         }
 
-        internal ChapterInfo PickChapter(IEnumerable<ChapterInfo> Input)
+        internal Chapter PickChapter(IEnumerable<Chapter> Input)
         {
             return Input.First();
         }
 
-        internal PageInfo PickPage(IEnumerable<PageInfo> Input)
+        internal Page PickPage(IEnumerable<Page> Input)
         {
             return Input.First();
         }

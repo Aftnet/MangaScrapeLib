@@ -11,13 +11,13 @@ namespace MangaScrapeLib.Repositories
     {
         public MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/") { }
 
-        public IEnumerable<SeriesInfo> GetDefaultSeries(string MangaIndexPageHtml)
+        public IEnumerable<Series> GetDefaultSeries(string MangaIndexPageHtml)
         {
             var Document = Parser.Parse(MangaIndexPageHtml);
 
             var Nodes = Document.QuerySelectorAll("a.manga_info");
 
-            var Output = Nodes.Select(d => new SeriesInfo(this, new Uri(RootUri, d.Attributes["href"].Value))
+            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value))
             {
                 Name = WebUtility.HtmlDecode(d.Attributes["rel"].Value)
             });
@@ -25,12 +25,12 @@ namespace MangaScrapeLib.Repositories
             return Output;
         }
 
-        public void GetSeriesInfo(SeriesInfo Series, string SeriesPageHtml)
+        public void GetSeriesInfo(Series Series, string SeriesPageHtml)
         {
             Series.Description = Series.Tags = string.Empty;
         }
 
-        public IEnumerable<ChapterInfo> GetChapters(SeriesInfo Series, string SeriesPageHtml)
+        public IEnumerable<Chapter> GetChapters(Series Series, string SeriesPageHtml)
         {
             var Document = Parser.Parse(SeriesPageHtml);
 
@@ -43,7 +43,7 @@ namespace MangaScrapeLib.Repositories
                 string Title = d.TextContent;
                 Title = Regex.Replace(Title, @"^[\r\n\s\t]+", string.Empty);
                 Title = Regex.Replace(Title, @"[\r\n\s\t]+$", string.Empty);
-                var Chapter = new ChapterInfo(Series, new Uri(RootUri, d.Attributes["href"].Value))
+                var Chapter = new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value))
                 {
                     Title = Title
                 };
@@ -55,7 +55,7 @@ namespace MangaScrapeLib.Repositories
             return Output;
         }
 
-        public IEnumerable<PageInfo> GetPages(ChapterInfo Chapter, string MangaPageHtml)
+        public IEnumerable<Page> GetPages(Chapter Chapter, string MangaPageHtml)
         {
             var Document = Parser.Parse(MangaPageHtml);
 
@@ -63,7 +63,7 @@ namespace MangaScrapeLib.Repositories
             Node = Node.QuerySelector("span.right select");
             var Nodes = Node.QuerySelectorAll("option");
 
-            var Output = Nodes.Select((d, e) => new PageInfo(Chapter, new Uri(RootUri, d.Attributes["value"].Value))
+            var Output = Nodes.Select((d, e) => new Page(Chapter, new Uri(RootUri, d.Attributes["value"].Value))
             {
                 PageNo = e + 1
             });

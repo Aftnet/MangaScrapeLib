@@ -3,15 +3,15 @@ using System.IO;
 
 namespace MangaScrapeLib.Models
 {
-    public class ChapterInfo : IPathSuggester
+    public class Chapter : IPathSuggester
     {
-        public readonly SeriesInfo ParentSeries;
+        public readonly Series ParentSeries;
 
         public readonly Uri FirstPageUri;
 
         public string Title { get; set; }
 
-        public ChapterInfo(SeriesInfo parent, Uri firstPageUri)
+        public Chapter(Series parent, Uri firstPageUri)
         {
             ParentSeries = parent;
             FirstPageUri = firstPageUri;
@@ -20,9 +20,9 @@ namespace MangaScrapeLib.Models
         public string SuggestPath(string rootDirectoryPath)
         {
             var parentSeriesPath = ParentSeries.SuggestPath(rootDirectoryPath);
-            var output = Path.Combine(ParentSeries.SuggestPath(rootDirectoryPath), SeriesInfo.MakeValidPathName(Title));
+            var output = Path.Combine(ParentSeries.SuggestPath(rootDirectoryPath), Series.MakeValidPathName(Title));
 
-            output = SeriesInfo.MakeValidPathName(output);
+            output = Series.MakeValidPathName(output);
             return output;
         }
     }
