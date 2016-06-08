@@ -11,7 +11,7 @@ namespace MangaScrapeLib.Repositories
     {
         public MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/") { }
 
-        public IEnumerable<Series> GetDefaultSeries(string MangaIndexPageHtml)
+        public Series[] GetDefaultSeries(string MangaIndexPageHtml)
         {
             var Document = Parser.Parse(MangaIndexPageHtml);
 
@@ -20,9 +20,8 @@ namespace MangaScrapeLib.Repositories
             var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value))
             {
                 Name = WebUtility.HtmlDecode(d.Attributes["rel"].Value)
-            });
-            Output = Output.OrderBy(d => d.Name);
-            return Output;
+            }).OrderBy(d => d.Name);
+            return Output.ToArray();
         }
 
         public void GetSeriesInfo(Series Series, string SeriesPageHtml)
@@ -30,7 +29,7 @@ namespace MangaScrapeLib.Repositories
             Series.Description = Series.Tags = string.Empty;
         }
 
-        public IEnumerable<Chapter> GetChapters(Series Series, string SeriesPageHtml)
+        public Chapter[] GetChapters(Series Series, string SeriesPageHtml)
         {
             var Document = Parser.Parse(SeriesPageHtml);
 
@@ -52,10 +51,10 @@ namespace MangaScrapeLib.Repositories
             });
 
             Output.Reverse();
-            return Output;
+            return Output.ToArray();
         }
 
-        public IEnumerable<Page> GetPages(Chapter Chapter, string MangaPageHtml)
+        public Page[] GetPages(Chapter Chapter, string MangaPageHtml)
         {
             var Document = Parser.Parse(MangaPageHtml);
 
@@ -67,7 +66,7 @@ namespace MangaScrapeLib.Repositories
             {
                 PageNo = e + 1
             });
-            return Output;
+            return Output.ToArray();
         }
 
         public Uri GetImageUri(string MangaPageHtml)
