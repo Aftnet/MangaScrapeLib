@@ -4,9 +4,12 @@ using System.Linq;
 
 namespace MangaScrapeLib.Repositories
 {
-    internal class EatMangaRepository : RepositoryBase
+    public sealed class EatMangaRepository : RepositoryBase
     {
-        public EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", "Manga-Scan/") { }
+        private static readonly EatMangaRepository instance = new EatMangaRepository();
+        public static EatMangaRepository Instance { get { return instance; } }
+
+        private EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", "Manga-Scan/") { }
 
         internal override Series[] GetDefaultSeries(string MangaIndexPageHtml)
         {

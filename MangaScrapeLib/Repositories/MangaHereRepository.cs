@@ -6,9 +6,12 @@ using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Repositories
 {
-    public class MangaHereRepository : RepositoryBase
+    public sealed class MangaHereRepository : RepositoryBase
     {
-        public MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/") { }
+        private static readonly MangaHereRepository instance = new MangaHereRepository();
+        public static MangaHereRepository Instance { get { return instance; } }
+
+        private MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/") { }
 
         internal override Series[] GetDefaultSeries(string MangaIndexPageHtml)
         {

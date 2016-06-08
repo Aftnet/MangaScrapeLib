@@ -1,7 +1,7 @@
 ﻿using MangaScrapeLib.Repositories;
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
@@ -32,6 +32,16 @@ namespace MangaScrapeLib.Models
         {
             var output = Path.Combine(rootDirectoryPath, RepositoryBase.MakeValidPathName(Name));
             return output;
+        }
+
+        public static Series CreateFromData(Uri seriesPageUri, string name)
+        {
+            if (name == null) throw new ArgumentNullException();
+
+            var repository = RepositoryBase.AllRepositories.FirstOrDefault(d => d.RootUri.Host == seriesPageUri.Host);
+            if (repository == null) throw new ArgumentException("Series page Uri does not match any supported repository");
+
+            return new Series(repository, seriesPageUri, name);
         }
     }
 }

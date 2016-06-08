@@ -9,8 +9,14 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories
 {
-    public abstract class RepositoryBase : IRepository
+    public abstract class RepositoryBase
     {
+        public static readonly RepositoryBase[] AllRepositories = new RepositoryBase[]
+        {
+            EatMangaRepository.Instance,
+            MangaHereRepository.Instance
+        };
+
         protected static readonly HttpClient Client = new HttpClient();
         protected static readonly HtmlParser Parser = new HtmlParser();
 

@@ -46,7 +46,6 @@
     <Compile Include="Models\Series.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\EatMangaRepository.cs" />
-    <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\MangaHereRepository.cs" />
     <Compile Include="Repositories\NoFullListRepositoryBase.cs" />
     <Compile Include="Repositories\RepositoryBase.cs" />

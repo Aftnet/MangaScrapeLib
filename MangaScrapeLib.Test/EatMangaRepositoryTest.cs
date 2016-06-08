@@ -12,7 +12,7 @@ namespace MangaScrapeLib.TestServices
     {
         internal override RepositoryBase GetRepository()
         {
-            return new EatMangaRepository();
+            return EatMangaRepository.Instance;
         }
     }
 }
