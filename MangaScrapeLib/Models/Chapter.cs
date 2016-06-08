@@ -9,9 +9,9 @@ namespace MangaScrapeLib.Models
 
         public readonly Uri FirstPageUri;
 
-        public string Title { get; set; }
+        public string Title { get; internal set; }
 
-        public Chapter(Series parent, Uri firstPageUri)
+        internal Chapter(Series parent, Uri firstPageUri)
         {
             ParentSeries = parent;
             FirstPageUri = firstPageUri;

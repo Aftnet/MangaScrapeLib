@@ -8,10 +8,10 @@ namespace MangaScrapeLib.Models
         public readonly Chapter ParentChapter;
         public readonly Uri PageUri;
 
-        public int PageNo { get; set; }
-        public Uri ImageUri { get; set; }
+        public int PageNo { get; internal set; }
+        public Uri ImageUri { get; internal set; }
 
-        public Page(Chapter parent, Uri pageUri)
+        internal Page(Chapter parent, Uri pageUri)
         {
             ParentChapter = parent;
             PageUri = pageUri;

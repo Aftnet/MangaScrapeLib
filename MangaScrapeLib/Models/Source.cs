@@ -9,6 +9,7 @@ namespace MangaScrapeLib.Models
     {
         public static readonly Source EatManga = new Source(new EatMangaRepository());
         public static readonly Source MangaHere = new Source(new MangaHereRepository());
+        public static readonly Source[] AllSources = new Source[] { EatManga, MangaHere };
 
         protected static readonly HttpClient Client = new HttpClient();
         internal readonly IRepository Repository;

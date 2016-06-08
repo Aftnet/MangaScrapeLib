@@ -1,6 +1,7 @@
 ﻿using MangaScrapeLib.Repositories;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Models
@@ -10,15 +11,23 @@ namespace MangaScrapeLib.Models
         internal readonly IRepository ParentRepository;
         public readonly Uri SeriesPageUri;
 
-        public string Name { get; set; }
-
-        public string Tags { get; set; }
-        public string Description { get; set; }
+        public string Name { get; internal set; }
+        public Uri CoverImageUri { get; internal set; }
+        public string Tags { get; internal set; }
+        public string Description { get; internal set; }
 
         internal Series(IRepository parent, Uri seriesPageUri)
         {
             ParentRepository = parent;
             SeriesPageUri = seriesPageUri;
+        }
+
+        public static Series GetFromUri(Uri seriesPageUri)
+        {
+            var matchingSource = Source.AllSources.Where(d => d.Repository.MangaIndexPage.Host == seriesPageUri.Host).FirstOrDefault();
+            if (matchingSource == null) throw new ArgumentException();
+
+            return new Series(matchingSource.Repository, seriesPageUri);
         }
 
         public string SuggestPath(string rootDirectoryPath)
