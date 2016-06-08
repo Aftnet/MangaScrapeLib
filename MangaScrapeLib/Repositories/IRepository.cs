@@ -13,6 +13,6 @@ namespace MangaScrapeLib.Repositories
         Chapter[] GetChapters(Series series, string seriesPageHtml);
         Uri GetImageUri(string mangaPageHtml);
         void GetSeriesInfo(Series series, string seriesPageHtml);
-        Series[] GetDefaultSeries(string mangaIndexPageHtml);
+        Series[] GetDefaultSeries(Source source, string mangaIndexPageHtml);
     }
 }

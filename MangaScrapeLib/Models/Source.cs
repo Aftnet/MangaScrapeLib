@@ -26,7 +26,7 @@ namespace MangaScrapeLib.Models
             if (DefaultSeries != null) return DefaultSeries;
 
             var html = await Client.GetStringAsync(Repository.MangaIndexPage);
-            DefaultSeries = Repository.GetDefaultSeries(html);
+            DefaultSeries = Repository.GetDefaultSeries(this, html);
             DefaultSeries.OrderBy(d => d.Name).ToArray();
             return DefaultSeries;
         }
@@ -44,7 +44,7 @@ namespace MangaScrapeLib.Models
 
             var searchUri = searchableRepository.GetSearchUri(lowercaseQuery);
             var html = await Client.GetStringAsync(searchUri);
-            var output = searchableRepository.GetSeriesFromSearch(html);
+            var output = searchableRepository.GetSeriesFromSearch(this, html);
             output = output.OrderBy(d => d.Name).ToArray();
             return output;
         }
@@ -52,14 +52,14 @@ namespace MangaScrapeLib.Models
         static internal async Task<Chapter[]> GetChapters(Series input)
         {
             var html = await Client.GetStringAsync(input.SeriesPageUri);
-            var output = input.ParentRepository.GetChapters(input, html);
+            var output = input.ParentSource.Repository.GetChapters(input, html);
             return output;
         }
 
         static internal async Task<Page[]> GetPages(Chapter input)
         {
             var html = await Client.GetStringAsync(input.FirstPageUri);
-            var output = input.ParentSeries.ParentRepository.GetPages(input, html);
+            var output = input.ParentSeries.ParentSource.Repository.GetPages(input, html);
             return output;
         }
 

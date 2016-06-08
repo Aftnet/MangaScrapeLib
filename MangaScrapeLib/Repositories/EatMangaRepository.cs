@@ -8,14 +8,14 @@ namespace MangaScrapeLib.Repositories
     {
         public EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", "Manga-Scan/") { }
 
-        public Series[] GetDefaultSeries(string MangaIndexPageHtml)
+        public Series[] GetDefaultSeries(Source source, string MangaIndexPageHtml)
         {
             var Document = Parser.Parse(MangaIndexPageHtml);
 
             var Node = Document.QuerySelector("#updates");
             var Nodes = Node.QuerySelectorAll("th a");
 
-            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value))
+            var Output = Nodes.Select(d => new Series(source, new Uri(RootUri, d.Attributes["href"].Value))
             {
                 Name = d.TextContent
             }).OrderBy(d => d.Name);

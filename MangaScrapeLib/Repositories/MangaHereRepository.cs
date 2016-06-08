@@ -1,6 +1,5 @@
 ﻿using MangaScrapeLib.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -11,13 +10,13 @@ namespace MangaScrapeLib.Repositories
     {
         public MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/") { }
 
-        public Series[] GetDefaultSeries(string MangaIndexPageHtml)
+        public Series[] GetDefaultSeries(Source source, string MangaIndexPageHtml)
         {
             var Document = Parser.Parse(MangaIndexPageHtml);
 
             var Nodes = Document.QuerySelectorAll("a.manga_info");
 
-            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value))
+            var Output = Nodes.Select(d => new Series(source, new Uri(RootUri, d.Attributes["href"].Value))
             {
                 Name = WebUtility.HtmlDecode(d.Attributes["rel"].Value)
             }).OrderBy(d => d.Name);

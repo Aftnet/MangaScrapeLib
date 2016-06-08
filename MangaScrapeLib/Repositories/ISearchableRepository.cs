@@ -6,6 +6,6 @@ namespace MangaScrapeLib.Repositories
     internal interface ISearchableRepository : IRepository
     {
         Uri GetSearchUri(string query);
-        Series[] GetSeriesFromSearch(string mangaSearchPageHtml);
+        Series[] GetSeriesFromSearch(Source source, string mangaSearchPageHtml);
     }
 }

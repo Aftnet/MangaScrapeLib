@@ -1,5 +1,4 @@
-﻿using MangaScrapeLib.Repositories;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -8,7 +7,7 @@ namespace MangaScrapeLib.Models
 {
     public class Series : IPathSuggester
     {
-        internal readonly IRepository ParentRepository;
+        public readonly Source ParentSource;
         public readonly Uri SeriesPageUri;
 
         public string Name { get; internal set; }
@@ -16,9 +15,9 @@ namespace MangaScrapeLib.Models
         public string Tags { get; internal set; }
         public string Description { get; internal set; }
 
-        internal Series(IRepository parent, Uri seriesPageUri)
+        internal Series(Source parent, Uri seriesPageUri)
         {
-            ParentRepository = parent;
+            ParentSource = parent;
             SeriesPageUri = seriesPageUri;
         }
 
@@ -27,7 +26,7 @@ namespace MangaScrapeLib.Models
             var matchingSource = Source.AllSources.Where(d => d.Repository.MangaIndexPage.Host == seriesPageUri.Host).FirstOrDefault();
             if (matchingSource == null) throw new ArgumentException();
 
-            return new Series(matchingSource.Repository, seriesPageUri);
+            return new Series(matchingSource, seriesPageUri);
         }
 
         public string SuggestPath(string rootDirectoryPath)
