@@ -8,7 +8,7 @@ namespace MangaScrapeLib.Models
 {
     public class Series : IPathSuggester
     {
-        public readonly RepositoryBase ParentRepository;
+        public readonly Repository ParentRepository;
         public readonly Uri SeriesPageUri;
         public readonly string Name;
 
@@ -16,7 +16,7 @@ namespace MangaScrapeLib.Models
         public string Tags { get; internal set; }
         public string Description { get; internal set; }
 
-        internal Series(RepositoryBase parent, Uri seriesPageUri, string name)
+        internal Series(Repository parent, Uri seriesPageUri, string name)
         {
             ParentRepository = parent;
             SeriesPageUri = seriesPageUri;
@@ -25,12 +25,12 @@ namespace MangaScrapeLib.Models
 
         public Task<Chapter[]> GetChaptersAsync()
         {
-            return RepositoryBase.GetChaptersAsync(this);
+            return Repository.GetChaptersAsync(this);
         }
 
         public string SuggestPath(string rootDirectoryPath)
         {
-            var output = Path.Combine(rootDirectoryPath, RepositoryBase.MakeValidPathName(Name));
+            var output = Path.Combine(rootDirectoryPath, Repository.MakeValidPathName(Name));
             return output;
         }
 
@@ -38,7 +38,7 @@ namespace MangaScrapeLib.Models
         {
             if (name == null) throw new ArgumentNullException();
 
-            var repository = RepositoryBase.AllRepositories.FirstOrDefault(d => d.RootUri.Host == seriesPageUri.Host);
+            var repository = Repository.AllRepositories.FirstOrDefault(d => d.RootUri.Host == seriesPageUri.Host);
             if (repository == null) throw new ArgumentException("Series page Uri does not match any supported repository");
 
             return new Series(repository, seriesPageUri, name);

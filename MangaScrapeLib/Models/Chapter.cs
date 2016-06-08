@@ -20,13 +20,13 @@ namespace MangaScrapeLib.Models
 
         public Task<Page[]> GetPagesAsync()
         {
-            return RepositoryBase.GetPagesAsync(this);
+            return Repository.GetPagesAsync(this);
         }
 
         public string SuggestPath(string rootDirectoryPath)
         {
             var parentSeriesPath = ParentSeries.SuggestPath(rootDirectoryPath);
-            var output = Path.Combine(parentSeriesPath, RepositoryBase.MakeValidPathName(Title));
+            var output = Path.Combine(parentSeriesPath, Repository.MakeValidPathName(Title));
             return output;
         }
     }

@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories
 {
-    public abstract class RepositoryBase
+    public abstract class Repository
     {
-        public static readonly RepositoryBase[] AllRepositories = new RepositoryBase[]
+        public static readonly Repository[] AllRepositories = new Repository[]
         {
             EatMangaRepository.Instance,
             MangaHereRepository.Instance
@@ -20,9 +20,9 @@ namespace MangaScrapeLib.Repositories
         protected static readonly HttpClient Client = new HttpClient();
         protected static readonly HtmlParser Parser = new HtmlParser();
 
-        public string Name { get; private set; }
-        public Uri RootUri { get; private set; }
-        public Uri MangaIndexPage { get; private set; }
+        public readonly string Name;
+        public readonly Uri RootUri;
+        public readonly Uri MangaIndexPage;
 
         private Series[] DefaultSeries = null;
 
@@ -32,7 +32,7 @@ namespace MangaScrapeLib.Repositories
         internal abstract Page[] GetPages(Chapter chapter, string mangaPageHtml);
         internal abstract Uri GetImageUri(string mangaPageHtml);
 
-        protected RepositoryBase(string name, string uriString, string mangaIndexPageStr)
+        protected Repository(string name, string uriString, string mangaIndexPageStr)
         {
             Name = name;
             RootUri = new Uri(uriString, UriKind.Absolute);

@@ -14,9 +14,9 @@ namespace MangaScrapeLib.TestServices
     public abstract class MangaRepositoryTestBase
     {
         const string RootDir = "C:\\";
-        internal abstract RepositoryBase GetRepository();
+        internal abstract Repository GetRepository();
 
-        internal RepositoryBase Repository { get; set; }
+        internal Repository Repository { get; set; }
 
         [TestInitialize]
         public void TestInitializer()

@@ -22,14 +22,14 @@ namespace MangaScrapeLib.Models
 
         public Task<byte[]> GetImageAsync()
         {
-            return RepositoryBase.GetImageAsync(this);
+            return Repository.GetImageAsync(this);
         }
 
         public string SuggestPath(string rootDirectoryPath)
         {
             var pathStr = String.Format("{0}{1}{2}{3}", ImageUri.Scheme, "://", ImageUri.Authority, ImageUri.AbsolutePath);
             var extension = Path.GetExtension(pathStr);
-            var output = Path.Combine(ParentChapter.SuggestPath(rootDirectoryPath), RepositoryBase.MakeValidPathName(SuggestFileName()), extension);
+            var output = Path.Combine(ParentChapter.SuggestPath(rootDirectoryPath), Repository.MakeValidPathName(SuggestFileName()), extension);
             return output;
         }
 

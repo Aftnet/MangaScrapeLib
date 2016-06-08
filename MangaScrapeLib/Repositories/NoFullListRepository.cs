@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories
 {
-    public abstract class NoFullListRepositoryBase : RepositoryBase
+    public abstract class NoFullListRepository : Repository
     {
         protected abstract Uri GetSearchUri(string query);
         protected abstract Series[] GetSeriesFromSearch(string searchPageHtml);
 
-        public NoFullListRepositoryBase(string name, string uriString, string mangaIndexPageStr) : base(name, uriString, mangaIndexPageStr)
+        public NoFullListRepository(string name, string uriString, string mangaIndexPageStr) : base(name, uriString, mangaIndexPageStr)
         {
         }
 
