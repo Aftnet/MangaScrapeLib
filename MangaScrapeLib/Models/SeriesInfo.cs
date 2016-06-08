@@ -7,7 +7,7 @@ namespace MangaScrapeLib.Models
 {
     public class SeriesInfo : IPathSuggester
     {
-        public readonly IMangaRepository ParentRepository;
+        public readonly IRepository ParentRepository;
         public readonly Uri SeriesPageUri;
 
         public string Name { get; set; }
@@ -15,7 +15,7 @@ namespace MangaScrapeLib.Models
         public string Tags { get; set; }
         public string Description { get; set; }
 
-        public SeriesInfo(IMangaRepository parent, Uri seriesPageUri)
+        public SeriesInfo(IRepository parent, Uri seriesPageUri)
         {
             ParentRepository = parent;
             SeriesPageUri = seriesPageUri;

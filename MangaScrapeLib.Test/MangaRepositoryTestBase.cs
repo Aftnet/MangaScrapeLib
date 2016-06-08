@@ -17,7 +17,7 @@ namespace MangaScrapeLib.TestServices
     [TestClass]
     public abstract class MangaRepositoryTestBase
     {
-        protected IMangaRepository Repository { get; set; }
+        protected IRepository Repository { get; set; }
 
         private TestContext testContextInstance;
 
@@ -183,14 +183,14 @@ namespace MangaScrapeLib.TestServices
             Repository = GetRepository();
         }
 
-        internal async Task<IEnumerable<SeriesInfo>> GetSeriesListAsync(IMangaRepository Repository, HttpClient Client)
+        internal async Task<IEnumerable<SeriesInfo>> GetSeriesListAsync(IRepository Repository, HttpClient Client)
         {
             string PageHTML = await Client.GetStringAsync(Repository.MangaIndexPage);
             var SeriesList = Repository.GetDefaultSeries(PageHTML);
             return SeriesList;
         }
 
-        internal async Task<IEnumerable<ChapterInfo>> GetChaptersListAsync(IMangaRepository Repository, SeriesInfo Series, HttpClient Client)
+        internal async Task<IEnumerable<ChapterInfo>> GetChaptersListAsync(IRepository Repository, SeriesInfo Series, HttpClient Client)
         {
             string PageHTML = await Client.GetStringAsync(Series.SeriesPageUri);
             Assert.IsNotNull(PageHTML);
@@ -198,7 +198,7 @@ namespace MangaScrapeLib.TestServices
             return ChaptersList;
         }
 
-        internal async Task<IEnumerable<PageInfo>> GetPagesListAsync(IMangaRepository Repository, ChapterInfo Chapter, HttpClient Client)
+        internal async Task<IEnumerable<PageInfo>> GetPagesListAsync(IRepository Repository, ChapterInfo Chapter, HttpClient Client)
         {
             var PageHTML = await Client.GetStringAsync(Chapter.FirstPageUri);
             Assert.IsNotNull(PageHTML);
@@ -226,6 +226,6 @@ namespace MangaScrapeLib.TestServices
             return Input.First();
         }
 
-        internal abstract IMangaRepository GetRepository();
+        internal abstract IRepository GetRepository();
     }
 }

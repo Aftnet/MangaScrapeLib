@@ -10,7 +10,7 @@ namespace MangaScrapeLib.TestServices
     [TestClass]
     public class MangaHereRepositoryTest : MangaRepositoryTestBase
     {
-        internal override IMangaRepository GetRepository()
+        internal override IRepository GetRepository()
         {
             return new MangaHereRepository();
         }

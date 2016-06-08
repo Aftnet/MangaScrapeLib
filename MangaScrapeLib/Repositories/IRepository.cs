@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MangaScrapeLib.Repositories
 {
-    public interface IMangaRepository
+    public interface IRepository
     {
         Uri MangaIndexPage { get; }
         string Name { get; }
