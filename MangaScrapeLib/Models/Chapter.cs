@@ -26,9 +26,7 @@ namespace MangaScrapeLib.Models
         public string SuggestPath(string rootDirectoryPath)
         {
             var parentSeriesPath = ParentSeries.SuggestPath(rootDirectoryPath);
-            var output = Path.Combine(ParentSeries.SuggestPath(rootDirectoryPath), Series.MakeValidPathName(Title));
-
-            output = Series.MakeValidPathName(output);
+            var output = Path.Combine(parentSeriesPath, RepositoryBase.MakeValidPathName(Title));
             return output;
         }
     }

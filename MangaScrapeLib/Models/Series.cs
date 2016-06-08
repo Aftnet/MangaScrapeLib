@@ -29,21 +29,8 @@ namespace MangaScrapeLib.Models
 
         public string SuggestPath(string rootDirectoryPath)
         {
-            var output = Path.Combine(rootDirectoryPath, MakeValidPathName(Name));
+            var output = Path.Combine(rootDirectoryPath, RepositoryBase.MakeValidPathName(Name));
             return output;
         }
-
-        public static string MakeValidPathName(string name)
-        {
-            var invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));
-            var invalidReStr = string.Format(@"[{0}]+", invalidChars);
-            name = Regex.Replace(name, invalidReStr, " ");
-            name = Regex.Replace(name, @"\s{2,}", " ");
-            name = Regex.Replace(name, @"^[\s]+", "");
-            name = Regex.Replace(name, @"[\s]+$", "");
-            name = Regex.Replace(name, @"[\s]+", " ");
-            return name;
-        }
-
     }
 }

@@ -29,7 +29,7 @@ namespace MangaScrapeLib.Models
         {
             var pathStr = String.Format("{0}{1}{2}{3}", ImageUri.Scheme, "://", ImageUri.Authority, ImageUri.AbsolutePath);
             var extension = Path.GetExtension(pathStr);
-            var output = Path.Combine(ParentChapter.SuggestPath(rootDirectoryPath), Series.MakeValidPathName(SuggestFileName()), extension);
+            var output = Path.Combine(ParentChapter.SuggestPath(rootDirectoryPath), RepositoryBase.MakeValidPathName(SuggestFileName()), extension);
             return output;
         }
 
