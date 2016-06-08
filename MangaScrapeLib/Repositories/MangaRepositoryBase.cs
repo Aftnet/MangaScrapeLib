@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Repositories
 {
-    public abstract class MangaRepositoryBase
+    internal abstract class MangaRepositoryBase
     {
         protected static readonly HtmlParser Parser = new HtmlParser();
 

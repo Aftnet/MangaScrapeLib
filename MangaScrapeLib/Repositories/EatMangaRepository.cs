@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MangaScrapeLib.Repositories
 {
-    public class EatMangaRepository : MangaRepositoryBase, IRepository
+    internal class EatMangaRepository : MangaRepositoryBase, IRepository
     {
         public EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", "Manga-Scan/") { }
 

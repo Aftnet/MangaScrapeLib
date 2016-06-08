@@ -3,7 +3,7 @@ using System;
 
 namespace MangaScrapeLib.Repositories
 {
-    public interface IRepository
+    internal interface IRepository
     {
         Uri MangaIndexPage { get; }
         string Name { get; }

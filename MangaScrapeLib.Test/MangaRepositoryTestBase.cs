@@ -17,7 +17,7 @@ namespace MangaScrapeLib.TestServices
     [TestClass]
     public abstract class MangaRepositoryTestBase
     {
-        protected IRepository Repository { get; set; }
+        internal IRepository Repository { get; set; }
 
         private TestContext testContextInstance;
 
