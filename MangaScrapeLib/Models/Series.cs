@@ -36,7 +36,7 @@ namespace MangaScrapeLib.Models
 
         public static Series CreateFromData(Uri seriesPageUri, string name)
         {
-            if (name == null) throw new ArgumentNullException();
+            if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException();
 
             var repository = Repository.AllRepositories.FirstOrDefault(d => d.RootUri.Host == seriesPageUri.Host);
             if (repository == null) throw new ArgumentException("Series page Uri does not match any supported repository");

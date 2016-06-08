@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MangaScrapeLib.TestServices
+namespace MangaScrapeLib.Test.Repositories
 {
     /// <summary>
     ///This is a test class for MangaRepositoryTest and is intended

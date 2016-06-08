@@ -62,9 +62,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="MangaHereRepositoryTest.cs" />
-    <Compile Include="EatMangaRepositoryTest.cs" />
-    <Compile Include="MangaRepositoryTestBase.cs" />
+    <Compile Include="Repositories\MangaHereRepositoryTest.cs" />
+    <Compile Include="Repositories\EatMangaRepositoryTest.cs" />
+    <Compile Include="Repositories\MangaRepositoryTestBase.cs" />
+    <Compile Include="Models\SeriesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +80,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
