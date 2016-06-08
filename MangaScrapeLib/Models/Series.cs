@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
@@ -27,6 +28,11 @@ namespace MangaScrapeLib.Models
             if (matchingSource == null) throw new ArgumentException();
 
             return new Series(matchingSource, seriesPageUri);
+        }
+
+        public Task<Chapter[]> GetChaptersAsync()
+        {
+            return Source.GetChaptersAsync(this);
         }
 
         public string SuggestPath(string rootDirectoryPath)

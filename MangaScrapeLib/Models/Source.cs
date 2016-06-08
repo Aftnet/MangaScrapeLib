@@ -49,22 +49,24 @@ namespace MangaScrapeLib.Models
             return output;
         }
 
-        static internal async Task<Chapter[]> GetChapters(Series input)
+        static internal async Task<Chapter[]> GetChaptersAsync(Series input)
         {
             var html = await Client.GetStringAsync(input.SeriesPageUri);
             var output = input.ParentSource.Repository.GetChapters(input, html);
             return output;
         }
 
-        static internal async Task<Page[]> GetPages(Chapter input)
+        static internal async Task<Page[]> GetPagesAsync(Chapter input)
         {
             var html = await Client.GetStringAsync(input.FirstPageUri);
             var output = input.ParentSeries.ParentSource.Repository.GetPages(input, html);
             return output;
         }
 
-        static internal async Task<byte[]> GetImage(Page input)
+        static internal async Task<byte[]> GetImageAsync(Page input)
         {
+            var html = await Client.GetStringAsync(input.PageUri);
+            input.ImageUri = input.ParentChapter.ParentSeries.ParentSource.Repository.GetImageUri(html);
             var output = await Client.GetByteArrayAsync(input.ImageUri);
             return output;
         }

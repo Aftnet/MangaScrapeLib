@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
@@ -15,6 +16,11 @@ namespace MangaScrapeLib.Models
         {
             ParentChapter = parent;
             PageUri = pageUri;
+        }
+
+        public Task<byte[]> GetImageAsync()
+        {
+            return Source.GetImageAsync(this);
         }
 
         public string SuggestPath(string rootDirectoryPath)
