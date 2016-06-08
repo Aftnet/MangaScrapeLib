@@ -10,16 +10,17 @@ namespace MangaScrapeLib.Models
     {
         public readonly RepositoryBase ParentRepository;
         public readonly Uri SeriesPageUri;
+        public readonly string Name;
 
-        public string Name { get; internal set; }
         public Uri CoverImageUri { get; internal set; }
         public string Tags { get; internal set; }
         public string Description { get; internal set; }
 
-        internal Series(RepositoryBase parent, Uri seriesPageUri)
+        internal Series(RepositoryBase parent, Uri seriesPageUri, string name)
         {
             ParentRepository = parent;
             SeriesPageUri = seriesPageUri;
+            Name = name;
         }
 
         public Task<Chapter[]> GetChaptersAsync()

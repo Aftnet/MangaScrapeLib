@@ -16,10 +16,7 @@ namespace MangaScrapeLib.Repositories
 
             var Nodes = Document.QuerySelectorAll("a.manga_info");
 
-            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value))
-            {
-                Name = WebUtility.HtmlDecode(d.Attributes["rel"].Value)
-            }).OrderBy(d => d.Name);
+            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value), WebUtility.HtmlDecode(d.Attributes["rel"].Value))).OrderBy(d => d.Name);
             return Output.ToArray();
         }
 

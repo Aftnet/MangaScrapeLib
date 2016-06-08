@@ -58,6 +58,7 @@ namespace MangaScrapeLib.Repositories
         internal static async Task<Chapter[]> GetChaptersAsync(Series input)
         {
             var html = await Client.GetStringAsync(input.SeriesPageUri);
+            input.ParentRepository.GetSeriesInfo(input, html);
             var output = input.ParentRepository.GetChapters(input, html);
             return output;
         }
