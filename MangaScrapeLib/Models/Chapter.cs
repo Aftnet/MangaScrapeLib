@@ -8,7 +8,6 @@ namespace MangaScrapeLib.Models
     public class Chapter : IPathSuggester
     {
         public readonly Series ParentSeries;
-
         public readonly Uri FirstPageUri;
 
         public string Title { get; internal set; }

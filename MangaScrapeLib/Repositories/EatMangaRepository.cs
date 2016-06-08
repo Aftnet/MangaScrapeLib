@@ -56,11 +56,7 @@ namespace MangaScrapeLib.Repositories
             var Node = Document.QuerySelector("#pages");
             var Nodes = Node.QuerySelectorAll("option");
 
-            var Output = Nodes.Select((d, e) => new Page(Chapter, new Uri(RootUri, d.Attributes["value"].Value))
-            {
-                PageNo = e + 1
-            }).OrderBy(d => d.PageNo);
-
+            var Output = Nodes.Select((d, e) => new Page(Chapter, new Uri(RootUri, d.Attributes["value"].Value), e)).OrderBy(d => d.PageNo);
             return Output.ToArray();
         }
 

@@ -9,14 +9,15 @@ namespace MangaScrapeLib.Models
     {
         public readonly Chapter ParentChapter;
         public readonly Uri PageUri;
+        public readonly int PageNo;
 
-        public int PageNo { get; internal set; }
         public Uri ImageUri { get; internal set; }
 
-        internal Page(Chapter parent, Uri pageUri)
+        internal Page(Chapter parent, Uri pageUri, int pageNo)
         {
             ParentChapter = parent;
             PageUri = pageUri;
+            PageNo = pageNo;
         }
 
         public Task<byte[]> GetImageAsync()
