@@ -6,29 +6,29 @@ using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Repositories
 {
-    internal class MangaHereRepository : RepositoryBase, IRepository
+    public class MangaHereRepository : RepositoryBase
     {
         public MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/") { }
 
-        public Series[] GetDefaultSeries(Source source, string MangaIndexPageHtml)
+        internal override Series[] GetDefaultSeries(string MangaIndexPageHtml)
         {
             var Document = Parser.Parse(MangaIndexPageHtml);
 
             var Nodes = Document.QuerySelectorAll("a.manga_info");
 
-            var Output = Nodes.Select(d => new Series(source, new Uri(RootUri, d.Attributes["href"].Value))
+            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value))
             {
                 Name = WebUtility.HtmlDecode(d.Attributes["rel"].Value)
             }).OrderBy(d => d.Name);
             return Output.ToArray();
         }
 
-        public void GetSeriesInfo(Series Series, string SeriesPageHtml)
+        internal override void GetSeriesInfo(Series Series, string SeriesPageHtml)
         {
             Series.Description = Series.Tags = string.Empty;
         }
 
-        public Chapter[] GetChapters(Series Series, string SeriesPageHtml)
+        internal override Chapter[] GetChapters(Series Series, string SeriesPageHtml)
         {
             var Document = Parser.Parse(SeriesPageHtml);
 
@@ -53,7 +53,7 @@ namespace MangaScrapeLib.Repositories
             return Output.ToArray();
         }
 
-        public Page[] GetPages(Chapter Chapter, string MangaPageHtml)
+        internal override Page[] GetPages(Chapter Chapter, string MangaPageHtml)
         {
             var Document = Parser.Parse(MangaPageHtml);
 
@@ -68,7 +68,7 @@ namespace MangaScrapeLib.Repositories
             return Output.ToArray();
         }
 
-        public Uri GetImageUri(string MangaPageHtml)
+        internal override Uri GetImageUri(string MangaPageHtml)
         {
             var Document = Parser.Parse(MangaPageHtml);
 

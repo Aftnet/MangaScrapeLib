@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MangaScrapeLib.Repositories;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -20,7 +21,7 @@ namespace MangaScrapeLib.Models
 
         public Task<byte[]> GetImageAsync()
         {
-            return Source.GetImageAsync(this);
+            return RepositoryBase.GetImageAsync(this);
         }
 
         public string SuggestPath(string rootDirectoryPath)

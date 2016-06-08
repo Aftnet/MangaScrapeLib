@@ -17,8 +17,9 @@ namespace MangaScrapeLib.TestServices
     [TestClass]
     public abstract class MangaRepositoryTestBase
     {
-        internal IRepository Repository { get; set; }
-        internal Source Source { get; set; }
+        internal abstract RepositoryBase GetRepository();
+
+        internal RepositoryBase Repository { get; set; }
 
         private TestContext testContextInstance;
 
@@ -46,7 +47,7 @@ namespace MangaScrapeLib.TestServices
         {
             using (var Client = GetWebClient())
             {
-                var SeriesList = await GetSeriesListAsync(Repository, Source, Client);
+                var SeriesList = await GetSeriesListAsync(Repository, Client);
                 var SelectedSeries = PickSeries(SeriesList);
                 var ChaptersList = await GetChaptersListAsync(Repository, SelectedSeries, Client);
                 var SelectedChapter = PickChapter(ChaptersList);
@@ -68,7 +69,7 @@ namespace MangaScrapeLib.TestServices
         {
             using (var Client = GetWebClient())
             {
-                var SeriesList = await GetSeriesListAsync(Repository, Source, Client);
+                var SeriesList = await GetSeriesListAsync(Repository, Client);
                 var SelectedSeries = PickSeries(SeriesList);
                 var ChaptersList = await GetChaptersListAsync(Repository, SelectedSeries, Client);
                 foreach (var i in ChaptersList)
@@ -88,7 +89,7 @@ namespace MangaScrapeLib.TestServices
         {
             using (var Client = GetWebClient())
             {
-                var SeriesList = await GetSeriesListAsync(Repository, Source, Client);
+                var SeriesList = await GetSeriesListAsync(Repository, Client);
                 var SelectedSeries = PickSeries(SeriesList);
                 var ChaptersList = await GetChaptersListAsync(Repository, SelectedSeries, Client);
                 var SelectedChapter = PickChapter(ChaptersList);
@@ -113,7 +114,7 @@ namespace MangaScrapeLib.TestServices
         {
             using (var Client = GetWebClient())
             {
-                var SeriesList = await GetSeriesListAsync(Repository, Source, Client);
+                var SeriesList = await GetSeriesListAsync(Repository, Client);
                 var TestSeries = PickSeries(SeriesList);
                 Assert.IsNull(TestSeries.Description);
                 Assert.IsNull(TestSeries.Tags);
@@ -133,13 +134,13 @@ namespace MangaScrapeLib.TestServices
         {
             using (var Client = GetWebClient())
             {
-                var SeriesList = await GetSeriesListAsync(Repository, Source, Client);
+                var SeriesList = await GetSeriesListAsync(Repository, Client);
                 Assert.IsNotNull(SeriesList);
                 Assert.IsFalse(SeriesList.Count() == 0);
                 foreach (var i in SeriesList)
                 {
                     Assert.IsNotNull(i.Name);
-                    Assert.AreSame(i.ParentSource, Source);
+                    Assert.AreSame(i.ParentRepository, Repository);
                     Assert.IsNotNull(i.SeriesPageUri);
                 }
             }
@@ -182,17 +183,16 @@ namespace MangaScrapeLib.TestServices
         public void TestInitializer()
         {
             Repository = GetRepository();
-            Source = new Source(Repository);
         }
 
-        internal async Task<IEnumerable<Series>> GetSeriesListAsync(IRepository Repository, Source Source, HttpClient Client)
+        internal async Task<IEnumerable<Series>> GetSeriesListAsync(RepositoryBase Repository, HttpClient Client)
         {
             string PageHTML = await Client.GetStringAsync(Repository.MangaIndexPage);
-            var SeriesList = Repository.GetDefaultSeries(Source, PageHTML);
+            var SeriesList = Repository.GetDefaultSeries(PageHTML);
             return SeriesList;
         }
 
-        internal async Task<IEnumerable<Chapter>> GetChaptersListAsync(IRepository Repository, Series Series, HttpClient Client)
+        internal async Task<IEnumerable<Chapter>> GetChaptersListAsync(RepositoryBase Repository, Series Series, HttpClient Client)
         {
             string PageHTML = await Client.GetStringAsync(Series.SeriesPageUri);
             Assert.IsNotNull(PageHTML);
@@ -200,7 +200,7 @@ namespace MangaScrapeLib.TestServices
             return ChaptersList;
         }
 
-        internal async Task<IEnumerable<Page>> GetPagesListAsync(IRepository Repository, Chapter Chapter, HttpClient Client)
+        internal async Task<IEnumerable<Page>> GetPagesListAsync(RepositoryBase Repository, Chapter Chapter, HttpClient Client)
         {
             var PageHTML = await Client.GetStringAsync(Chapter.FirstPageUri);
             Assert.IsNotNull(PageHTML);
@@ -227,7 +227,5 @@ namespace MangaScrapeLib.TestServices
         {
             return Input.First();
         }
-
-        internal abstract IRepository GetRepository();
     }
 }

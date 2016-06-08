@@ -4,18 +4,18 @@ using System.Linq;
 
 namespace MangaScrapeLib.Repositories
 {
-    internal class EatMangaRepository : RepositoryBase, IRepository
+    internal class EatMangaRepository : RepositoryBase
     {
         public EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", "Manga-Scan/") { }
 
-        public Series[] GetDefaultSeries(Source source, string MangaIndexPageHtml)
+        internal override Series[] GetDefaultSeries(string MangaIndexPageHtml)
         {
             var Document = Parser.Parse(MangaIndexPageHtml);
 
             var Node = Document.QuerySelector("#updates");
             var Nodes = Node.QuerySelectorAll("th a");
 
-            var Output = Nodes.Select(d => new Series(source, new Uri(RootUri, d.Attributes["href"].Value))
+            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value))
             {
                 Name = d.TextContent
             }).OrderBy(d => d.Name);
@@ -23,12 +23,12 @@ namespace MangaScrapeLib.Repositories
             return Output.ToArray();
         }
 
-        public void GetSeriesInfo(Series Series, string SeriesPageHtml)
+        internal override void GetSeriesInfo(Series Series, string SeriesPageHtml)
         {
             Series.Description = Series.Tags = string.Empty;
         }
 
-        public Chapter[] GetChapters(Series Series, string SeriesPageHtml)
+        internal override Chapter[] GetChapters(Series Series, string SeriesPageHtml)
         {
             var Document = Parser.Parse(SeriesPageHtml);
 
@@ -49,7 +49,7 @@ namespace MangaScrapeLib.Repositories
             return Output.ToArray();
         }
 
-        public Page[] GetPages(Chapter Chapter, string MangaPageHtml)
+        internal override Page[] GetPages(Chapter Chapter, string MangaPageHtml)
         {
             var Document = Parser.Parse(MangaPageHtml);
 
@@ -64,7 +64,7 @@ namespace MangaScrapeLib.Repositories
             return Output.ToArray();
         }
 
-        public Uri GetImageUri(string MangaPageHtml)
+        internal override Uri GetImageUri(string MangaPageHtml)
         {
             var IDs = new string[]
             {

@@ -1,18 +1,16 @@
 ﻿using MangaScrapeLib.Models;
 using System;
+using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories
 {
-    internal interface IRepository
+    public interface IRepository
     {
         Uri MangaIndexPage { get; }
         string Name { get; }
         Uri RootUri { get; }
 
-        Page[] GetPages(Chapter chapter, string mangaPageHtml);
-        Chapter[] GetChapters(Series series, string seriesPageHtml);
-        Uri GetImageUri(string mangaPageHtml);
-        void GetSeriesInfo(Series series, string seriesPageHtml);
-        Series[] GetDefaultSeries(Source source, string mangaIndexPageHtml);
+        Task<Series[]> GetSeriesAsync();
+        Task<Series[]> SearchSeriesAsync(string query);
     }
 }
