@@ -10,7 +10,7 @@ namespace MangaScrapeLib.Test.Repositories
     [TestClass]
     public class EatMangaRepositoryTest : MangaRepositoryTestBase
     {
-        internal override Repository GetRepository()
+        protected override Repository GetRepository()
         {
             return EatMangaRepository.Instance;
         }

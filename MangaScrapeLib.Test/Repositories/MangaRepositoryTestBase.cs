@@ -1,6 +1,7 @@
 ﻿using MangaScrapeLib.Repositories;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,10 +14,12 @@ namespace MangaScrapeLib.Test.Repositories
     [TestClass]
     public abstract class MangaRepositoryTestBase
     {
-        const string RootDir = "C:\\";
-        internal abstract Repository GetRepository();
+        protected abstract Repository GetRepository();
 
-        internal Repository Repository { get; set; }
+        private const string RootDir = "C:\\";
+        private readonly HashSet<string> UniqueParsedValues = new HashSet<string>();
+
+        private Repository Repository { get; set; }
 
         [TestInitialize]
         public void TestInitializer()
@@ -31,15 +34,16 @@ namespace MangaScrapeLib.Test.Repositories
             Assert.IsTrue(series.Any());
             foreach (var i in series)
             {
-                Assert.IsNotNull(i.Name);
                 Assert.AreSame(Repository, i.ParentRepository);
+                CheckParsedStringValidity(i.Name);
                 Assert.IsNotNull(i.SeriesPageUri);
+                CheckParsedStringValidity(i.SeriesPageUri.ToString());
 
                 Assert.IsNull(i.CoverImageUri);
                 Assert.IsNull(i.Description);
                 Assert.IsNull(i.Tags);
 
-                Assert.IsFalse(string.IsNullOrEmpty(i.SuggestPath(RootDir)));
+                CheckParsedStringValidity(i.SuggestPath(RootDir));
             }
 
             var selectedSeries = series[0];
@@ -48,11 +52,12 @@ namespace MangaScrapeLib.Test.Repositories
             Assert.IsTrue(chapters.Any());
             foreach (var i in chapters)
             {
-                Assert.IsNotNull(i.Title);
+                CheckParsedStringValidity(i.Title);
                 Assert.AreSame(selectedSeries, i.ParentSeries);
                 Assert.IsNotNull(i.FirstPageUri);
+                CheckParsedStringValidity(i.FirstPageUri.ToString());
 
-                Assert.IsFalse(string.IsNullOrEmpty(i.SuggestPath(RootDir)));
+                CheckParsedStringValidity(i.SuggestPath(RootDir));
             }
 
             var selectedChapter = chapters[0];
@@ -62,6 +67,8 @@ namespace MangaScrapeLib.Test.Repositories
             foreach (var i in pages)
             {
                 Assert.IsNotNull(i.PageUri);
+                CheckParsedStringValidity(i.PageUri.ToString());
+
                 Assert.AreSame(selectedChapter, i.ParentChapter);
                 Assert.AreEqual(ctr, i.PageNo);
                 ctr++;
@@ -73,7 +80,7 @@ namespace MangaScrapeLib.Test.Repositories
             Assert.IsTrue(imageBytes.Any());
             Assert.IsNotNull(selectedPage.ImageUri);
 
-            Assert.IsFalse(string.IsNullOrEmpty(selectedPage.SuggestPath(RootDir)));
+            CheckParsedStringValidity(selectedPage.SuggestPath(RootDir));
         }
 
         [TestMethod]
@@ -100,6 +107,14 @@ namespace MangaScrapeLib.Test.Repositories
         public void IconLoadingWorks()
         {
             Assert.IsNotNull(Repository.Icon);
+        }
+
+        private void CheckParsedStringValidity(string input)
+        {
+            Assert.IsFalse(string.IsNullOrEmpty(input));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(input));
+            Assert.IsFalse(UniqueParsedValues.Contains(input), "Duplicate value detected when parsing");
+            UniqueParsedValues.Add(input);
         }
     }
 }
