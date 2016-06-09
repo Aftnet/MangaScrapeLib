@@ -60,6 +60,9 @@ namespace MangaScrapeLib.Test.Repositories
                 CheckParsedStringValidity(i.SuggestPath(RootDir));
             }
 
+            //Some repositories have a chapter's first page placed at chapter page. Clear uniqies values before testing.
+            UniqueParsedValues.Clear();
+
             var selectedChapter = chapters[0];
             var pages = await selectedChapter.GetPagesAsync();
             Assert.IsTrue(pages.Any());
