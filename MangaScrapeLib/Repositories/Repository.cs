@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories
 {
-    public abstract class Repository
+    public abstract class Repository : IRepository
     {
         public static readonly Repository[] AllRepositories = new Repository[]
         {
@@ -21,21 +21,22 @@ namespace MangaScrapeLib.Repositories
         protected static readonly HttpClient Client = new HttpClient();
         protected static readonly HtmlParser Parser = new HtmlParser();
 
-        public readonly string Name;
-        public readonly Uri RootUri;
-        public readonly Uri MangaIndexPage;
-        public readonly string IconFileName;
-
-        private Series[] DefaultSeries = null;
-
-        private readonly Lazy<byte[]> icon;
+        public string Name { get; private set; }
         public byte[] Icon { get { return icon.Value; } }
+        public Uri RootUri { get; private set; }
+        public Uri MangaIndexPage { get; private set; }
+
+        private readonly string IconFileName;
+        private readonly Lazy<byte[]> icon;
+
 
         internal abstract Series[] GetDefaultSeries(string mangaIndexPageHtml);
         internal abstract void GetSeriesInfo(Series series, string seriesPageHtml);
         internal abstract Chapter[] GetChapters(Series series, string seriesPageHtml);
         internal abstract Page[] GetPages(Chapter chapter, string mangaPageHtml);
         internal abstract Uri GetImageUri(string mangaPageHtml);
+
+        private Series[] DefaultSeries = null;
 
         protected Repository(string name, string uriString, string mangaIndexPageStr, string iconFileName)
         {

@@ -11,6 +11,8 @@ namespace MangaScrapeLib.Models
         public readonly Uri FirstPageUri;
         public readonly string Title;
 
+        protected Chapter() { }
+
         internal Chapter(Series parent, Uri firstPageUri, string title)
         {
             ParentSeries = parent;
@@ -18,12 +20,12 @@ namespace MangaScrapeLib.Models
             Title = title;
         }
 
-        public Task<Page[]> GetPagesAsync()
+        public virtual Task<Page[]> GetPagesAsync()
         {
             return Repository.GetPagesAsync(this);
         }
 
-        public string SuggestPath(string rootDirectoryPath)
+        public virtual string SuggestPath(string rootDirectoryPath)
         {
             var parentSeriesPath = ParentSeries.SuggestPath(rootDirectoryPath);
             var output = Path.Combine(parentSeriesPath, Repository.MakeValidPathName(Title));

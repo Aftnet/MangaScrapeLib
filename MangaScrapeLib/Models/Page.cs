@@ -13,6 +13,8 @@ namespace MangaScrapeLib.Models
 
         public Uri ImageUri { get; internal set; }
 
+        protected Page() { }
+
         internal Page(Chapter parent, Uri pageUri, int pageNo)
         {
             ParentChapter = parent;
@@ -20,12 +22,12 @@ namespace MangaScrapeLib.Models
             PageNo = pageNo;
         }
 
-        public Task<byte[]> GetImageAsync()
+        public virtual Task<byte[]> GetImageAsync()
         {
             return Repository.GetImageAsync(this);
         }
 
-        public string SuggestPath(string rootDirectoryPath)
+        public virtual string SuggestPath(string rootDirectoryPath)
         {
             var pathStr = String.Format("{0}{1}{2}{3}", ImageUri.Scheme, "://", ImageUri.Authority, ImageUri.AbsolutePath);
             var extension = Path.GetExtension(pathStr);
@@ -33,7 +35,7 @@ namespace MangaScrapeLib.Models
             return output;
         }
 
-        public string SuggestFileName()
+        public virtual string SuggestFileName()
         {
             const string numberFormatString = "000";
             var parentSeries = ParentChapter.ParentSeries;
