@@ -16,6 +16,8 @@ namespace MangaScrapeLib.Models
         public string Tags { get; internal set; }
         public string Description { get; internal set; }
 
+        protected Series() { }
+
         internal Series(Repository parent, Uri seriesPageUri, string name)
         {
             ParentRepository = parent;
@@ -23,12 +25,12 @@ namespace MangaScrapeLib.Models
             Name = name;
         }
 
-        public Task<Chapter[]> GetChaptersAsync()
+        public virtual Task<Chapter[]> GetChaptersAsync()
         {
             return Repository.GetChaptersAsync(this);
         }
 
-        public string SuggestPath(string rootDirectoryPath)
+        public virtual string SuggestPath(string rootDirectoryPath)
         {
             var output = Path.Combine(rootDirectoryPath, Repository.MakeValidPathName(Name));
             return output;
