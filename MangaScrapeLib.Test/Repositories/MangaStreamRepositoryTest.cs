@@ -8,7 +8,7 @@ namespace MangaScrapeLib.Test.Repositories
     {
         protected override Repository GetRepository()
         {
-            return new MangaStreamRepository();
+            return MangaStreamRepository.Instance;
         }
     }
 }
