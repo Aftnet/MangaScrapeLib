@@ -61,7 +61,7 @@
     <EmbeddedResource Include="Resources\EatManga.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\MangaHere.png" />
+    <EmbeddedResource Include="Resources\MangaHere.png" />
     <EmbeddedResource Include="Resources\MangaStream.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
