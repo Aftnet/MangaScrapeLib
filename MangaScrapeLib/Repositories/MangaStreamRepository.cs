@@ -31,7 +31,7 @@ namespace MangaScrapeLib.Repositories
             var document = Parser.Parse(seriesPageHtml);
             var tableNode = document.QuerySelector("table.table-striped") as AngleSharp.Dom.Html.IHtmlTableElement;
             var linkNodes = tableNode.QuerySelectorAll("a");
-            var output = linkNodes.Select(d => new Chapter(series, new Uri(d.Attributes["href"].Value), d.TextContent)).ToArray();
+            var output = linkNodes.Select(d => new Chapter(series, new Uri(d.Attributes["href"].Value), d.TextContent)).Reverse().ToArray();
             return output;
         }
 
