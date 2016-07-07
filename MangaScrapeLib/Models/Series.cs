@@ -16,8 +16,6 @@ namespace MangaScrapeLib.Models
         public string Tags { get; internal set; }
         public string Description { get; internal set; }
 
-        protected Series() { }
-
         internal Series(Repository parent, Uri seriesPageUri, string name)
         {
             ParentRepository = parent;
@@ -38,9 +36,11 @@ namespace MangaScrapeLib.Models
 
         public static Series CreateFromData(Uri seriesPageUri, string name)
         {
+            if (seriesPageUri == null) throw new ArgumentNullException();
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException();
 
-            var repository = Repository.AllRepositories.FirstOrDefault(d => d.RootUri.Host == seriesPageUri.Host);
+            var allRepositories = Repository.AllRepositories;
+            var repository = allRepositories.FirstOrDefault(d => d.RootUri.Host == seriesPageUri.Host);
             if (repository == null) throw new ArgumentException("Series page Uri does not match any supported repository");
 
             return new Series(repository, seriesPageUri, name);
