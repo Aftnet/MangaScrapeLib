@@ -14,7 +14,7 @@ namespace MangaScrapeLib.Repositories
         {
         }
 
-        public override async Task<Series[]> SearchSeriesAsync(string query)
+        public override async Task<ISeries[]> SearchSeriesAsync(string query)
         {
             var lowercaseQuery = query.ToLowerInvariant();
             var searchUri = GetSearchUri(lowercaseQuery);

@@ -13,7 +13,7 @@ namespace MangaScrapeLib.Repositories
 
         private MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/", "MangaHere.png") { }
 
-        internal override Series[] GetDefaultSeries(string MangaIndexPageHtml)
+        internal override ISeries[] GetDefaultSeries(string MangaIndexPageHtml)
         {
             var Document = Parser.Parse(MangaIndexPageHtml);
 
@@ -28,7 +28,7 @@ namespace MangaScrapeLib.Repositories
             Series.Description = Series.Tags = string.Empty;
         }
 
-        internal override Chapter[] GetChapters(Series Series, string SeriesPageHtml)
+        internal override IChapter[] GetChapters(Series Series, string SeriesPageHtml)
         {
             var Document = Parser.Parse(SeriesPageHtml);
 
@@ -49,7 +49,7 @@ namespace MangaScrapeLib.Repositories
             return Output.ToArray();
         }
 
-        internal override Page[] GetPages(Chapter Chapter, string MangaPageHtml)
+        internal override IPage[] GetPages(Chapter Chapter, string MangaPageHtml)
         {
             var Document = Parser.Parse(MangaPageHtml);
 

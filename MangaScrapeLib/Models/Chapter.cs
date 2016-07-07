@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
-    public class Chapter : IPathSuggester
+    public class Chapter : IChapter
     {
-        public readonly Series ParentSeries;
-        public readonly Uri FirstPageUri;
-        public readonly string Title;
+        public Series ParentSeries { get; private set; }
+        public Uri FirstPageUri { get; private set; }
+        public string Title { get; private set; }
 
         internal Chapter(Series parent, Uri firstPageUri, string title)
         {
@@ -18,7 +18,7 @@ namespace MangaScrapeLib.Models
             Title = title;
         }
 
-        public virtual Task<Page[]> GetPagesAsync()
+        public virtual Task<IPage[]> GetPagesAsync()
         {
             return Repository.GetPagesAsync(this);
         }

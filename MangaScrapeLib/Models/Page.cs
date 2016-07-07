@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
-    public class Page : IPathSuggester
+    public class Page : IPage
     {
-        public readonly Chapter ParentChapter;
-        public readonly Uri PageUri;
-        public readonly int PageNo;
+        public Chapter ParentChapter { get; private set; }
+        public Uri PageUri { get; private set; }
+        public int PageNo { get; private set; }
 
         public Uri ImageUri { get; internal set; }
 

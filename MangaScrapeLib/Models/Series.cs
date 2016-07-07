@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
-    public class Series : IPathSuggester
+    public class Series : ISeries
     {
-        public readonly Repository ParentRepository;
-        public readonly Uri SeriesPageUri;
-        public readonly string Name;
+        public Repository ParentRepository { get; private set; }
+        public Uri SeriesPageUri { get; private set; }
+        public string Name { get; private set; }
 
         public Uri CoverImageUri { get; internal set; }
         public string Tags { get; internal set; }
@@ -23,7 +23,7 @@ namespace MangaScrapeLib.Models
             Name = name;
         }
 
-        public virtual Task<Chapter[]> GetChaptersAsync()
+        public virtual Task<IChapter[]> GetChaptersAsync()
         {
             return Repository.GetChaptersAsync(this);
         }
