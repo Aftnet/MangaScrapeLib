@@ -9,7 +9,7 @@ namespace MangaScrapeLib.Models
         Uri CoverImageUri { get; }
         string Description { get; }
         string Name { get; }
-        Repository ParentRepository { get; }
+        IRepository ParentRepository { get; }
         Uri SeriesPageUri { get; }
         string Tags { get; }
 

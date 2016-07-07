@@ -8,7 +8,7 @@ namespace MangaScrapeLib.Models
 {
     public class Series : ISeries
     {
-        public Repository ParentRepository { get; private set; }
+        public IRepository ParentRepository { get; private set; }
         public Uri SeriesPageUri { get; private set; }
         public string Name { get; private set; }
 
