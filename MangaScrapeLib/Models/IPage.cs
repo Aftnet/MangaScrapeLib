@@ -8,7 +8,7 @@ namespace MangaScrapeLib.Models
         Uri ImageUri { get; }
         int PageNo { get; }
         Uri PageUri { get; }
-        Chapter ParentChapter { get; }
+        IChapter ParentChapter { get; }
 
         Task<byte[]> GetImageAsync();
         string SuggestFileName();

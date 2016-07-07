@@ -7,7 +7,7 @@ namespace MangaScrapeLib.Models
 {
     public class Chapter : IChapter
     {
-        public Series ParentSeries { get; private set; }
+        public ISeries ParentSeries { get; private set; }
         public Uri FirstPageUri { get; private set; }
         public string Title { get; private set; }
 

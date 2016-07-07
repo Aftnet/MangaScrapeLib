@@ -75,22 +75,23 @@ namespace MangaScrapeLib.Repositories
         internal static async Task<IChapter[]> GetChaptersAsync(Series input)
         {
             var html = await Client.GetStringAsync(input.SeriesPageUri);
-            input.ParentRepository.GetSeriesInfo(input, html);
-            var output = input.ParentRepository.GetChapters(input, html);
+            var repository = input.ParentRepository as Repository;
+            repository.GetSeriesInfo(input, html);
+            var output = repository.GetChapters(input, html);
             return output;
         }
 
         internal static async Task<IPage[]> GetPagesAsync(Chapter input)
         {
             var html = await Client.GetStringAsync(input.FirstPageUri);
-            var output = input.ParentSeries.ParentRepository.GetPages(input, html);
+            var output = (input.ParentSeries.ParentRepository as Repository).GetPages(input, html);
             return output;
         }
 
         internal static async Task<byte[]> GetImageAsync(Page input)
         {
             var html = await Client.GetStringAsync(input.PageUri);
-            input.ImageUri = input.ParentChapter.ParentSeries.ParentRepository.GetImageUri(html);
+            input.ImageUri = (input.ParentChapter.ParentSeries.ParentRepository as Repository).GetImageUri(html);
             var output = await Client.GetByteArrayAsync(input.ImageUri);
             return output;
         }

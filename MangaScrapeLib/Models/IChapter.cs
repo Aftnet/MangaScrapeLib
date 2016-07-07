@@ -6,7 +6,7 @@ namespace MangaScrapeLib.Models
     public interface IChapter : IPathSuggester
     {
         Uri FirstPageUri { get; }
-        Series ParentSeries { get; }
+        ISeries ParentSeries { get; }
         string Title { get; }
 
         Task<IPage[]> GetPagesAsync();
