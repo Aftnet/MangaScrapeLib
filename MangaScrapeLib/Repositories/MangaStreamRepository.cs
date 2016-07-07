@@ -13,7 +13,7 @@ namespace MangaScrapeLib.Repositories
         {
         }
 
-        internal override Series[] GetDefaultSeries(string mangaIndexPageHtml)
+        internal override ISeries[] GetDefaultSeries(string mangaIndexPageHtml)
         {
             var document = Parser.Parse(mangaIndexPageHtml);
             var tableNode = document.QuerySelector("table.table-striped") as AngleSharp.Dom.Html.IHtmlTableElement;
@@ -26,7 +26,7 @@ namespace MangaScrapeLib.Repositories
         {
         }
 
-        internal override Chapter[] GetChapters(Series series, string seriesPageHtml)
+        internal override IChapter[] GetChapters(Series series, string seriesPageHtml)
         {
             var document = Parser.Parse(seriesPageHtml);
             var tableNode = document.QuerySelector("table.table-striped") as AngleSharp.Dom.Html.IHtmlTableElement;
@@ -43,7 +43,7 @@ namespace MangaScrapeLib.Repositories
             return output;
         }
 
-        internal override Page[] GetPages(Chapter chapter, string mangaPageHtml)
+        internal override IPage[] GetPages(Chapter chapter, string mangaPageHtml)
         {
             var document = Parser.Parse(mangaPageHtml);
             var listNode = document.QuerySelectorAll("ul.dropdown-menu")[2];

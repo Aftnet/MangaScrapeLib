@@ -11,7 +11,7 @@ namespace MangaScrapeLib.Repositories
         string Name { get; }
         Uri RootUri { get; }
 
-        Task<Series[]> GetSeriesAsync();
-        Task<Series[]> SearchSeriesAsync(string query);
+        Task<ISeries[]> GetSeriesAsync();
+        Task<ISeries[]> SearchSeriesAsync(string query);
     }
 }

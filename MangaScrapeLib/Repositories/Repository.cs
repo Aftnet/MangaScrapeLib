@@ -32,13 +32,13 @@ namespace MangaScrapeLib.Repositories
         private readonly Lazy<byte[]> icon;
 
 
-        internal abstract Series[] GetDefaultSeries(string mangaIndexPageHtml);
+        internal abstract ISeries[] GetDefaultSeries(string mangaIndexPageHtml);
         internal abstract void GetSeriesInfo(Series series, string seriesPageHtml);
-        internal abstract Chapter[] GetChapters(Series series, string seriesPageHtml);
-        internal abstract Page[] GetPages(Chapter chapter, string mangaPageHtml);
+        internal abstract IChapter[] GetChapters(Series series, string seriesPageHtml);
+        internal abstract IPage[] GetPages(Chapter chapter, string mangaPageHtml);
         internal abstract Uri GetImageUri(string mangaPageHtml);
 
-        private Series[] DefaultSeries = null;
+        private ISeries[] DefaultSeries = null;
 
         protected Repository(string name, string uriString, string mangaIndexPageStr, string iconFileName)
         {
@@ -55,7 +55,7 @@ namespace MangaScrapeLib.Repositories
             return Name;
         }
 
-        public async Task<Series[]> GetSeriesAsync()
+        public async Task<ISeries[]> GetSeriesAsync()
         {
             if (DefaultSeries != null) return DefaultSeries;
 
@@ -65,14 +65,14 @@ namespace MangaScrapeLib.Repositories
             return DefaultSeries;
         }
 
-        public virtual async Task<Series[]> SearchSeriesAsync(string query)
+        public virtual async Task<ISeries[]> SearchSeriesAsync(string query)
         {
             var lowercaseQuery = query.ToLowerInvariant();
             var series = await GetSeriesAsync();
             return series.Where(d => d.Name.ToLowerInvariant().Contains(lowercaseQuery)).ToArray();
         }
 
-        internal static async Task<Chapter[]> GetChaptersAsync(Series input)
+        internal static async Task<IChapter[]> GetChaptersAsync(Series input)
         {
             var html = await Client.GetStringAsync(input.SeriesPageUri);
             input.ParentRepository.GetSeriesInfo(input, html);
@@ -80,7 +80,7 @@ namespace MangaScrapeLib.Repositories
             return output;
         }
 
-        internal static async Task<Page[]> GetPagesAsync(Chapter input)
+        internal static async Task<IPage[]> GetPagesAsync(Chapter input)
         {
             var html = await Client.GetStringAsync(input.FirstPageUri);
             var output = input.ParentSeries.ParentRepository.GetPages(input, html);
