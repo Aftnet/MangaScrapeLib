@@ -12,12 +12,13 @@ namespace MangaScrapeLib.Repositories
 {
     public abstract class Repository : IRepository
     {
-        public static readonly Repository[] AllRepositories = new Repository[]
+        public static Repository[] AllRepositories
         {
-            EatMangaRepository.Instance,
-            MangaHereRepository.Instance,
-            MangaStreamRepository.Instance
-        };
+            get
+            {
+                return new Repository[] { EatMangaRepository.Instance, MangaHereRepository.Instance, MangaStreamRepository.Instance };
+            }
+        }
 
         protected static readonly HttpClient Client = new HttpClient();
         protected static readonly HtmlParser Parser = new HtmlParser();

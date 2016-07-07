@@ -39,7 +39,8 @@ namespace MangaScrapeLib.Models
             if (seriesPageUri == null) throw new ArgumentNullException();
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException();
 
-            var repository = Repository.AllRepositories.FirstOrDefault(d => d.RootUri.Host == seriesPageUri.Host);
+            var allRepositories = Repository.AllRepositories;
+            var repository = allRepositories.FirstOrDefault(d => d.RootUri.Host == seriesPageUri.Host);
             if (repository == null) throw new ArgumentException("Series page Uri does not match any supported repository");
 
             return new Series(repository, seriesPageUri, name);

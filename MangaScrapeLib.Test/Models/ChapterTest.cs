@@ -7,12 +7,14 @@ namespace MangaScrapeLib.Test.Models
     [TestClass]
     public class ChapterTest
     {
-        protected Series TestSeries = Series.CreateFromData(new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/"), "SomeTitle");
+        public static readonly Uri ValidChapterUri = new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/testch/");
+
+        protected Series TestSeries = Series.CreateFromData(SeriesTest.ValidSeriesUri, "SomeTitle");
 
         [TestMethod]
         public void CreateFromDataWorks()
         {
-            var chapter = Chapter.CreateFromData(TestSeries, new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/testch/"), "Test chapter");
+            var chapter = Chapter.CreateFromData(TestSeries, ValidChapterUri, "Test chapter");
             Assert.IsNotNull(chapter);
         }
 
@@ -22,7 +24,7 @@ namespace MangaScrapeLib.Test.Models
             var numExceptions = 0;
             try
             {
-                var chapter = Chapter.CreateFromData(null, new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/testch/"), "Test chapter");
+                var chapter = Chapter.CreateFromData(null, ValidChapterUri, "Test chapter");
             }
             catch (ArgumentException)
             {
@@ -42,7 +44,7 @@ namespace MangaScrapeLib.Test.Models
             {
                 try
                 {
-                    var chapter = Chapter.CreateFromData(TestSeries, new Uri("http://omg.lol/"), "SomeTitle");
+                    var chapter = Chapter.CreateFromData(TestSeries, i, "SomeTitle");
                 }
                 catch (ArgumentException)
                 {
@@ -62,7 +64,7 @@ namespace MangaScrapeLib.Test.Models
             {
                 try
                 {
-                    var chapter = Chapter.CreateFromData(TestSeries, new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/"), i);
+                    var chapter = Chapter.CreateFromData(TestSeries, ValidChapterUri, i);
                 }
                 catch (ArgumentNullException)
                 {

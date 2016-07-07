@@ -7,10 +7,12 @@ namespace MangaScrapeLib.Test.Models
     [TestClass]
     public class SeriesTest
     {
+        public static readonly Uri ValidSeriesUri = new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/");
+
         [TestMethod]
         public void CreateFromDataWorks()
         {
-            var series = Series.CreateFromData(new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/"), "SomeTitle");
+            var series = Series.CreateFromData(ValidSeriesUri, "SomeTitle");
             Assert.IsNotNull(series);
         }
 
@@ -24,7 +26,7 @@ namespace MangaScrapeLib.Test.Models
             {
                 try
                 {
-                    var series = Series.CreateFromData(new Uri("http://omg.lol/"), "SomeTitle");
+                    var series = Series.CreateFromData(i, "SomeTitle");
                 }
                 catch (ArgumentException)
                 {
@@ -44,7 +46,7 @@ namespace MangaScrapeLib.Test.Models
             {
                 try
                 {
-                    var series = Series.CreateFromData(new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/"), i);
+                    var series = Series.CreateFromData(ValidSeriesUri, i);
                 }
                 catch (ArgumentNullException)
                 {
