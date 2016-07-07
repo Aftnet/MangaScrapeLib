@@ -13,8 +13,6 @@ namespace MangaScrapeLib.Models
 
         public Uri ImageUri { get; internal set; }
 
-        protected Page() { }
-
         internal Page(Chapter parent, Uri pageUri, int pageNo)
         {
             ParentChapter = parent;

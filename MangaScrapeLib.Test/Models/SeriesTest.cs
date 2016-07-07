@@ -17,17 +17,22 @@ namespace MangaScrapeLib.Test.Models
         [TestMethod]
         public void CreateFromDataRejectsUnsupportedUri()
         {
+            var invalidUris = new Uri[] { null, new Uri("http://omg.lol/") };
+
             var numExceptions = 0;
-            try
+            foreach (var i in invalidUris)
             {
-                var series = Series.CreateFromData(new Uri("http://omg.lol/"), "SomeTitle");
-            }
-            catch (ArgumentException)
-            {
-                numExceptions++;
+                try
+                {
+                    var series = Series.CreateFromData(new Uri("http://omg.lol/"), "SomeTitle");
+                }
+                catch (ArgumentException)
+                {
+                    numExceptions++;
+                }
             }
 
-            Assert.AreEqual(1, numExceptions);
+            Assert.AreEqual(invalidUris.Length, numExceptions);
         }
 
         [TestMethod]
