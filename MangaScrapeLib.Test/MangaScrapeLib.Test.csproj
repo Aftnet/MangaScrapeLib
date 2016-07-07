@@ -62,6 +62,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Models\ChapterTest.cs" />
     <Compile Include="Repositories\MangaHereRepositoryTest.cs" />
     <Compile Include="Repositories\EatMangaRepositoryTest.cs" />
     <Compile Include="Repositories\MangaRepositoryTestBase.cs" />
