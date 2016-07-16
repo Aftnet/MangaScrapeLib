@@ -51,6 +51,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\EatMangaRepository.cs" />
     <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\MangaEdenRepository.cs" />
     <Compile Include="Repositories\MangaHereRepository.cs" />
     <Compile Include="Repositories\MangaStreamRepository.cs" />
     <Compile Include="Repositories\NoFullListRepository.cs" />
@@ -67,6 +68,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\MangaHere.png" />
     <EmbeddedResource Include="Resources\MangaStream.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\MangaEden.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
