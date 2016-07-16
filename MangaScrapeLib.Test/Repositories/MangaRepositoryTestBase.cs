@@ -88,6 +88,28 @@ namespace MangaScrapeLib.Test.Repositories
         }
 
         [TestMethod]
+        public async Task SearchWorks()
+        {
+            var searchQuery = "naruto";
+            var searchResult = await Repository.SearchSeriesAsync(searchQuery);
+            Assert.IsTrue(searchResult.Any());
+            foreach (var i in searchResult)
+            {
+                Assert.AreSame(Repository, i.ParentRepository);
+                CheckParsedStringValidity(i.Title);
+                Assert.IsTrue(i.Title.ToLower().Contains(searchQuery));
+                Assert.IsNotNull(i.SeriesPageUri);
+                CheckParsedStringValidity(i.SeriesPageUri.ToString());
+
+                Assert.IsFalse(string.IsNullOrEmpty(i.Updated));
+                Assert.IsNull(i.CoverImageUri);
+                Assert.IsNull(i.Description);
+
+                CheckParsedStringValidity(i.SuggestPath(RootDir));
+            }
+        }
+
+        [TestMethod]
         public void MangaIndexPageIsSet()
         {
             Uri actual;
