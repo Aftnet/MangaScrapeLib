@@ -43,9 +43,8 @@ namespace MangaScrapeLib.Repositories
                 Title = Regex.Replace(Title, @"[\r\n\s\t]+$", string.Empty);
                 var Chapter = new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value), Title);
                 return Chapter;
-            });
+            }).Reverse().ToArray();
 
-            Output.Reverse();
             return Output.ToArray();
         }
 

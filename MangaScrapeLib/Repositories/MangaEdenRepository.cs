@@ -42,7 +42,20 @@ namespace MangaScrapeLib.Repositories
 
         internal override IChapter[] GetChapters(Series series, string seriesPageHtml)
         {
-            throw new NotImplementedException();
+            var document = Parser.Parse(seriesPageHtml);
+
+            var table = document.QuerySelector("table");
+            var rows = table.QuerySelectorAll("tr").Skip(1);
+            var output = rows.Select(d =>
+            {
+                var linknode = d.QuerySelector("a.chapterLink");
+                var titleNode = linknode.QuerySelector("b");
+                var dateNode = d.QuerySelector("td.chapterDate");
+                var chapter = new Chapter(series, new Uri(RootUri, linknode.Attributes["href"].Value), titleNode.TextContent.Trim()) { Updated = dateNode.TextContent.Trim() };
+                return chapter;
+            }).Reverse().ToArray();
+
+            return output;
         }
 
         internal override ISeries[] GetDefaultSeries(string mangaIndexPageHtml)
@@ -62,7 +75,13 @@ namespace MangaScrapeLib.Repositories
 
         internal override void GetSeriesInfo(Series series, string seriesPageHtml)
         {
-            throw new NotImplementedException();
+            var document = Parser.Parse(seriesPageHtml);
+
+            var imgNode = document.QuerySelector("div.mangaImage2 img");
+            series.CoverImageUri = new Uri(RootUri, imgNode.Attributes["src"].Value);
+
+            var descriptionNode = document.QuerySelector("h2#mangaDescription");
+            series.Description = descriptionNode.TextContent.Trim();
         }
     }
 }
