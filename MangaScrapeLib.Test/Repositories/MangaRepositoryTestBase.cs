@@ -35,13 +35,12 @@ namespace MangaScrapeLib.Test.Repositories
             foreach (var i in series)
             {
                 Assert.AreSame(Repository, i.ParentRepository);
-                CheckParsedStringValidity(i.Name);
+                CheckParsedStringValidity(i.Title);
                 Assert.IsNotNull(i.SeriesPageUri);
                 CheckParsedStringValidity(i.SeriesPageUri.ToString());
 
                 Assert.IsNull(i.CoverImageUri);
                 Assert.IsNull(i.Description);
-                Assert.IsNull(i.Tags);
 
                 CheckParsedStringValidity(i.SuggestPath(RootDir));
             }

@@ -19,13 +19,13 @@ namespace MangaScrapeLib.Repositories
 
             var Nodes = Document.QuerySelectorAll("a.manga_info");
 
-            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value), WebUtility.HtmlDecode(d.Attributes["rel"].Value))).OrderBy(d => d.Name);
+            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value), WebUtility.HtmlDecode(d.Attributes["rel"].Value))).OrderBy(d => d.Title);
             return Output.ToArray();
         }
 
         internal override void GetSeriesInfo(Series Series, string SeriesPageHtml)
         {
-            Series.Description = Series.Tags = string.Empty;
+            Series.Description = string.Empty;
         }
 
         internal override IChapter[] GetChapters(Series Series, string SeriesPageHtml)

@@ -21,7 +21,7 @@ namespace MangaScrapeLib.Repositories
 
             var html = await Client.GetStringAsync(searchUri);
             var output = GetSeriesFromSearch(html);
-            output = output.OrderBy(d => d.Name).ToArray();
+            output = output.OrderBy(d => d.Title).ToArray();
             return output;
         }
     }

@@ -61,7 +61,7 @@ namespace MangaScrapeLib.Repositories
 
             var html = await Client.GetStringAsync(MangaIndexPage);
             DefaultSeries = GetDefaultSeries(html);
-            DefaultSeries.OrderBy(d => d.Name).ToArray();
+            DefaultSeries.OrderBy(d => d.Title).ToArray();
             return DefaultSeries;
         }
 
@@ -69,7 +69,7 @@ namespace MangaScrapeLib.Repositories
         {
             var lowercaseQuery = query.ToLowerInvariant();
             var series = await GetSeriesAsync();
-            return series.Where(d => d.Name.ToLowerInvariant().Contains(lowercaseQuery)).ToArray();
+            return series.Where(d => d.Title.ToLowerInvariant().Contains(lowercaseQuery)).ToArray();
         }
 
         internal static async Task<IChapter[]> GetChaptersAsync(Series input)
