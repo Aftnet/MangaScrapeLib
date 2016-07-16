@@ -11,6 +11,7 @@ namespace MangaScrapeLib.Models
         public IRepository ParentRepository { get; private set; }
         public Uri SeriesPageUri { get; private set; }
         public string Title { get; private set; }
+        public string Updated { get; internal set; }
 
         public Uri CoverImageUri { get; internal set; }
         public string Description { get; internal set; }
@@ -20,6 +21,7 @@ namespace MangaScrapeLib.Models
             ParentRepository = parent;
             SeriesPageUri = seriesPageUri;
             Title = name;
+            Updated = string.Empty;
         }
 
         public virtual Task<IChapter[]> GetChaptersAsync()

@@ -1,6 +1,7 @@
 ﻿using MangaScrapeLib.Models;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Repositories
 {
@@ -18,9 +19,15 @@ namespace MangaScrapeLib.Repositories
             var Node = Document.QuerySelector("#updates");
             var Nodes = Node.QuerySelectorAll("th a");
 
-            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value), d.TextContent)).OrderBy(d => d.Title);
+            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value), d.TextContent)).OrderBy(d => d.Title).ToArray();
 
-            return Output.ToArray();
+            Nodes = Node.QuerySelectorAll("td.time");
+            for (var i = 0; i < Output.Length; i++)
+            {
+                Output[i].Updated = Nodes[i].TextContent;
+            }
+
+            return Output;
         }
 
         internal override void GetSeriesInfo(Series Series, string SeriesPageHtml)
@@ -34,12 +41,17 @@ namespace MangaScrapeLib.Repositories
 
             var Node = Document.QuerySelector("#updates");
             var Nodes = Node.QuerySelectorAll("tr a");
-            var Output = Nodes.Select(d => new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value), d.TextContent));
+            var Output = Nodes.Select(d => new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value), d.TextContent)).ToArray();
+
+            Nodes = Node.QuerySelectorAll("td.time");
+            for (var i = 0; i < Output.Length; i++)
+            {
+                Output[i].Updated = Nodes[i].TextContent;
+            }
 
             //Eatmanga has dummy entries for not yet released chapters, prune them.
-            Output = Output.Where(d => d.FirstPageUri.ToString().Contains("http://eatmanga.com/upcoming/") == false).Reverse();
-
-            return Output.ToArray();
+            Output = Output.Where(d => d.FirstPageUri.ToString().Contains("http://eatmanga.com/upcoming/") == false).Reverse().ToArray();
+            return Output;
         }
 
         internal override IPage[] GetPages(Chapter Chapter, string MangaPageHtml)

@@ -41,6 +41,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Models\Chapter.cs" />
+    <Compile Include="Models\IBasicInfo.cs" />
     <Compile Include="Models\IChapter.cs" />
     <Compile Include="Models\IPage.cs" />
     <Compile Include="Models\IPathSuggester.cs" />

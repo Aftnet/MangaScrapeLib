@@ -3,11 +3,10 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
-    public interface IChapter : IPathSuggester
+    public interface IChapter : IBasicInfo, IPathSuggester
     {
-        Uri FirstPageUri { get; }
         ISeries ParentSeries { get; }
-        string Title { get; }
+        Uri FirstPageUri { get; }
 
         Task<IPage[]> GetPagesAsync();
     }

@@ -19,7 +19,7 @@ namespace MangaScrapeLib.Test.Repositories
         private const string RootDir = "C:\\";
         private readonly HashSet<string> UniqueParsedValues = new HashSet<string>();
 
-        private Repository Repository { get; set; }
+        protected Repository Repository { get; set; }
 
         [TestInitialize]
         public void TestInitializer()
@@ -39,6 +39,7 @@ namespace MangaScrapeLib.Test.Repositories
                 Assert.IsNotNull(i.SeriesPageUri);
                 CheckParsedStringValidity(i.SeriesPageUri.ToString());
 
+                Assert.IsFalse(string.IsNullOrEmpty(i.Updated));
                 Assert.IsNull(i.CoverImageUri);
                 Assert.IsNull(i.Description);
 
@@ -52,6 +53,7 @@ namespace MangaScrapeLib.Test.Repositories
             foreach (var i in chapters)
             {
                 CheckParsedStringValidity(i.Title);
+                Assert.IsFalse(string.IsNullOrEmpty(i.Updated));
                 Assert.AreSame(selectedSeries, i.ParentSeries);
                 Assert.IsNotNull(i.FirstPageUri);
                 CheckParsedStringValidity(i.FirstPageUri.ToString());

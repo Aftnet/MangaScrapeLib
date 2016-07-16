@@ -10,12 +10,14 @@ namespace MangaScrapeLib.Models
         public ISeries ParentSeries { get; private set; }
         public Uri FirstPageUri { get; private set; }
         public string Title { get; private set; }
+        public string Updated { get; internal set; }
 
         internal Chapter(Series parent, Uri firstPageUri, string title)
         {
             ParentSeries = parent;
             FirstPageUri = firstPageUri;
             Title = title;
+            Updated = string.Empty;
         }
 
         public virtual Task<IPage[]> GetPagesAsync()
