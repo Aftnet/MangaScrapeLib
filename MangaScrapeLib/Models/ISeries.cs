@@ -4,14 +4,12 @@ using MangaScrapeLib.Repositories;
 
 namespace MangaScrapeLib.Models
 {
-    public interface ISeries : IPathSuggester
+    public interface ISeries : IBasicInfo, IPathSuggester
     {
-        Uri CoverImageUri { get; }
-        string Description { get; }
-        string Name { get; }
         IRepository ParentRepository { get; }
         Uri SeriesPageUri { get; }
-        string Tags { get; }
+        Uri CoverImageUri { get; }
+        string Description { get; }
 
         Task<IChapter[]> GetChaptersAsync();
     }

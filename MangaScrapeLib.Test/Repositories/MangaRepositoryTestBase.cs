@@ -19,7 +19,7 @@ namespace MangaScrapeLib.Test.Repositories
         private const string RootDir = "C:\\";
         private readonly HashSet<string> UniqueParsedValues = new HashSet<string>();
 
-        private Repository Repository { get; set; }
+        protected Repository Repository { get; set; }
 
         [TestInitialize]
         public void TestInitializer()
@@ -35,13 +35,13 @@ namespace MangaScrapeLib.Test.Repositories
             foreach (var i in series)
             {
                 Assert.AreSame(Repository, i.ParentRepository);
-                CheckParsedStringValidity(i.Name);
+                CheckParsedStringValidity(i.Title);
                 Assert.IsNotNull(i.SeriesPageUri);
                 CheckParsedStringValidity(i.SeriesPageUri.ToString());
 
+                Assert.IsFalse(string.IsNullOrEmpty(i.Updated));
                 Assert.IsNull(i.CoverImageUri);
                 Assert.IsNull(i.Description);
-                Assert.IsNull(i.Tags);
 
                 CheckParsedStringValidity(i.SuggestPath(RootDir));
             }
@@ -53,6 +53,7 @@ namespace MangaScrapeLib.Test.Repositories
             foreach (var i in chapters)
             {
                 CheckParsedStringValidity(i.Title);
+                Assert.IsFalse(string.IsNullOrEmpty(i.Updated));
                 Assert.AreSame(selectedSeries, i.ParentSeries);
                 Assert.IsNotNull(i.FirstPageUri);
                 CheckParsedStringValidity(i.FirstPageUri.ToString());
@@ -84,6 +85,28 @@ namespace MangaScrapeLib.Test.Repositories
             Assert.IsNotNull(selectedPage.ImageUri);
 
             CheckParsedStringValidity(selectedPage.SuggestPath(RootDir));
+        }
+
+        [TestMethod]
+        public async Task SearchWorks()
+        {
+            var searchQuery = "naruto";
+            var searchResult = await Repository.SearchSeriesAsync(searchQuery);
+            Assert.IsTrue(searchResult.Any());
+            foreach (var i in searchResult)
+            {
+                Assert.AreSame(Repository, i.ParentRepository);
+                CheckParsedStringValidity(i.Title);
+                Assert.IsTrue(i.Title.ToLower().Contains(searchQuery));
+                Assert.IsNotNull(i.SeriesPageUri);
+                CheckParsedStringValidity(i.SeriesPageUri.ToString());
+
+                Assert.IsFalse(string.IsNullOrEmpty(i.Updated));
+                Assert.IsNull(i.CoverImageUri);
+                Assert.IsNull(i.Description);
+
+                CheckParsedStringValidity(i.SuggestPath(RootDir));
+            }
         }
 
         [TestMethod]

@@ -18,7 +18,8 @@ namespace MangaScrapeLib.Repositories
             var document = Parser.Parse(mangaIndexPageHtml);
             var tableNode = document.QuerySelector("table.table-striped") as AngleSharp.Dom.Html.IHtmlTableElement;
             var linkNodes = tableNode.QuerySelectorAll("strong a");
-            var output = linkNodes.Select(d => new Series(this, new Uri(d.Attributes["href"].Value), d.TextContent)).ToArray();
+            var updateNodes = tableNode.QuerySelectorAll("a.chapter-link");
+            var output = linkNodes.Zip(updateNodes, (d, e) => new Series(this, new Uri(d.Attributes["href"].Value), d.TextContent) { Updated = e.TextContent }).ToArray();
             return output;
         }
 
@@ -30,8 +31,15 @@ namespace MangaScrapeLib.Repositories
         {
             var document = Parser.Parse(seriesPageHtml);
             var tableNode = document.QuerySelector("table.table-striped") as AngleSharp.Dom.Html.IHtmlTableElement;
-            var linkNodes = tableNode.QuerySelectorAll("a");
-            var output = linkNodes.Select(d => new Chapter(series, new Uri(d.Attributes["href"].Value), d.TextContent)).Reverse().ToArray();
+            var rows = tableNode.QuerySelectorAll("tr").Skip(1);
+            var output = rows.Select(d =>
+            {
+                var linkNode = d.QuerySelector("a");
+                var datenode = d.QuerySelectorAll("td").Skip(1);
+                var chapter = new Chapter(series, new Uri(linkNode.Attributes["href"].Value), linkNode.TextContent) { Updated = datenode.First().TextContent.Trim() };
+                return chapter;
+            }).Reverse().ToArray();
+
             return output;
         }
 
