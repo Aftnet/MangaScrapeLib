@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MangaScrapeLib.Models;
+using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MangaScrapeLib.Models;
 
 namespace MangaScrapeLib.Repositories
 {
@@ -65,12 +62,21 @@ namespace MangaScrapeLib.Repositories
 
         internal override Uri GetImageUri(string mangaPageHtml)
         {
-            throw new NotImplementedException();
+            var document = Parser.Parse(mangaPageHtml);
+
+            var imageNode = document.QuerySelector("img#mainImg");
+            var output = new Uri(RootUri, imageNode.Attributes["src"].Value);
+            return output;
         }
 
         internal override IPage[] GetPages(Chapter chapter, string mangaPageHtml)
         {
-            throw new NotImplementedException();
+            var document = Parser.Parse(mangaPageHtml);
+
+            var selectNode = document.QuerySelector("select#pageSelect");
+            var options = selectNode.QuerySelectorAll("option");
+            var output = options.Select((d, e) => new Page(chapter, new Uri(RootUri, d.Attributes["value"].Value), e + 1)).ToArray();
+            return output; 
         }
 
         internal override void GetSeriesInfo(Series series, string seriesPageHtml)
