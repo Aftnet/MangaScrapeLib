@@ -23,7 +23,13 @@ namespace MangaScrapeLib.Repositories
             var document = Parser.Parse(searchPageHtml);
 
             var table = document.QuerySelector("#mangaList");
-            var rows = table.QuerySelectorAll("tr").Skip(1);
+            var rows = table.QuerySelectorAll("tr").Skip(1).ToArray();
+
+            if (rows.Length == 1 && rows[0].TextContent.Contains("No results found"))
+            {
+                return new Series[0];
+            }
+
             var output = rows.Select(d =>
             {
                 var links = d.QuerySelectorAll("a");

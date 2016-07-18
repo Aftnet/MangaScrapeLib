@@ -110,6 +110,14 @@ namespace MangaScrapeLib.Test.Repositories
         }
 
         [TestMethod]
+        public async Task NoResultsSearchWorks()
+        {
+            var searchQuery = "fbywguewvugewf";
+            var searchResult = await Repository.SearchSeriesAsync(searchQuery);
+            Assert.IsFalse(searchResult.Any());
+        }
+
+        [TestMethod]
         public void MangaIndexPageIsSet()
         {
             Uri actual;
