@@ -45,7 +45,14 @@ namespace MangaScrapeLib.Repositories
         {
             var document = Parser.Parse(seriesPageHtml);
 
-            throw new NotImplementedException();
+            var containerNode = document.QuerySelector("section.section-chapter div.container div.row:nth-child(2)");
+            var linkNodes = containerNode.QuerySelectorAll("div.col-xs-9").Skip(1).ToArray();
+            linkNodes = linkNodes.Select(d => d.QuerySelector("a")).ToArray();
+            var dateNodes = containerNode.QuerySelectorAll("div.col-xs-3").Skip(1).ToArray();
+
+            var output = linkNodes.Zip(dateNodes, (d, e) => new Chapter(series, new Uri(RootUri, d.Attributes["href"].Value), d.TextContent.Trim()) { Updated = e.TextContent.Trim() })
+                .Reverse().ToArray();
+            return output;
         }
 
         internal override ISeries[] GetDefaultSeries(string mangaIndexPageHtml)
@@ -70,14 +77,22 @@ namespace MangaScrapeLib.Repositories
         {
             var document = Parser.Parse(mangaPageHtml);
 
-            throw new NotImplementedException();
+            var imageNode = document.QuerySelector("div.reader-image a img.img-responsive");
+            var output = new Uri(RootUri, imageNode.Attributes["src"].Value);
+            return output;
         }
 
         internal override IPage[] GetPages(Chapter chapter, string mangaPageHtml)
         {
             var document = Parser.Parse(mangaPageHtml);
 
-            throw new NotImplementedException();
+            var selectorNode = document.QuerySelector("select#page-dropdown");
+            var optionNodes = selectorNode.QuerySelectorAll("option");
+
+            var chaptersRootUri = chapter.FirstPageUri.ToString();
+            chaptersRootUri = chaptersRootUri.Substring(0, chaptersRootUri.LastIndexOf("/"));
+            var output = optionNodes.Select((d, e) => new Page(chapter, new Uri(string.Format("{0}/{1}", chaptersRootUri, d.TextContent.Trim())), e + 1)).ToArray();
+            return output;
         }
 
         internal override void GetSeriesInfo(Series series, string seriesPageHtml)
