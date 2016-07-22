@@ -16,7 +16,7 @@ namespace MangaScrapeLib.Repositories
         {
             get
             {
-                return new Repository[] { EatMangaRepository.Instance, MangaEdenRepository.Instance, MangaHereRepository.Instance, MangaStreamRepository.Instance };
+                return new Repository[] { EatMangaRepository.Instance, MangaEdenRepository.Instance, MangaHereRepository.Instance, MangaStreamRepository.Instance, MyMangaRepository.Instance };
             }
         }
 
