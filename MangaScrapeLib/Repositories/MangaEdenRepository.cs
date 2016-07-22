@@ -9,7 +9,7 @@ namespace MangaScrapeLib.Repositories
         private static readonly MangaEdenRepository instance = new MangaEdenRepository();
         public static MangaEdenRepository Instance { get { return instance; } }
 
-        private MangaEdenRepository() : base("Manga Eden", "http://www.mangaeden.com/", "en/en-directory/", "MangaEden.png") { }
+        private MangaEdenRepository() : base("Manga Eden", "http://www.mangaeden.com/", "en/en-directory/", new SeriesMetadataSupport(true), "MangaEden.png") { }
 
         protected override Uri GetSearchUri(string query)
         {
@@ -91,6 +91,19 @@ namespace MangaScrapeLib.Repositories
 
             var imgNode = document.QuerySelector("div.mangaImage2 img");
             series.CoverImageUri = new Uri(RootUri, imgNode.Attributes["src"].Value);
+
+            var infoBoxNode = document.QuerySelectorAll("div.rightBox")[1];
+            var headerNodes = infoBoxNode.QuerySelectorAll("h4");
+
+            var yearHeader = headerNodes.First(d => d.TextContent == "Year of release");
+            series.Release = yearHeader.NextSibling.TextContent;
+
+            var linkNodes = infoBoxNode.QuerySelectorAll("a").ToArray();
+            var authorNode = linkNodes.First(d => d.Attributes["href"].Value.Contains("?author="));
+            series.Author = authorNode.TextContent;
+
+            var tagNodes = linkNodes.Where(d => d.Attributes["href"].Value.Contains("?categoriesInc=")).ToArray();
+            series.Tags = string.Join(", ", tagNodes.Select(d => d.TextContent));
 
             var descriptionNode = document.QuerySelector("h2#mangaDescription");
             series.Description = descriptionNode.TextContent.Trim();

@@ -54,8 +54,10 @@
     <Compile Include="Repositories\MangaEdenRepository.cs" />
     <Compile Include="Repositories\MangaHereRepository.cs" />
     <Compile Include="Repositories\MangaStreamRepository.cs" />
+    <Compile Include="Repositories\MyMangaRepository.cs" />
     <Compile Include="Repositories\NoFullListRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
+    <Compile Include="Repositories\SeriesMetadataSupport.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MangaScrapeLib.nuspec" />
@@ -71,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\MangaEden.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\MyManga.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

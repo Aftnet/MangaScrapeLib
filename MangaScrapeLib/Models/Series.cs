@@ -14,6 +14,9 @@ namespace MangaScrapeLib.Models
         public string Updated { get; internal set; }
 
         public Uri CoverImageUri { get; internal set; }
+        public string Author { get; internal set; }
+        public string Release { get; internal set; }
+        public string Tags { get; internal set; }
         public string Description { get; internal set; }
 
         internal Series(Repository parent, Uri seriesPageUri, string name)

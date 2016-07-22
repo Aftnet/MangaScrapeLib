@@ -10,6 +10,7 @@ namespace MangaScrapeLib.Repositories
         Uri MangaIndexPage { get; }
         string Name { get; }
         Uri RootUri { get; }
+        SeriesMetadataSupport SeriesMetadata { get; }
 
         Task<ISeries[]> GetSeriesAsync();
         Task<ISeries[]> SearchSeriesAsync(string query);

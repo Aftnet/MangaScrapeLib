@@ -16,7 +16,7 @@ namespace MangaScrapeLib.Repositories
         {
             get
             {
-                return new Repository[] { EatMangaRepository.Instance, MangaEdenRepository.Instance, MangaHereRepository.Instance, MangaStreamRepository.Instance };
+                return new Repository[] { EatMangaRepository.Instance, MangaEdenRepository.Instance, MangaHereRepository.Instance, MangaStreamRepository.Instance, MyMangaRepository.Instance };
             }
         }
 
@@ -27,6 +27,7 @@ namespace MangaScrapeLib.Repositories
         public byte[] Icon { get { return icon.Value; } }
         public Uri RootUri { get; private set; }
         public Uri MangaIndexPage { get; private set; }
+        public SeriesMetadataSupport SeriesMetadata { get; private set; }
 
         private readonly string IconFileName;
         private readonly Lazy<byte[]> icon;
@@ -40,11 +41,12 @@ namespace MangaScrapeLib.Repositories
 
         private ISeries[] DefaultSeries = null;
 
-        protected Repository(string name, string uriString, string mangaIndexPageStr, string iconFileName)
+        protected Repository(string name, string uriString, string mangaIndexPageStr, SeriesMetadataSupport seriesMetadata, string iconFileName)
         {
             Name = name;
             RootUri = new Uri(uriString, UriKind.Absolute);
             MangaIndexPage = new Uri(RootUri, mangaIndexPageStr);
+            SeriesMetadata = seriesMetadata;
             IconFileName = iconFileName;
 
             icon = new Lazy<byte[]>(LoadIcon);

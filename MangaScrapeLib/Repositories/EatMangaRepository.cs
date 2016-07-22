@@ -10,7 +10,7 @@ namespace MangaScrapeLib.Repositories
         private static readonly EatMangaRepository instance = new EatMangaRepository();
         public static EatMangaRepository Instance { get { return instance; } }
 
-        private EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", "Manga-Scan/", "EatManga.png") { }
+        private EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", "Manga-Scan/", new SeriesMetadataSupport(), "EatManga.png") { }
 
         internal override ISeries[] GetDefaultSeries(string MangaIndexPageHtml)
         {

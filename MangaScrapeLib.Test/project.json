@@ -1,6 +1,9 @@
 ﻿{
   "frameworks": {
-    ".NETPortable,Version=v4.5,Profile=Profile111": {}
+    ".NETFramework,Version=v4.6.1": {}
+  },
+  "runtimes": {
+    "win": {}
   },
   "dependencies": {
     "AngleSharp": "0.9.6",
