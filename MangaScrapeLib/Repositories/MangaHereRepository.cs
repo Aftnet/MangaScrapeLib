@@ -11,7 +11,7 @@ namespace MangaScrapeLib.Repositories
         private static readonly MangaHereRepository instance = new MangaHereRepository();
         public static MangaHereRepository Instance { get { return instance; } }
 
-        private MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/", "MangaHere.png") { }
+        private MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/", new SeriesMetadataSupport(), "MangaHere.png") { }
 
         internal override ISeries[] GetDefaultSeries(string MangaIndexPageHtml)
         {

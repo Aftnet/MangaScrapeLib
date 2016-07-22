@@ -56,6 +56,7 @@
     <Compile Include="Repositories\MangaStreamRepository.cs" />
     <Compile Include="Repositories\NoFullListRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
+    <Compile Include="Repositories\SeriesMetadataSupport.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MangaScrapeLib.nuspec" />

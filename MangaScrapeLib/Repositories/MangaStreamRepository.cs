@@ -9,7 +9,7 @@ namespace MangaScrapeLib.Repositories
         private static readonly MangaStreamRepository instance = new MangaStreamRepository();
         public static MangaStreamRepository Instance { get { return instance; } }
 
-        private MangaStreamRepository() : base("Mangastream", "http://mangastream.com/", "manga/", "MangaStream.png")
+        private MangaStreamRepository() : base("Mangastream", "http://mangastream.com/", "manga/", new SeriesMetadataSupport(), "MangaStream.png")
         {
         }
 
