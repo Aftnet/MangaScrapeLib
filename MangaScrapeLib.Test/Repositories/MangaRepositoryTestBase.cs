@@ -49,6 +49,13 @@ namespace MangaScrapeLib.Test.Repositories
             var selectedSeries = series[0];
             var chapters = await selectedSeries.GetChaptersAsync();
 
+            var metadataSupport = Repository.SeriesMetadata;
+            if (metadataSupport.Cover) Assert.IsNotNull(selectedSeries.CoverImageUri);
+            if (metadataSupport.Author) Assert.IsTrue(!string.IsNullOrEmpty(selectedSeries.Author));
+            if (metadataSupport.Description) Assert.IsTrue(!string.IsNullOrEmpty(selectedSeries.Description));
+            if (metadataSupport.Release) Assert.IsTrue(!string.IsNullOrEmpty(selectedSeries.Release));
+            if (metadataSupport.Tags) Assert.IsTrue(!string.IsNullOrEmpty(selectedSeries.Tags));
+
             Assert.IsTrue(chapters.Any());
             foreach (var i in chapters)
             {
