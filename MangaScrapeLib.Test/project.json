@@ -6,7 +6,6 @@
     "win": {}
   },
   "dependencies": {
-    "AngleSharp": "0.9.6",
-    "Newtonsoft.Json": "9.0.1"
+    "AngleSharp": "0.9.6"
   }
 }

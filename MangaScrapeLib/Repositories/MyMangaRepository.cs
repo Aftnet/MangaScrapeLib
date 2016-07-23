@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MangaScrapeLib.Models;
+using System;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
 using System.Text;
-using System.Threading.Tasks;
-using MangaScrapeLib.Models;
-using Newtonsoft.Json;
 
 namespace MangaScrapeLib.Repositories
 {
@@ -12,11 +12,12 @@ namespace MangaScrapeLib.Repositories
     {
         private const string SeriesUpdatedValue = "Unknown";
 
+        [DataContract]
         private class SearchEntry
         {
-            [JsonProperty("manga")]
+            [DataMember(Name = "manga")]
             public string MangaName { get; set; }
-            [JsonProperty("permalink")]
+            [DataMember(Name = "permalink")]
             public string Permalink { get; set; }
         }
 
@@ -35,7 +36,13 @@ namespace MangaScrapeLib.Repositories
 
         protected override Series[] GetSeriesFromSearch(string searchPageHtml)
         {
-            var searchResult = JsonConvert.DeserializeObject<SearchEntry[]>(searchPageHtml);
+            var searchResult = new SearchEntry[0];
+            using (var stream = new MemoryStream(Encoding.Unicode.GetBytes(searchPageHtml)))
+            {
+                var serializer = new DataContractJsonSerializer(typeof(SearchEntry[]));
+                searchResult = (SearchEntry[])serializer.ReadObject(stream);
+            }
+
             var uriFormatString = "manga/{0}";
             var output = searchResult.Select(d => new Series(this, new Uri(RootUri, string.Format(uriFormatString, d.Permalink)), d.MangaName) { Updated = SeriesUpdatedValue }).ToArray();
             return output;
