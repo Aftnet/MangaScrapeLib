@@ -69,7 +69,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\MangaStreamRepositoryTest.cs" />
     <Compile Include="Repositories\MyMangaRepositoryTest.cs" />
-    <Compile Include="ClientTest.cs" />
     <Compile Include="Tools\UriToolsTest.cs" />
   </ItemGroup>
   <ItemGroup>
