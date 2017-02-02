@@ -62,8 +62,8 @@ namespace MangaScrapeLib.Repositories
             var linksNodes = listNode.QuerySelectorAll("a");
 
             /* 
-             * Mangastream doesnt't display all the pages in the Dropdown
-             * if the pages count exceed a certain amount.
+             * Mangastream doesn't display all the pages in the Dropdown
+             * if the pages count exceeds a certain amount.
              * Parsing the last item needs to be done to get the pages count accurately.
              */
             try
