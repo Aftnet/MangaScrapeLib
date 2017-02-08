@@ -58,6 +58,7 @@
     <Compile Include="Repositories\NoFullListRepository.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Repositories\SeriesMetadataSupport.cs" />
+    <Compile Include="Tools\UriTools.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MangaScrapeLib.nuspec" />
