@@ -20,7 +20,7 @@ namespace MangaScrapeLib.Repositories
             }
         }
 
-        protected static readonly HttpClient Client = new HttpClient();
+        protected static readonly HttpClient Client;
         protected static readonly HtmlParser Parser = new HtmlParser();
 
         public string Name { get; private set; }
@@ -40,6 +40,12 @@ namespace MangaScrapeLib.Repositories
         internal abstract Uri GetImageUri(string mangaPageHtml);
 
         private ISeries[] DefaultSeries = null;
+
+        static Repository()
+        {
+            Client = new HttpClient();
+            Client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0");
+        }
 
         protected Repository(string name, string uriString, string mangaIndexPageStr, SeriesMetadataSupport seriesMetadata, string iconFileName)
         {
@@ -61,7 +67,7 @@ namespace MangaScrapeLib.Repositories
         {
             if (DefaultSeries != null) return DefaultSeries;
 
-            var html = await Client.GetStringAsync(MangaIndexPage);
+            var html = await GetStringAsync(MangaIndexPage, RootUri);
             DefaultSeries = GetDefaultSeries(html);
             DefaultSeries.OrderBy(d => d.Title).ToArray();
             return DefaultSeries;
@@ -76,7 +82,7 @@ namespace MangaScrapeLib.Repositories
 
         internal static async Task<IChapter[]> GetChaptersAsync(Series input)
         {
-            var html = await Client.GetStringAsync(input.SeriesPageUri);
+            var html = await GetStringAsync(input.SeriesPageUri, input.ParentRepository.MangaIndexPage);
             var repository = input.ParentRepository as Repository;
             repository.GetSeriesInfo(input, html);
             var output = repository.GetChapters(input, html);
@@ -85,16 +91,16 @@ namespace MangaScrapeLib.Repositories
 
         internal static async Task<IPage[]> GetPagesAsync(Chapter input)
         {
-            var html = await Client.GetStringAsync(input.FirstPageUri);
+            var html = await GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri);
             var output = (input.ParentSeries.ParentRepository as Repository).GetPages(input, html);
             return output;
         }
 
         internal static async Task<byte[]> GetImageAsync(Page input)
         {
-            var html = await Client.GetStringAsync(input.PageUri);
+            var html = await GetStringAsync(input.PageUri, input.ParentChapter.FirstPageUri);
             input.ImageUri = (input.ParentChapter.ParentSeries.ParentRepository as Repository).GetImageUri(html);
-            var output = await Client.GetByteArrayAsync(input.ImageUri);
+            var output = await GetByteArrayAsync(input.ImageUri, input.PageUri);
             return output;
         }
 
@@ -108,6 +114,18 @@ namespace MangaScrapeLib.Repositories
             name = Regex.Replace(name, @"[\s]+$", "");
             name = Regex.Replace(name, @"[\s]+", " ");
             return name;
+        }
+
+        private static Task<string> GetStringAsync(Uri uri, Uri referrer)
+        {
+            Client.DefaultRequestHeaders.Referrer = referrer;
+            return Client.GetStringAsync(uri);
+        }
+
+        private static Task<byte[]> GetByteArrayAsync(Uri uri, Uri referrer)
+        {
+            Client.DefaultRequestHeaders.Referrer = referrer;
+            return Client.GetByteArrayAsync(uri);
         }
 
         private byte[] LoadIcon()
