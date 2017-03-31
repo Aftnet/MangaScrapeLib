@@ -84,9 +84,11 @@ namespace MangaScrapeLib.Repositories
         {
             var document = Parser.Parse(mangaPageHtml);
 
-            var imageNode = document.QuerySelector("div.reader-image a img.img-responsive");
-            var output = new Uri(RootUri, imageNode.Attributes["src"].Value);
-            return output;
+            var imageNode = document.QuerySelector("img.img-responsive");
+            var output = imageNode.Attributes["onerror"].Value;
+            output = output.Substring(output.IndexOf('\'') + 1);
+            output = output.Substring(0, output.IndexOf('\''));
+            return new Uri(RootUri, output);
         }
 
         internal override IPage[] GetPages(Chapter chapter, string mangaPageHtml)

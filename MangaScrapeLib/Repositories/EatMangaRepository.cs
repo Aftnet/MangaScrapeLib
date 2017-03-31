@@ -1,7 +1,7 @@
 ﻿using MangaScrapeLib.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Repositories
 {
@@ -14,14 +14,30 @@ namespace MangaScrapeLib.Repositories
 
         internal override ISeries[] GetDefaultSeries(string MangaIndexPageHtml)
         {
-            var Document = Parser.Parse(MangaIndexPageHtml);
+            var document = Parser.Parse(MangaIndexPageHtml);
 
-            var Node = Document.QuerySelector("#updates");
-            var Nodes = Node.QuerySelectorAll("th a");
-            var LastChapterNodes = Node.QuerySelectorAll("td.title");
-            var Output = Nodes.Zip(LastChapterNodes, (d, e) => new Series(this, new Uri(RootUri, d.Attributes["href"].Value), d.TextContent) { Updated = e.TextContent.Trim() }).OrderBy(d => d.Title).ToArray();
-            return Output;
+            var rows = document.QuerySelectorAll("#updates tr");
+            var output = new List<Series>();
+            foreach (var i in rows)
+            {
+                var titleNode = i.QuerySelector("th a");
+                var dateNode = i.QuerySelector("td.time");
+                if (titleNode == null || dateNode == null)
+                {
+                    continue;
+                }
+
+                var seriesUri = new Uri(RootUri, titleNode.Attributes["href"].Value);
+                var series = new Series(this, seriesUri, titleNode.TextContent)
+                {
+                    Updated = dateNode.TextContent
+                };
+                output.Add(series);
+            }
+
+            return output.ToArray();
         }
+
 
         internal override void GetSeriesInfo(Series Series, string SeriesPageHtml)
         {

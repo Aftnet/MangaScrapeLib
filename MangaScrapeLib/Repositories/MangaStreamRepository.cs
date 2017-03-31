@@ -1,6 +1,9 @@
 ﻿using MangaScrapeLib.Models;
+using MangaScrapeLib.Tools;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace MangaScrapeLib.Repositories
 {
@@ -55,9 +58,43 @@ namespace MangaScrapeLib.Repositories
         {
             var document = Parser.Parse(mangaPageHtml);
             var listNode = document.QuerySelectorAll("ul.dropdown-menu")[2];
+            
             var linksNodes = listNode.QuerySelectorAll("a");
-            var output = linksNodes.Select((d, e) => new Page(chapter, new Uri(d.Attributes["href"].Value), e + 1)).ToArray();
-            return output;
+
+            /* 
+             * Mangastream doesn't display all the pages in the Dropdown
+             * if the pages count exceeds a certain amount.
+             * Parsing the last item needs to be done to get the pages count accurately.
+             */
+            try
+            {
+                var lastLinkNode = linksNodes.Last();
+
+                var output = new List<Page>();
+
+                var uri = lastLinkNode.Attributes["href"].Value;
+                var lastPage = 0;
+
+                var couldParseLastPageNumber = int.TryParse(UriTools.GetLastUriSegment(uri), out lastPage);
+
+                if (!couldParseLastPageNumber)
+                {
+                    return new Page[0];
+                }
+
+                var baseUri = UriTools.TruncateLastUriSegment(uri);
+
+                for (var i = 1; i <= lastPage; i++)
+                {
+                    output.Add(new Page(chapter, new Uri(baseUri + i), i));
+                }
+
+                return output.ToArray();
+            }
+            catch (InvalidOperationException e)
+            {
+                return new Page[0];
+            }
         }
     }
 }
