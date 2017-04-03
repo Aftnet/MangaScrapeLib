@@ -50,7 +50,7 @@ namespace MangaScrapeLib.Repositories
         {
             var document = Parser.Parse(mangaPageHtml);
             var imageNode = document.QuerySelector("img#manga-page");
-            var output = new Uri(imageNode.Attributes["src"].Value);
+            var output = new Uri($"http:{imageNode.Attributes["src"].Value}");
             return output;
         }
 
