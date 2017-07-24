@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>MangaScrapeLib</id>
+    <version>$version$</version>
+    <title>MangaScrapeLib</title>
+    <authors>Alberto Fustinoni</authors>
+    <owners>Alberto Fustinoni</owners>
+    <licenseUrl>https://raw.githubusercontent.com/albertofustinoni/MangaScrapeLib/master/License.txt</licenseUrl>
+    <projectUrl>https://github.com/albertofustinoni/MangaScrapeLib</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A library to scrape publicly available manga repositories</description>
+    <copyright>Copyright 2015</copyright>
+  </metadata>
+</package>
