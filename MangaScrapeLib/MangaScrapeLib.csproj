@@ -8,6 +8,8 @@
     <PackageProjectUrl>https://github.com/Aftnet/mangascrapeLib</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Aftnet/MangaScrapeLib/blob/master/License.txt</PackageLicenseUrl>
     <PackageTags>manga scraper</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <SignAssembly>False</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
