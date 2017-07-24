@@ -2,6 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
+    <Authors>Alberto Fustinoni</Authors>
+    <Description>A library to scrape publicly available manga repositories</Description>
+    <Company />
+    <PackageProjectUrl>https://github.com/Aftnet/mangascrapeLib</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Aftnet/MangaScrapeLib/blob/master/License.txt</PackageLicenseUrl>
+    <PackageTags>manga scraper</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
