@@ -1,22 +1,21 @@
 ﻿using MangaScrapeLib.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using Xunit;
 
 namespace MangaScrapeLib.Test.Models
 {
-    [TestClass]
     public class SeriesTest
     {
         public static readonly Uri ValidSeriesUri = new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/");
 
-        [TestMethod]
+        [Fact]
         public void CreateFromDataWorks()
         {
             var series = Series.CreateFromData(ValidSeriesUri, "SomeTitle");
-            Assert.IsNotNull(series);
+            Assert.NotNull(series);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateFromDataRejectsUnsupportedUri()
         {
             var invalidUris = new Uri[] { null, new Uri("http://omg.lol/") };
@@ -34,10 +33,10 @@ namespace MangaScrapeLib.Test.Models
                 }
             }
 
-            Assert.AreEqual(invalidUris.Length, numExceptions);
+            Assert.Equal(invalidUris.Length, numExceptions);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateFromDataRejectsInvalidTitle()
         {
             var invalidTitles = new string[] { null, string.Empty, "  " };
@@ -54,7 +53,7 @@ namespace MangaScrapeLib.Test.Models
                 }
             }
 
-            Assert.AreEqual(invalidTitles.Length, numExceptions);
+            Assert.Equal(invalidTitles.Length, numExceptions);
         }
     }
 }

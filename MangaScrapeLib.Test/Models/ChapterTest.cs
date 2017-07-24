@@ -1,24 +1,23 @@
 ﻿using MangaScrapeLib.Models;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using Xunit;
 
 namespace MangaScrapeLib.Test.Models
 {
-    [TestClass]
     public class ChapterTest
     {
         public static readonly Uri ValidChapterUri = new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/testch/");
 
         protected Series TestSeries = Series.CreateFromData(SeriesTest.ValidSeriesUri, "SomeTitle");
 
-        [TestMethod]
+        [Fact]
         public void CreateFromDataWorks()
         {
             var chapter = Chapter.CreateFromData(TestSeries, ValidChapterUri, "Test chapter");
-            Assert.IsNotNull(chapter);
+            Assert.NotNull(chapter);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateFromDataRejectsNullSeries()
         {
             var numExceptions = 0;
@@ -31,10 +30,10 @@ namespace MangaScrapeLib.Test.Models
                 numExceptions++;
             }
 
-            Assert.AreEqual(1, numExceptions);
+            Assert.Equal(1, numExceptions);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateFromDataRejectsUnsupportedUri()
         {
             var invalidUris = new Uri[] { null, new Uri("http://omg.lol/") };
@@ -52,10 +51,10 @@ namespace MangaScrapeLib.Test.Models
                 }
             }
 
-            Assert.AreEqual(invalidUris.Length, numExceptions);
+            Assert.Equal(invalidUris.Length, numExceptions);
         }
 
-        [TestMethod]
+        [Fact]
         public void CreateFromDataRejectsInvalidTitle()
         {
             var invalidTitles = new string[] { null, string.Empty, "  " };
@@ -72,7 +71,7 @@ namespace MangaScrapeLib.Test.Models
                 }
             }
 
-            Assert.AreEqual(invalidTitles.Length, numExceptions);
+            Assert.Equal(invalidTitles.Length, numExceptions);
         }
     }
 }

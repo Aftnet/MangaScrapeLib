@@ -1,9 +1,9 @@
 ﻿using MangaScrapeLib.Repositories;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace MangaScrapeLib.Test.Repositories
 {
@@ -11,7 +11,6 @@ namespace MangaScrapeLib.Test.Repositories
     ///This is a test class for MangaRepositoryTest and is intended
     ///to contain all MangaRepositoryTest Unit Tests
     ///</summary>
-    [TestClass]
     public abstract class MangaRepositoryTestBase
     {
         protected abstract Repository GetRepository();
@@ -21,27 +20,26 @@ namespace MangaScrapeLib.Test.Repositories
 
         protected Repository Repository { get; set; }
 
-        [TestInitialize]
-        public void TestInitializer()
+        public MangaRepositoryTestBase()
         {
             Repository = GetRepository();
         }
 
-        [TestMethod]
+        [Fact]
         public async Task ParsingWorks()
         {
             var series = await Repository.GetSeriesAsync();
-            Assert.IsTrue(series.Any());
+            Assert.True(series.Any());
             foreach (var i in series)
             {
-                Assert.AreSame(Repository, i.ParentRepository);
+                Assert.Same(Repository, i.ParentRepository);
                 CheckParsedStringValidity(i.Title);
-                Assert.IsNotNull(i.SeriesPageUri);
+                Assert.NotNull(i.SeriesPageUri);
                 CheckParsedStringValidity(i.SeriesPageUri.ToString());
 
-                Assert.IsFalse(string.IsNullOrEmpty(i.Updated));
-                Assert.IsNull(i.CoverImageUri);
-                Assert.IsNull(i.Description);
+                Assert.False(string.IsNullOrEmpty(i.Updated));
+                Assert.Null(i.CoverImageUri);
+                Assert.Null(i.Description);
 
                 CheckParsedStringValidity(i.SuggestPath(RootDir));
             }
@@ -50,19 +48,19 @@ namespace MangaScrapeLib.Test.Repositories
             var chapters = await selectedSeries.GetChaptersAsync();
 
             var metadataSupport = Repository.SeriesMetadata;
-            if (metadataSupport.Cover) Assert.IsNotNull(selectedSeries.CoverImageUri);
-            if (metadataSupport.Author) Assert.IsTrue(!string.IsNullOrEmpty(selectedSeries.Author));
-            if (metadataSupport.Description) Assert.IsTrue(!string.IsNullOrEmpty(selectedSeries.Description));
-            if (metadataSupport.Release) Assert.IsTrue(!string.IsNullOrEmpty(selectedSeries.Release));
-            if (metadataSupport.Tags) Assert.IsTrue(!string.IsNullOrEmpty(selectedSeries.Tags));
+            if (metadataSupport.Cover) Assert.NotNull(selectedSeries.CoverImageUri);
+            if (metadataSupport.Author) Assert.True(!string.IsNullOrEmpty(selectedSeries.Author));
+            if (metadataSupport.Description) Assert.True(!string.IsNullOrEmpty(selectedSeries.Description));
+            if (metadataSupport.Release) Assert.True(!string.IsNullOrEmpty(selectedSeries.Release));
+            if (metadataSupport.Tags) Assert.True(!string.IsNullOrEmpty(selectedSeries.Tags));
 
-            Assert.IsTrue(chapters.Any());
+            Assert.True(chapters.Any());
             foreach (var i in chapters)
             {
                 CheckParsedStringValidity(i.Title);
-                Assert.IsFalse(string.IsNullOrEmpty(i.Updated));
-                Assert.AreSame(selectedSeries, i.ParentSeries);
-                Assert.IsNotNull(i.FirstPageUri);
+                Assert.False(string.IsNullOrEmpty(i.Updated));
+                Assert.Same(selectedSeries, i.ParentSeries);
+                Assert.NotNull(i.FirstPageUri);
                 CheckParsedStringValidity(i.FirstPageUri.ToString());
 
                 CheckParsedStringValidity(i.SuggestPath(RootDir));
@@ -73,88 +71,88 @@ namespace MangaScrapeLib.Test.Repositories
 
             var selectedChapter = chapters[0];
             var pages = await selectedChapter.GetPagesAsync();
-            Assert.IsTrue(pages.Any());
+            Assert.True(pages.Any());
             var ctr = 1;
             foreach (var i in pages)
             {
-                Assert.IsNotNull(i.PageUri);
+                Assert.NotNull(i.PageUri);
                 CheckParsedStringValidity(i.PageUri.ToString());
 
-                Assert.AreSame(selectedChapter, i.ParentChapter);
-                Assert.AreEqual(ctr, i.PageNo);
+                Assert.Same(selectedChapter, i.ParentChapter);
+                Assert.Equal(ctr, i.PageNo);
                 ctr++;
             }
 
             var selectedPage = pages[0];
             var imageBytes = await selectedPage.GetImageAsync();
-            Assert.IsNotNull(imageBytes);
-            Assert.IsTrue(imageBytes.Any());
-            Assert.IsNotNull(selectedPage.ImageUri);
+            Assert.NotNull(imageBytes);
+            Assert.True(imageBytes.Any());
+            Assert.NotNull(selectedPage.ImageUri);
 
             CheckParsedStringValidity(selectedPage.SuggestPath(RootDir));
         }
 
-        [TestMethod]
+        [Fact]
         public async Task SearchWorks()
         {
             var searchQuery = "naruto";
             var searchResult = await Repository.SearchSeriesAsync(searchQuery);
-            Assert.IsTrue(searchResult.Any());
+            Assert.True(searchResult.Any());
             foreach (var i in searchResult)
             {
-                Assert.AreSame(Repository, i.ParentRepository);
+                Assert.Same(Repository, i.ParentRepository);
                 CheckParsedStringValidity(i.Title);
-                Assert.IsTrue(i.Title.ToLower().Contains(searchQuery));
-                Assert.IsNotNull(i.SeriesPageUri);
+                Assert.True(i.Title.ToLower().Contains(searchQuery));
+                Assert.NotNull(i.SeriesPageUri);
                 CheckParsedStringValidity(i.SeriesPageUri.ToString());
 
-                Assert.IsFalse(string.IsNullOrEmpty(i.Updated));
-                Assert.IsNull(i.CoverImageUri);
-                Assert.IsNull(i.Description);
+                Assert.False(string.IsNullOrEmpty(i.Updated));
+                Assert.Null(i.CoverImageUri);
+                Assert.Null(i.Description);
 
                 CheckParsedStringValidity(i.SuggestPath(RootDir));
             }
         }
 
-        [TestMethod]
+        [Fact]
         public async Task NoResultsSearchWorks()
         {
             var searchQuery = "fbywguewvugewf";
             var searchResult = await Repository.SearchSeriesAsync(searchQuery);
-            Assert.IsFalse(searchResult.Any());
+            Assert.False(searchResult.Any());
         }
 
-        [TestMethod]
+        [Fact]
         public void MangaIndexPageIsSet()
         {
             Uri actual;
             actual = Repository.MangaIndexPage;
-            Assert.IsNotNull(actual);
+            Assert.NotNull(actual);
         }
 
-        [TestMethod]
+        [Fact]
         public void NameIsSet()
         {
-            Assert.IsNotNull(Repository.Name);
+            Assert.NotNull(Repository.Name);
         }
 
-        [TestMethod]
+        [Fact]
         public void RootUriIsSet()
         {
-            Assert.IsNotNull(Repository.RootUri);
+            Assert.NotNull(Repository.RootUri);
         }
 
-        [TestMethod]
+        [Fact]
         public void IconLoadingWorks()
         {
-            Assert.IsNotNull(Repository.Icon);
+            Assert.NotNull(Repository.Icon);
         }
 
         private void CheckParsedStringValidity(string input)
         {
-            Assert.IsFalse(string.IsNullOrEmpty(input));
-            Assert.IsFalse(string.IsNullOrWhiteSpace(input));
-            Assert.IsFalse(UniqueParsedValues.Contains(input), "Duplicate value detected when parsing");
+            Assert.False(string.IsNullOrEmpty(input));
+            Assert.False(string.IsNullOrWhiteSpace(input));
+            Assert.False(UniqueParsedValues.Contains(input), "Duplicate value detected when parsing");
             UniqueParsedValues.Add(input);
         }
     }

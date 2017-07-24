@@ -16,12 +16,12 @@ namespace MangaScrapeLib.Repositories
         {
             var document = Parser.Parse(MangaIndexPageHtml);
 
-            var rows = document.QuerySelectorAll("#updates tr");
+            var rows = document.QuerySelectorAll("#updates li");
             var output = new List<Series>();
             foreach (var i in rows)
             {
-                var titleNode = i.QuerySelector("th a");
-                var dateNode = i.QuerySelector("td.time");
+                var titleNode = i.QuerySelector("a");
+                var dateNode = i.QuerySelector("span.badge");
                 if (titleNode == null || dateNode == null)
                 {
                     continue;
@@ -49,8 +49,8 @@ namespace MangaScrapeLib.Repositories
             var Document = Parser.Parse(SeriesPageHtml);
 
             var Node = Document.QuerySelector("#updates");
-            var Nodes = Node.QuerySelectorAll("tr a");
-            var Timenodes = Node.QuerySelectorAll("td.time");
+            var Nodes = Node.QuerySelectorAll("li a");
+            var Timenodes = Node.QuerySelectorAll("li span");
             var Output = Nodes.Zip(Timenodes, (d, e) => new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value), d.TextContent) { Updated = e.TextContent.Trim() }).ToArray();
 
             //Eatmanga has dummy entries for not yet released chapters, prune them.

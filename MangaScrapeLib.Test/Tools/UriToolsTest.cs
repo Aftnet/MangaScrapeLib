@@ -1,23 +1,22 @@
-﻿using MangaScrapeLib.Tools;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Xunit;
+using MangaScrapeLib.Tools;
 
 namespace MangaScrapeLib.Test.Tools
 {
-    [TestClass]
     public class UriToolsTest
     {
-        [TestMethod]
+        [Fact]
         public void TruncateLastUriSegmentRemovesLastSegment()
         {
             var testUri = "http://first.com/second/third";
-            Assert.AreEqual(UriTools.TruncateLastUriSegment(testUri), "http://first.com/second/");
+            Assert.Equal(UriTools.TruncateLastUriSegment(testUri), "http://first.com/second/");
         }
 
-        [TestMethod]
+        [Fact]
         public void GetLastUriSegmentGetsLastSegment()
         {
             var testUri = "http://first.com/second/third";
-            Assert.AreEqual(UriTools.GetLastUriSegment(testUri), "third");
+            Assert.Equal(UriTools.GetLastUriSegment(testUri), "third");
         }
     }
 }
