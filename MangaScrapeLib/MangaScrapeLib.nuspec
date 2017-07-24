@@ -11,5 +11,6 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>A library to scrape publicly available manga repositories</description>
     <copyright>Copyright 2015</copyright>
+    <tags>manga scrape</tags>
   </metadata>
 </package>
