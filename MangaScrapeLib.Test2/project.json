@@ -5,8 +5,5 @@
   "runtimes": {
     "win": {}
   },
-  "dependencies": {
-    "xunit": "2.2.0",
-    "xunit.runner.visualstudio": "2.2.0"
-  }
+  "dependencies": {}
 }
