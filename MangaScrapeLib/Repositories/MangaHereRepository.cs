@@ -1,73 +1,82 @@
 ﻿using MangaScrapeLib.Models;
+using MangaScrapeLib.Tools;
 using System;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories
 {
-    internal sealed class MangaHereRepository : Repository
+    internal sealed class MangaHereRepository : RepositoryBase
     {
-        private static readonly MangaHereRepository instance = new MangaHereRepository();
-        public static MangaHereRepository Instance { get { return instance; } }
+        private static readonly Uri MangaIndexUri = new Uri("http://www.mangahere.co/mangalist/");
 
-        private MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "mangalist/", new SeriesMetadataSupport(), "MangaHere.png") { }
+        private MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", new SeriesMetadataSupport(), "MangaHere.png") { }
 
-        internal override ISeries[] GetDefaultSeries(string MangaIndexPageHtml)
+        public override async Task<ISeries[]> GetSeriesAsync()
         {
-            var Document = Parser.Parse(MangaIndexPageHtml);
+            var html = await WebClient.GetStringAsync(MangaIndexUri, RootUri);
+            var document = Parser.Parse(html);
 
-            var Nodes = Document.QuerySelectorAll("a.manga_info");
+            var nodes = document.QuerySelectorAll("a.manga_info");
 
-            var Output = Nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value), WebUtility.HtmlDecode(d.Attributes["rel"].Value))).OrderBy(d => d.Title);
-            return Output.ToArray();
+            var output = nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value), WebUtility.HtmlDecode(d.Attributes["rel"].Value))).OrderBy(d => d.Title);
+            return output.ToArray();
         }
 
-        internal override void GetSeriesInfo(Series Series, string SeriesPageHtml)
+        public override async Task<ISeries[]> SearchSeriesAsync(string query)
         {
-            Series.Description = string.Empty;
+            var series = await GetSeriesAsync();
+            var lowerQuery = query.ToLowerInvariant();
+            return series.Where(d => d.Title.Contains(lowerQuery)).OrderBy(d => d.Title).ToArray();
         }
 
-        internal override IChapter[] GetChapters(Series Series, string SeriesPageHtml)
+        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
         {
-            var Document = Parser.Parse(SeriesPageHtml);
+            var html = await WebClient.GetStringAsync(input.SeriesPageUri, MangaIndexUri);
+            var document = Parser.Parse(html);
 
-            var Node = Document.QuerySelector("div.manga_detail");
-            Node = Node.QuerySelector("div.detail_list ul");
-            var Nodes = Node.QuerySelectorAll("a.color_0077");
+            var node = document.QuerySelector("div.manga_detail");
+            node = node.QuerySelector("div.detail_list ul");
+            var nodes = node.QuerySelectorAll("a.color_0077");
 
-            var Output = Nodes.Select(d =>
+            var Output = nodes.Select(d =>
             {
                 string Title = d.TextContent;
                 Title = Regex.Replace(Title, @"^[\r\n\s\t]+", string.Empty);
                 Title = Regex.Replace(Title, @"[\r\n\s\t]+$", string.Empty);
-                var Chapter = new Chapter(Series, new Uri(RootUri, d.Attributes["href"].Value), Title);
+                var Chapter = new Chapter((Series)input, new Uri(RootUri, d.Attributes["href"].Value), Title);
                 return Chapter;
             }).Reverse().ToArray();
 
             return Output.ToArray();
         }
 
-        internal override IPage[] GetPages(Chapter Chapter, string MangaPageHtml)
+        internal override async Task<byte[]> GetImageAsync(IPage input)
         {
-            var Document = Parser.Parse(MangaPageHtml);
+            var html = await WebClient.GetStringAsync(input.PageUri, MangaIndexUri);
+            var document = Parser.Parse(html);
 
-            var Node = Document.QuerySelector("section.readpage_top");
-            Node = Node.QuerySelector("span.right select");
-            var Nodes = Node.QuerySelectorAll("option");
+            var node = document.QuerySelector("img#image");
+            var imageUri = new Uri(node.Attributes["src"].Value);
 
-            var Output = Nodes.Select((d, e) => new Page(Chapter, new Uri(RootUri, d.Attributes["value"].Value), e + 1));
-            return Output.ToArray();
+            ((Page)input).ImageUri = new Uri(RootUri, imageUri);
+            var output = await WebClient.GetByteArrayAsync(input.ImageUri, MangaIndexUri);
+            return output;
         }
 
-        internal override Uri GetImageUri(string MangaPageHtml)
+        internal override async Task<IPage[]> GetPagesAsync(IChapter input)
         {
-            var Document = Parser.Parse(MangaPageHtml);
+            var html = await WebClient.GetStringAsync(input.FirstPageUri, MangaIndexUri);
+            var document = Parser.Parse(html);
 
-            var Node = Document.QuerySelector("img#image");
+            var node = document.QuerySelector("section.readpage_top");
+            node = node.QuerySelector("span.right select");
+            var nodes = node.QuerySelectorAll("option");
 
-            var Output = new Uri(Node.Attributes["src"].Value);
-            return Output;
+            var Output = nodes.Select((d, e) => new Page((Chapter)input, new Uri(RootUri, d.Attributes["value"].Value), e + 1));
+            return Output.ToArray();
         }
     }
 }

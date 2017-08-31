@@ -74,6 +74,7 @@ namespace MangaScrapeLib.Repositories
             var imageNode = document.QuerySelector("img#mainImg");
             var imageUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
 
+            ((Page)input).ImageUri = new Uri(RootUri, imageUri);
             var output = await WebClient.GetByteArrayAsync(imageUri, input.PageUri);
             return output;
         }
