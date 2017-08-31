@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories.Components
 {
-    internal abstract class FullListSearcher
+    internal abstract class FullListSearcher : ISearcher
     {
         protected abstract Task<ISeries[]> GetSeriesListAsync();
 

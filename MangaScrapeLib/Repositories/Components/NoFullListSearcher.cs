@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repositories.Components
 {
-    internal abstract class NoFullListSearcher
+    internal abstract class NoFullListSearcher : ISearcher
     {
         protected abstract Uri GenerateSearchUri(string query);
         protected abstract ISeries[] ParseResultsString(string resultsString);
