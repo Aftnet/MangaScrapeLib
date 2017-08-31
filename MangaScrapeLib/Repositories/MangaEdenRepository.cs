@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace MangaScrapeLib.Repositories
 {
-    public class MangaEdenRepository : NoFullListRepository
+    internal sealed class MangaEdenRepository : NoFullListRepository
     {
         private static readonly MangaEdenRepository instance = new MangaEdenRepository();
         public static MangaEdenRepository Instance { get { return instance; } }

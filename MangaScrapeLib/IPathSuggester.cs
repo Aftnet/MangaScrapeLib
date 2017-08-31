@@ -1,4 +1,4 @@
-﻿namespace MangaScrapeLib.Models
+﻿namespace MangaScrapeLib
 {
     public interface IPathSuggester
     {

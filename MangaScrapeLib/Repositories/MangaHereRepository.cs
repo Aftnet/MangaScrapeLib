@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace MangaScrapeLib.Repositories
 {
-    public sealed class MangaHereRepository : Repository
+    internal sealed class MangaHereRepository : Repository
     {
         private static readonly MangaHereRepository instance = new MangaHereRepository();
         public static MangaHereRepository Instance { get { return instance; } }

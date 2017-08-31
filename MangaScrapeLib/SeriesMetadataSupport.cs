@@ -1,4 +1,4 @@
-﻿namespace MangaScrapeLib.Repositories
+﻿namespace MangaScrapeLib
 {
     public class SeriesMetadataSupport
     {
@@ -8,17 +8,17 @@
         public readonly bool Tags = false;
         public readonly bool Description = false;
 
-        public SeriesMetadataSupport() : this(false)
+        internal SeriesMetadataSupport() : this(false)
         {
 
         }
 
-        public SeriesMetadataSupport(bool value) : this(value, value, value, value, value)
+        internal SeriesMetadataSupport(bool value) : this(value, value, value, value, value)
         {
 
         }
 
-        public SeriesMetadataSupport(bool cover, bool author, bool release, bool tags, bool description)
+        internal SeriesMetadataSupport(bool cover, bool author, bool release, bool tags, bool description)
         {
             Cover = cover;
             Author = author;

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MangaScrapeLib.Repositories
 {
-    public class MyMangaRepository : NoFullListRepository
+    internal sealed class MyMangaRepository : NoFullListRepository
     {
         private const string SeriesUpdatedValue = "Unknown";
 

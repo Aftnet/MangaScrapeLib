@@ -2,11 +2,15 @@
 using System.Threading.Tasks;
 using MangaScrapeLib.Repositories;
 
-namespace MangaScrapeLib.Models
+namespace MangaScrapeLib
 {
-    public interface ISeries : IBasicInfo, IPathSuggester
+    public interface ISeries : IPathSuggester
     {
         IRepository ParentRepository { get; }
+
+        string Title { get; }
+        string Updated { get; }
+
         Uri SeriesPageUri { get; }
         Uri CoverImageUri { get; }
         string Author { get; }

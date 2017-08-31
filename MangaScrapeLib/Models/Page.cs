@@ -1,13 +1,15 @@
-﻿using MangaScrapeLib.Repositories;
+﻿using MangaScrapeLib.Tools;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
-    public class Page : IPage
+    internal class Page : IPage
     {
-        public IChapter ParentChapter { get; private set; }
+        public Chapter ParentChapterInternal { get; private set; }
+        public IChapter ParentChapter => ParentChapterInternal;
+
         public Uri PageUri { get; private set; }
         public int PageNo { get; private set; }
 
@@ -15,21 +17,21 @@ namespace MangaScrapeLib.Models
 
         internal Page(Chapter parent, Uri pageUri, int pageNo)
         {
-            ParentChapter = parent;
+            ParentChapterInternal = parent;
             PageUri = pageUri;
             PageNo = pageNo;
         }
 
         public virtual Task<byte[]> GetImageAsync()
         {
-            return Repository.GetImageAsync(this);
+            return ParentChapterInternal.ParentSeriesInternal.ParentRepositoryInternal.GetImageAsync(this);
         }
 
         public virtual string SuggestPath(string rootDirectoryPath)
         {
             var pathStr = String.Format("{0}{1}{2}{3}", ImageUri.Scheme, "://", ImageUri.Authority, ImageUri.AbsolutePath);
             var extension = Path.GetExtension(pathStr);
-            var output = Path.Combine(ParentChapter.SuggestPath(rootDirectoryPath), Repository.MakeValidPathName(SuggestFileName()), extension);
+            var output = Path.Combine(ParentChapter.SuggestPath(rootDirectoryPath), SuggestFileName().MakeValidPathName(), extension);
             return output;
         }
 

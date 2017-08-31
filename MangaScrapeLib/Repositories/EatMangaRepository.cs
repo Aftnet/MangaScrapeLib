@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace MangaScrapeLib.Repositories
 {
-    public sealed class EatMangaRepository : Repository
+    internal sealed class EatMangaRepository : Repository
     {
         private static readonly EatMangaRepository instance = new EatMangaRepository();
         public static EatMangaRepository Instance { get { return instance; } }

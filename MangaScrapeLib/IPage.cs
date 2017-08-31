@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace MangaScrapeLib.Models
+namespace MangaScrapeLib
 {
     public interface IPage : IPathSuggester
     {

@@ -1,14 +1,16 @@
 ﻿using MangaScrapeLib.Repositories;
+using MangaScrapeLib.Tools;
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
-    public class Series : ISeries
+    internal class Series : ISeries
     {
-        public IRepository ParentRepository { get; private set; }
+        public RepositoryBase ParentRepositoryInternal { get; private set; }
+        public IRepository ParentRepository => ParentRepositoryInternal;
+
         public Uri SeriesPageUri { get; private set; }
         public string Title { get; private set; }
         public string Updated { get; internal set; }
@@ -19,9 +21,9 @@ namespace MangaScrapeLib.Models
         public string Tags { get; internal set; }
         public string Description { get; internal set; }
 
-        internal Series(Repository parent, Uri seriesPageUri, string name)
+        internal Series(RepositoryBase parent, Uri seriesPageUri, string name)
         {
-            ParentRepository = parent;
+            ParentRepositoryInternal = parent;
             SeriesPageUri = seriesPageUri;
             Title = name;
             Updated = string.Empty;
@@ -29,16 +31,16 @@ namespace MangaScrapeLib.Models
 
         public virtual Task<IChapter[]> GetChaptersAsync()
         {
-            return Repository.GetChaptersAsync(this);
+            return ParentRepositoryInternal.GetChaptersAsync(this);
         }
 
         public virtual string SuggestPath(string rootDirectoryPath)
         {
-            var output = Path.Combine(rootDirectoryPath, Repository.MakeValidPathName(Title));
+            var output = Path.Combine(rootDirectoryPath, Title.MakeValidPathName());
             return output;
         }
 
-        public static Series CreateFromData(Uri seriesPageUri, string name)
+        /*public static Series CreateFromData(Uri seriesPageUri, string name)
         {
             if (seriesPageUri == null) throw new ArgumentNullException();
             if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException();
@@ -48,6 +50,6 @@ namespace MangaScrapeLib.Models
             if (repository == null) throw new ArgumentException("Series page Uri does not match any supported repository");
 
             return new Series(repository, seriesPageUri, name);
-        }
+        }*/
     }
 }

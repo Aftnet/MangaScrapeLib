@@ -1,20 +1,22 @@
-﻿using MangaScrapeLib.Repositories;
+﻿using MangaScrapeLib.Tools;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
 {
-    public class Chapter : IChapter
+    internal class Chapter : IChapter
     {
-        public ISeries ParentSeries { get; private set; }
+        internal Series ParentSeriesInternal { get; private set; }
+        public ISeries ParentSeries => ParentSeriesInternal;
+
         public Uri FirstPageUri { get; private set; }
         public string Title { get; private set; }
         public string Updated { get; internal set; }
 
         internal Chapter(Series parent, Uri firstPageUri, string title)
         {
-            ParentSeries = parent;
+            ParentSeriesInternal = parent;
             FirstPageUri = firstPageUri;
             Title = title;
             Updated = string.Empty;
@@ -22,17 +24,17 @@ namespace MangaScrapeLib.Models
 
         public virtual Task<IPage[]> GetPagesAsync()
         {
-            return Repository.GetPagesAsync(this);
+            return ParentSeriesInternal.ParentRepositoryInternal.GetPagesAsync(this);
         }
 
         public virtual string SuggestPath(string rootDirectoryPath)
         {
             var parentSeriesPath = ParentSeries.SuggestPath(rootDirectoryPath);
-            var output = Path.Combine(parentSeriesPath, Repository.MakeValidPathName(Title));
+            var output = Path.Combine(parentSeriesPath, Title.MakeValidPathName());
             return output;
         }
 
-        public static Chapter CreateFromData(Series parent, Uri firstPageUri, string title)
+        /*public static Chapter CreateFromData(Series parent, Uri firstPageUri, string title)
         {
             if (parent == null) throw new ArgumentNullException();
             if (firstPageUri == null) throw new ArgumentNullException();
@@ -41,6 +43,6 @@ namespace MangaScrapeLib.Models
             if (firstPageUri.Host != parent.SeriesPageUri.Host) throw new ArgumentException("Series and chapter uri mismatch");
 
             return new Chapter(parent, firstPageUri, title);
-        }
+        }*/
     }
 }

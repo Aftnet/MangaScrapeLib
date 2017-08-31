@@ -7,7 +7,7 @@ using System.Text;
 
 namespace MangaScrapeLib.Repositories
 {
-    public class MangaStreamRepository : Repository
+    internal sealed class MangaStreamRepository : Repository
     {
         private static readonly MangaStreamRepository instance = new MangaStreamRepository();
         public static MangaStreamRepository Instance { get { return instance; } }
@@ -75,14 +75,14 @@ namespace MangaScrapeLib.Repositories
                 var uri = lastLinkNode.Attributes["href"].Value;
                 var lastPage = 0;
 
-                var couldParseLastPageNumber = int.TryParse(UriTools.GetLastUriSegment(uri), out lastPage);
+                var couldParseLastPageNumber = int.TryParse(ExtensionMethods.GetLastUriSegment(uri), out lastPage);
 
                 if (!couldParseLastPageNumber)
                 {
                     return new Page[0];
                 }
 
-                var baseUri = UriTools.TruncateLastUriSegment(uri);
+                var baseUri = ExtensionMethods.TruncateLastUriSegment(uri);
 
                 for (var i = 1; i <= lastPage; i++)
                 {
