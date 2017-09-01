@@ -39,12 +39,11 @@ namespace MangaScrapeLib.Test.Repository
             var selectedSeries = series[0];
             var chapters = await selectedSeries.GetChaptersAsync();
 
-            var metadataSupport = Repository.SeriesMetadata;
-            if (metadataSupport.Cover) Assert.NotNull(selectedSeries.CoverImageUri);
-            if (metadataSupport.Author) Assert.True(!string.IsNullOrEmpty(selectedSeries.Author));
-            if (metadataSupport.Description) Assert.True(!string.IsNullOrEmpty(selectedSeries.Description));
-            if (metadataSupport.Release) Assert.True(!string.IsNullOrEmpty(selectedSeries.Release));
-            if (metadataSupport.Tags) Assert.True(!string.IsNullOrEmpty(selectedSeries.Tags));
+            if (Repository.SupportsCover) Assert.NotNull(selectedSeries.CoverImageUri);
+            if (Repository.SupportsAuthor) Assert.True(!string.IsNullOrEmpty(selectedSeries.Author));
+            if (Repository.SupportsDescription) Assert.True(!string.IsNullOrEmpty(selectedSeries.Description));
+            if (Repository.SupportsReleaseTime) Assert.True(!string.IsNullOrEmpty(selectedSeries.Release));
+            if (Repository.SupportsTags) Assert.True(!string.IsNullOrEmpty(selectedSeries.Tags));
 
             Assert.True(chapters.Any());
             foreach (var i in chapters)

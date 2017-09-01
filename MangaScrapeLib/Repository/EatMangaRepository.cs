@@ -15,7 +15,7 @@ namespace MangaScrapeLib.Repository
 
         private ISeries[] AllSeries = null;
 
-        public EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", new SeriesMetadataSupport(), "EatManga.png")
+        public EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", "EatManga.png", false)
         {
         }
 

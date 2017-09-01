@@ -22,7 +22,7 @@ namespace MangaScrapeLib.Repository
 
         private static readonly Uri TopMangaPageUri = new Uri("http://www.meymanga.me/hot-manga/");
 
-        public MyMangaRepository() : base("My Manga", "http://www.heymanga.me/", new SeriesMetadataSupport(true), "MyManga.png")
+        public MyMangaRepository() : base("My Manga", "http://www.heymanga.me/", "MyManga.png", true)
         {
         }
 

@@ -24,16 +24,43 @@ namespace MangaScrapeLib.Repository
 
         public string Name { get; private set; }
         public Uri RootUri { get; private set; }
-        public SeriesMetadataSupport SeriesMetadata { get; private set; }
 
-        protected RepositoryBase(string name, string uriString, SeriesMetadataSupport seriesMetadata, string iconFileName)
+
+        private readonly bool supportsCover;
+        public bool SupportsCover => supportsCover;
+
+        private readonly bool supportsAuthor;
+        public bool SupportsAuthor => supportsAuthor;
+
+        private readonly bool supportsReleaseTime;
+        public bool SupportsReleaseTime => supportsReleaseTime;
+
+        private readonly bool supportsTags;
+        public bool SupportsTags => supportsTags;
+
+        private readonly bool supportsDescription;
+        public bool SupportsDescription => supportsDescription;
+
+        protected RepositoryBase(string name, string uriString, string iconFileName, bool supportsAllMetadata) :
+            this(name, uriString, iconFileName, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata)
+        {
+
+        }
+
+        protected RepositoryBase(string name, string uriString, string iconFileName, bool supportsCover, bool supportsAuthor, bool supportsReleaseTime, bool supportsTags, bool supportsDescription)
         {
             Name = name;
             RootUri = new Uri(uriString, UriKind.Absolute);
-            SeriesMetadata = seriesMetadata;
+
             IconFileName = iconFileName;
 
             icon = new Lazy<byte[]>(LoadIcon);
+
+            this.supportsCover = supportsCover;
+            this.supportsAuthor = supportsAuthor;
+            this.supportsReleaseTime = supportsReleaseTime;
+            this.supportsTags = supportsTags;
+            this.supportsDescription = supportsDescription;
         }
 
         public virtual Task<ISeries[]> GetSeriesAsync()
