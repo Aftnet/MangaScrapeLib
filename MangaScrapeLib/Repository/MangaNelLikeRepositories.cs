@@ -7,7 +7,21 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repository
 {
-    internal class MangaNelRepository : RepositoryBase
+    internal class MangaNelRepository : MangaNelLikeRepository
+    {
+        public MangaNelRepository() : base("Manga NEL", "http://manganel.com/", "MangaNel.png")
+        {
+        }
+    }
+
+    internal class MangaKakalotRepository : MangaNelLikeRepository
+    {
+        public MangaKakalotRepository() : base("MangaKakalot", "http://mangakakalot.com/", "MangaKakalot.png")
+        {
+        }
+    }
+
+    internal class MangaNelLikeRepository : RepositoryBase
     {
         [JsonObject]
         private class SearchEntry
@@ -22,12 +36,15 @@ namespace MangaScrapeLib.Repository
             public string Author { get; set; }
         }
 
-        private const string SearchUriPattern = "http://manganel.com/home/getjsonsearchstory?searchword={0}&search_style=tentruyen";
-        private const string ReadUriPattern = "http://manganel.com/manga/{0}";
+        private readonly string SearchUriPattern;
+        private readonly string ReadUriPattern;
+
         private static readonly string[] SupuriousTitleText = { "<span style=\"color: #FF530D;font-weight: bold;\">", "</span>" };
 
-        public MangaNelRepository() : base("Manga nel", "http://manganel.com/", "MangaNel.png", true)
+        protected MangaNelLikeRepository(string name, string uriString, string iconFileName) : base(name, uriString, iconFileName, true)
         {
+            SearchUriPattern = $"{RootUri.ToString()}home/getjsonsearchstory?searchword={{0}}&search_style=tentruyen";
+            ReadUriPattern = $"{RootUri.ToString()}manga/{{0}}";
         }
 
         public override async Task<ISeries[]> GetSeriesAsync()

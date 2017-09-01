@@ -46,6 +46,7 @@
     <Compile Include="Repository\EatMangaRepositoryTest.cs" />
     <Compile Include="Repository\MangaEdenRepositoryTest.cs" />
     <Compile Include="Repository\MangaHereRepositoryTest.cs" />
+    <Compile Include="Repository\MangaKakalotRepositoryTest.cs" />
     <Compile Include="Repository\MangaNelRepositoryTest.cs" />
     <Compile Include="Repository\MangaRepositoryTestBase.cs" />
     <Compile Include="Repository\MangaStreamRepositoryTest.cs" />
