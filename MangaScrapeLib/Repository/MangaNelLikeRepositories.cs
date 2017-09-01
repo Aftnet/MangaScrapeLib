@@ -9,14 +9,27 @@ namespace MangaScrapeLib.Repository
 {
     internal class MangaNelRepository : MangaNelLikeRepository
     {
-        public MangaNelRepository() : base("Manga NEL", "http://manganel.com/", "MangaNel.png")
+        private const string RepoRootUriString = "http://manganel.com/";
+
+        public MangaNelRepository() : base("Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home/getjsonsearchstory?searchword={{0}}&search_style=tentruyen")
         {
         }
     }
 
     internal class MangaKakalotRepository : MangaNelLikeRepository
     {
-        public MangaKakalotRepository() : base("MangaKakalot", "http://mangakakalot.com/", "MangaKakalot.png")
+        private const string RepoRootUriString = "http://mangakakalot.com/";
+
+        public MangaKakalotRepository() : base("MangaKakalot", RepoRootUriString, "MangaKakalot.png", $"{RepoRootUriString}home/getjsonsearchstory?searchword={{0}}&search_style=tentruyen")
+        {
+        }
+    }
+
+    internal class MangaSupaRepository : MangaNelLikeRepository
+    {
+        private const string RepoRootUriString = "http://mangasupa.com/";
+
+        public MangaSupaRepository() : base("MangaSupa", RepoRootUriString, "MangaSupa.png", $"{RepoRootUriString}getsearchstory?searchword={{0}}")
         {
         }
     }
@@ -36,14 +49,14 @@ namespace MangaScrapeLib.Repository
             public string Author { get; set; }
         }
 
-        private readonly string SearchUriPattern;
-        private readonly string ReadUriPattern;
+        protected readonly string SearchUriPattern;
+        protected readonly string ReadUriPattern;
 
         private static readonly string[] SupuriousTitleText = { "<span style=\"color: #FF530D;font-weight: bold;\">", "</span>" };
 
-        protected MangaNelLikeRepository(string name, string uriString, string iconFileName) : base(name, uriString, iconFileName, true)
+        protected MangaNelLikeRepository(string name, string uriString, string iconFileName, string searchUriPattern) : base(name, uriString, iconFileName, true)
         {
-            SearchUriPattern = $"{RootUri.ToString()}home/getjsonsearchstory?searchword={{0}}&search_style=tentruyen";
+            SearchUriPattern = searchUriPattern;
             ReadUriPattern = $"{RootUri.ToString()}manga/{{0}}";
         }
 
