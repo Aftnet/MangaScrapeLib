@@ -83,19 +83,60 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override Task<IChapter[]> GetChaptersAsync(ISeries input)
+        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
         {
-            throw new NotImplementedException();
+            var inputAsSeries = (Series)input;
+
+            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri);
+            var document = Parser.Parse(html);
+
+            var infoNode = document.QuerySelector("ul.manga-info-text");
+            var authorNode = infoNode.QuerySelector("li:nth-child(2) a");
+            inputAsSeries.Author = authorNode.TextContent;
+            var updatedNode = infoNode.QuerySelector("li:nth-child(4)");
+            inputAsSeries.Updated = updatedNode.TextContent.Replace("Last updated : ", string.Empty);
+            var tagNodes = infoNode.QuerySelectorAll("li:nth-child(7) a");
+            inputAsSeries.Tags = string.Join(", ", tagNodes.Select(d => d.TextContent).ToArray());
+            var descriptionNode = document.QuerySelector("div#noidungm");
+            inputAsSeries.Description = descriptionNode.TextContent.Trim();
+
+            var listNode = document.QuerySelector("div#chapter div.manga-info-chapter div.chapter-list");
+            var chapterNodes = listNode.QuerySelectorAll("div.row");
+            var output = chapterNodes.Select(d =>
+            {
+                var titleNode = d.QuerySelector("span:nth-child(1) a");
+                var dateNode = d.QuerySelector("span:nth-child(3)");
+
+                return new Chapter(inputAsSeries, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent)
+                {
+                    Updated = dateNode.TextContent
+                };
+            }).ToArray();
+
+            return output;
         }
 
-        internal override Task<IPage[]> GetPagesAsync(IChapter input)
+        internal override async Task<IPage[]> GetPagesAsync(IChapter input)
         {
-            throw new NotImplementedException();
+            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri);
+            var document = Parser.Parse(html);
+
+            var listNode = document.QuerySelector("div#vungdoc");
+            var imageNodes = listNode.QuerySelectorAll("img");
+            var output = imageNodes.Select((d, e) =>
+            {
+                return new Page((Chapter)input, input.FirstPageUri, e + 1)
+                {
+                    ImageUri = new Uri(RootUri, d.Attributes["src"].Value)
+                };
+            }).ToArray();
+
+            return output;
         }
 
         internal override Task<byte[]> GetImageAsync(IPage input)
         {
-            throw new NotImplementedException();
+            return WebClient.GetByteArrayAsync(input.ImageUri, input.PageUri);
         }
     }
 }
