@@ -49,8 +49,10 @@ namespace MangaScrapeLib.Repositories
             var html = await WebClient.GetStringAsync(input.PageUri, input.ParentChapter.FirstPageUri);
             var document = Parser.Parse(html);
             var imageNode = document.QuerySelector("img#manga-page");
-            var uri = new Uri($"http:{imageNode.Attributes["src"].Value}");
-            var output = await WebClient.GetByteArrayAsync(uri, input.PageUri);
+
+            var inputAsPage = (Page)input;
+            inputAsPage.ImageUri = new Uri($"http:{imageNode.Attributes["src"].Value}");
+            var output = await WebClient.GetByteArrayAsync(inputAsPage.ImageUri, input.PageUri);
             return output;
         }
 
