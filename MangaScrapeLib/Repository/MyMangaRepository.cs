@@ -20,9 +20,9 @@ namespace MangaScrapeLib.Repository
 
         private const string SeriesUpdatedValue = "Unknown";
 
-        private static readonly Uri TopMangaPageUri = new Uri("http://www.mymanga.me/hot-manga/");
+        private static readonly Uri TopMangaPageUri = new Uri("http://www.meymanga.me/hot-manga/");
 
-        public MyMangaRepository() : base("My Manga", "http://www.mymanga.me/", new SeriesMetadataSupport(true), "MyManga.png")
+        public MyMangaRepository() : base("My Manga", "http://www.heymanga.me/", new SeriesMetadataSupport(true), "MyManga.png")
         {
         }
 
