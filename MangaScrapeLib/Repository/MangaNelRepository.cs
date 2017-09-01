@@ -30,6 +30,32 @@ namespace MangaScrapeLib.Repository
         {
         }
 
+        public override async Task<ISeries[]> GetSeriesAsync()
+        {
+            var html = await WebClient.GetStringAsync(RootUri, RootUri);
+            var document = Parser.Parse(html);
+
+            var seriesNodes = document.QuerySelectorAll("div.itemupdate.first");
+            var output = seriesNodes.Select(d =>
+            {
+                var coverNode = d.QuerySelector("a.cover img");
+                var coverUri = new Uri(RootUri, coverNode.Attributes["src"].Value);
+
+                var titleNode = d.QuerySelector("ul li h3 a");
+                var uri = new Uri(RootUri, titleNode.Attributes["href"].Value);
+                var title = titleNode.TextContent;
+
+                var dateNode = d.QuerySelector("ul li:nth-child(2) i");
+                return new Series(this, uri, title)
+                {
+                    CoverImageUri = coverUri,
+                    Updated = dateNode.TextContent
+                };
+            }).OrderBy(d => d.Title).ToArray();
+
+            return output;
+        }
+
         public override async Task<ISeries[]> SearchSeriesAsync(string query)
         {
             var uriQuery = Uri.EscapeDataString(query);
