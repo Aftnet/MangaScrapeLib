@@ -15,6 +15,9 @@ namespace MangaScrapeLib
         private static MangaHereRepository mangaHere = new MangaHereRepository();
         public static IRepository MangaHere => mangaHere;
 
+        private static MangaNelRepository mangaNel = new MangaNelRepository();
+        public static IRepository MangaNel => mangaNel;
+
         private static MangaStreamRepository mangaStream = new MangaStreamRepository();
         public static IRepository MangaStream => mangaStream;
 
