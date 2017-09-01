@@ -13,7 +13,7 @@ namespace MangaScrapeLib
         public static IRepository MangaEden => mangaEden;
 
         private static MangaHereRepository mangaHere = new MangaHereRepository();
-        public static IRepository MangaHere => mangaHere;
+        //public static IRepository MangaHere => mangaHere;
 
         private static MangaKakalotRepository mangaKakalot = new MangaKakalotRepository();
         public static IRepository MangaKakalot => mangaKakalot;
@@ -25,6 +25,6 @@ namespace MangaScrapeLib
         public static IRepository MangaStream => mangaStream;
 
         private static MyMangaRepository myManga = new MyMangaRepository();
-        public static IRepository MyManga => myManga;
+        //public static IRepository MyManga => myManga;
     }
 }
