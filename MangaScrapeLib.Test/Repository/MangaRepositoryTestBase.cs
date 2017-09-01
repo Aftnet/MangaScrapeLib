@@ -97,10 +97,6 @@ namespace MangaScrapeLib.Test.Repository
                 Assert.NotNull(i.SeriesPageUri);
                 CheckParsedStringValidity(i.SeriesPageUri.ToString());
 
-                Assert.False(string.IsNullOrEmpty(i.Updated));
-                Assert.Null(i.CoverImageUri);
-                Assert.Null(i.Description);
-
                 CheckParsedStringValidity(i.SuggestPath(RootDir));
             }
         }
