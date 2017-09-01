@@ -17,7 +17,6 @@ namespace MangaScrapeLib.Models
 
         public Uri CoverImageUri { get; internal set; }
         public string Author { get; internal set; }
-        public string Release { get; internal set; }
         public string Tags { get; internal set; }
         public string Description { get; internal set; }
 

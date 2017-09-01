@@ -11,7 +11,7 @@ namespace MangaScrapeLib
 
         bool SupportsCover { get; }
         bool SupportsAuthor { get; }
-        bool SupportsReleaseTime { get; }
+        bool SupportsLastUpdateTime { get; }
         bool SupportsTags { get; }
         bool SupportsDescription { get; }
 

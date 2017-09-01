@@ -102,9 +102,6 @@ namespace MangaScrapeLib.Repository
             var infoBoxNode = document.QuerySelectorAll("div.rightBox")[1];
             var headerNodes = infoBoxNode.QuerySelectorAll("h4");
 
-            var yearHeader = headerNodes.First(d => d.TextContent == "Year of release");
-            series.Release = yearHeader.NextSibling.TextContent;
-
             var linkNodes = infoBoxNode.QuerySelectorAll("a").ToArray();
             var authorNode = linkNodes.First(d => d.Attributes["href"].Value.Contains("?author="));
             series.Author = authorNode.TextContent;

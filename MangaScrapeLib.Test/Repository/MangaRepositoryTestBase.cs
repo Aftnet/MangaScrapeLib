@@ -42,7 +42,7 @@ namespace MangaScrapeLib.Test.Repository
             if (Repository.SupportsCover) Assert.NotNull(selectedSeries.CoverImageUri);
             if (Repository.SupportsAuthor) Assert.True(!string.IsNullOrEmpty(selectedSeries.Author));
             if (Repository.SupportsDescription) Assert.True(!string.IsNullOrEmpty(selectedSeries.Description));
-            if (Repository.SupportsReleaseTime) Assert.True(!string.IsNullOrEmpty(selectedSeries.Release));
+            if (Repository.SupportsLastUpdateTime) Assert.True(!string.IsNullOrEmpty(selectedSeries.Updated));
             if (Repository.SupportsTags) Assert.True(!string.IsNullOrEmpty(selectedSeries.Tags));
 
             Assert.True(chapters.Any());

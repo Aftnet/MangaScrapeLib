@@ -32,8 +32,8 @@ namespace MangaScrapeLib.Repository
         private readonly bool supportsAuthor;
         public bool SupportsAuthor => supportsAuthor;
 
-        private readonly bool supportsReleaseTime;
-        public bool SupportsReleaseTime => supportsReleaseTime;
+        private readonly bool supportsLastUpdateTime;
+        public bool SupportsLastUpdateTime => supportsLastUpdateTime;
 
         private readonly bool supportsTags;
         public bool SupportsTags => supportsTags;
@@ -47,7 +47,7 @@ namespace MangaScrapeLib.Repository
 
         }
 
-        protected RepositoryBase(string name, string uriString, string iconFileName, bool supportsCover, bool supportsAuthor, bool supportsReleaseTime, bool supportsTags, bool supportsDescription)
+        protected RepositoryBase(string name, string uriString, string iconFileName, bool supportsCover, bool supportsAuthor, bool supportsLastUpdateTime, bool supportsTags, bool supportsDescription)
         {
             Name = name;
             RootUri = new Uri(uriString, UriKind.Absolute);
@@ -58,7 +58,7 @@ namespace MangaScrapeLib.Repository
 
             this.supportsCover = supportsCover;
             this.supportsAuthor = supportsAuthor;
-            this.supportsReleaseTime = supportsReleaseTime;
+            this.supportsLastUpdateTime = supportsLastUpdateTime;
             this.supportsTags = supportsTags;
             this.supportsDescription = supportsDescription;
         }
