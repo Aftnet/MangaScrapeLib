@@ -31,6 +31,8 @@ namespace MangaScrapeLib.Test.Repository
                 CheckParsedStringValidity(i.SuggestPath(RootDir), true);
             }
 
+            UniqueParsedValues.Clear();
+
             var selectedSeries = series[0];
             var chapters = await selectedSeries.GetChaptersAsync();
 
