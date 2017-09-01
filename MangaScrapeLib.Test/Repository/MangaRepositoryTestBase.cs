@@ -115,14 +115,6 @@ namespace MangaScrapeLib.Test.Repository
         }
 
         [Fact]
-        public void MangaIndexPageIsSet()
-        {
-            Uri actual;
-            actual = Repository.MangaIndexPage;
-            Assert.NotNull(actual);
-        }
-
-        [Fact]
         public void NameIsSet()
         {
             Assert.NotNull(Repository.Name);

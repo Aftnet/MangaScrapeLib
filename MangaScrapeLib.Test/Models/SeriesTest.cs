@@ -6,7 +6,7 @@ namespace MangaScrapeLib.Test.Models
 {
     public class SeriesTest
     {
-        public static readonly Uri ValidSeriesUri = new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/");
+        /*public static readonly Uri ValidSeriesUri = new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/");
 
         [Fact]
         public void CreateFromDataWorks()
@@ -54,6 +54,6 @@ namespace MangaScrapeLib.Test.Models
             }
 
             Assert.Equal(invalidTitles.Length, numExceptions);
-        }
+        }*/
     }
 }

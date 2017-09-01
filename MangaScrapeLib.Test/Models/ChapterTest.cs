@@ -5,7 +5,7 @@ using Xunit;
 namespace MangaScrapeLib.Test.Models
 {
     public class ChapterTest
-    {
+    {/*
         public static readonly Uri ValidChapterUri = new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/testch/");
 
         protected Series TestSeries = Series.CreateFromData(SeriesTest.ValidSeriesUri, "SomeTitle");
@@ -72,6 +72,6 @@ namespace MangaScrapeLib.Test.Models
             }
 
             Assert.Equal(invalidTitles.Length, numExceptions);
-        }
+        }*/
     }
 }
