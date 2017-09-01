@@ -12,11 +12,6 @@ namespace MangaScrapeLib.Repositories
 
         private MangaEdenRepository() : base("Manga Eden", "http://www.mangaeden.com/", new SeriesMetadataSupport(true), "MangaEden.png") { }
 
-        public override Task<ISeries[]> GetSeriesAsync()
-        {
-            return Task.FromResult(new ISeries[0]);
-        }
-
         public override async Task<ISeries[]> SearchSeriesAsync(string query)
         {
             var uriQuery = Uri.EscapeDataString(query);
@@ -66,9 +61,20 @@ namespace MangaScrapeLib.Repositories
             return output;
         }
 
+        internal override async Task<IPage[]> GetPagesAsync(IChapter input)
+        {
+            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri);
+            var document = Parser.Parse(html);
+
+            var selectNode = document.QuerySelector("select#pageSelect");
+            var options = selectNode.QuerySelectorAll("option");
+            var output = options.Select((d, e) => new Page((Chapter)input, new Uri(RootUri, d.Attributes["value"].Value), e + 1)).ToArray();
+            return output;
+        }
+
         internal override async Task<byte[]> GetImageAsync(IPage input)
         {
-            var html = await WebClient.GetStringAsync(input.PageUri, MangaIndexUri);
+            var html = await WebClient.GetStringAsync(input.PageUri, input.ParentChapter.FirstPageUri);
             var document = Parser.Parse(html);
 
             var imageNode = document.QuerySelector("img#mainImg");
@@ -76,17 +82,6 @@ namespace MangaScrapeLib.Repositories
 
             ((Page)input).ImageUri = new Uri(RootUri, imageUri);
             var output = await WebClient.GetByteArrayAsync(imageUri, input.PageUri);
-            return output;
-        }
-
-        internal override async Task<IPage[]> GetPagesAsync(IChapter input)
-        {
-            var html = await WebClient.GetStringAsync(input.FirstPageUri, MangaIndexUri);
-            var document = Parser.Parse(html);
-
-            var selectNode = document.QuerySelector("select#pageSelect");
-            var options = selectNode.QuerySelectorAll("option");
-            var output = options.Select((d, e) => new Page((Chapter)input, new Uri(RootUri, d.Attributes["value"].Value), e + 1)).ToArray();
             return output;
         }
 

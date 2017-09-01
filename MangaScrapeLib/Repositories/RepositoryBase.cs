@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Parser.Html;
 using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -8,11 +9,11 @@ namespace MangaScrapeLib.Repositories
 {
     internal abstract class RepositoryBase : IRepository
     {
-        public abstract Task<ISeries[]> GetSeriesAsync();
-        public abstract Task<ISeries[]> SearchSeriesAsync(string query);
         internal abstract Task<IChapter[]> GetChaptersAsync(ISeries input);
         internal abstract Task<IPage[]> GetPagesAsync(IChapter input);
         internal abstract Task<byte[]> GetImageAsync(IPage input);
+
+        private ISeries[] AvailableSeries { get; set; }
 
         protected static readonly HtmlParser Parser = new HtmlParser();
 
@@ -32,6 +33,22 @@ namespace MangaScrapeLib.Repositories
             IconFileName = iconFileName;
 
             icon = new Lazy<byte[]>(LoadIcon);
+        }
+
+        public virtual Task<ISeries[]> GetSeriesAsync()
+        {
+            return Task.FromResult(new ISeries[0]);
+        }
+
+        public virtual async Task<ISeries[]> SearchSeriesAsync(string query)
+        {
+            if (AvailableSeries == null)
+            {
+                AvailableSeries = await GetSeriesAsync();
+            }
+
+            var lowerQuery = query.ToLowerInvariant();
+            return AvailableSeries.Where(d => d.Title.Contains(lowerQuery)).OrderBy(d => d.Title).ToArray();
         }
 
         public override string ToString()

@@ -51,16 +51,9 @@ namespace MangaScrapeLib.Repositories
             return output.ToArray();
         }
 
-        public override async Task<ISeries[]> SearchSeriesAsync(string query)
-        {
-            var series = await GetSeriesAsync();
-            var lowerQuery = query.ToLowerInvariant();
-            return series.Where(d => d.Title.Contains(lowerQuery)).OrderBy(d => d.Title).ToArray();
-        }
-
         internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
         {
-            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri);
+            var html = await WebClient.GetStringAsync(input.SeriesPageUri, MangaIndexUri);
             var document = Parser.Parse(html);
 
             var node = document.QuerySelector("#updates");

@@ -25,13 +25,6 @@ namespace MangaScrapeLib.Repositories
             return output.ToArray();
         }
 
-        public override async Task<ISeries[]> SearchSeriesAsync(string query)
-        {
-            var series = await GetSeriesAsync();
-            var lowerQuery = query.ToLowerInvariant();
-            return series.Where(d => d.Title.Contains(lowerQuery)).OrderBy(d => d.Title).ToArray();
-        }
-
         internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
         {
             var html = await WebClient.GetStringAsync(input.SeriesPageUri, MangaIndexUri);
@@ -53,22 +46,9 @@ namespace MangaScrapeLib.Repositories
             return Output.ToArray();
         }
 
-        internal override async Task<byte[]> GetImageAsync(IPage input)
-        {
-            var html = await WebClient.GetStringAsync(input.PageUri, MangaIndexUri);
-            var document = Parser.Parse(html);
-
-            var node = document.QuerySelector("img#image");
-            var imageUri = new Uri(node.Attributes["src"].Value);
-
-            ((Page)input).ImageUri = new Uri(RootUri, imageUri);
-            var output = await WebClient.GetByteArrayAsync(input.ImageUri, MangaIndexUri);
-            return output;
-        }
-
         internal override async Task<IPage[]> GetPagesAsync(IChapter input)
         {
-            var html = await WebClient.GetStringAsync(input.FirstPageUri, MangaIndexUri);
+            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri);
             var document = Parser.Parse(html);
 
             var node = document.QuerySelector("section.readpage_top");
@@ -77,6 +57,19 @@ namespace MangaScrapeLib.Repositories
 
             var Output = nodes.Select((d, e) => new Page((Chapter)input, new Uri(RootUri, d.Attributes["value"].Value), e + 1));
             return Output.ToArray();
+        }
+
+        internal override async Task<byte[]> GetImageAsync(IPage input)
+        {
+            var html = await WebClient.GetStringAsync(input.PageUri, input.ParentChapter.FirstPageUri);
+            var document = Parser.Parse(html);
+
+            var node = document.QuerySelector("img#image");
+            var imageUri = new Uri(node.Attributes["src"].Value);
+
+            ((Page)input).ImageUri = new Uri(RootUri, imageUri);
+            var output = await WebClient.GetByteArrayAsync(input.ImageUri, input.PageUri);
+            return output;
         }
     }
 }
