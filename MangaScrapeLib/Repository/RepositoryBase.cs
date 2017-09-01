@@ -1,4 +1,5 @@
 ﻿using AngleSharp.Parser.Html;
+using MangaScrapeLib.Models;
 using System;
 using System.IO;
 using System.Linq;
@@ -49,6 +50,20 @@ namespace MangaScrapeLib.Repository
 
             var lowerQuery = query.ToLowerInvariant();
             return AvailableSeries.Where(d => d.Title.Contains(lowerQuery)).OrderBy(d => d.Title).ToArray();
+        }
+
+        public ISeries GetSingleSeriesFromData(Uri seriesPageUri, string name)
+        {
+            if (seriesPageUri == null)
+                return null;
+
+            if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
+                return null;
+
+            if (RootUri.Host != seriesPageUri.Host)
+                return null;
+
+            return new Series(this, seriesPageUri, name);
         }
 
         public override string ToString()

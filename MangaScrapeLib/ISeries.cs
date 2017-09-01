@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using MangaScrapeLib.Repository;
 
 namespace MangaScrapeLib
 {
@@ -19,5 +18,7 @@ namespace MangaScrapeLib
         string Description { get; }
 
         Task<IChapter[]> GetChaptersAsync();
+
+        IChapter GetSingleChapterFromData(Uri firstPageUri, string title);
     }
 }

@@ -40,16 +40,18 @@ namespace MangaScrapeLib.Models
             return output;
         }
 
-        /*public static Series CreateFromData(Uri seriesPageUri, string name)
+        public IChapter GetSingleChapterFromData(Uri firstPageUri, string title)
         {
-            if (seriesPageUri == null) throw new ArgumentNullException();
-            if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name)) throw new ArgumentNullException();
+            if (firstPageUri == null)
+                return null;
 
-            var allRepositories = Repository.AllRepositories;
-            var repository = allRepositories.FirstOrDefault(d => d.RootUri.Host == seriesPageUri.Host);
-            if (repository == null) throw new ArgumentException("Series page Uri does not match any supported repository");
+            if (string.IsNullOrEmpty(title) || string.IsNullOrWhiteSpace(title))
+                return null;
 
-            return new Series(repository, seriesPageUri, name);
-        }*/
+            if (firstPageUri.Host != SeriesPageUri.Host)
+                return null;
+
+            return new Chapter(this, firstPageUri, title);
+        }
     }
 }
