@@ -87,14 +87,14 @@ namespace MangaScrapeLib.Test.Repository
         [Fact]
         public async Task SearchWorks()
         {
-            var searchQuery = "naruto";
+            var searchQuery = "one";
             var searchResult = await Repository.SearchSeriesAsync(searchQuery);
             Assert.True(searchResult.Any());
             foreach (var i in searchResult)
             {
                 Assert.Same(Repository, i.ParentRepository);
                 CheckParsedStringValidity(i.Title);
-                Assert.True(i.Title.ToLower().Contains(searchQuery));
+                Assert.True(i.Title.ToLowerInvariant().Contains(searchQuery));
                 Assert.NotNull(i.SeriesPageUri);
                 CheckParsedStringValidity(i.SeriesPageUri.ToString());
 

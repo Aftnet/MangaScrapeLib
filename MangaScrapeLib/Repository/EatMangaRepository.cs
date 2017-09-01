@@ -92,6 +92,7 @@ namespace MangaScrapeLib.Repository
                 {
                     ((Page)input).ImageUri = new Uri(RootUri, imgUri);
                     var imgData = await WebClient.GetByteArrayAsync(new Uri(imgUri), input.PageUri);
+                    return imgData;
                 }
             }
 
