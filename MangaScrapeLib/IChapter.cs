@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace MangaScrapeLib.Models
+namespace MangaScrapeLib
 {
-    public interface IChapter : IBasicInfo, IPathSuggester
+    public interface IChapter : IPathSuggester
     {
+        string Title { get; }
+        string Updated { get; }
+
         ISeries ParentSeries { get; }
         Uri FirstPageUri { get; }
 
