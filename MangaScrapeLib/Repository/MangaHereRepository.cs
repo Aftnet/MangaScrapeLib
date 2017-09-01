@@ -6,13 +6,15 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace MangaScrapeLib.Repositories
+namespace MangaScrapeLib.Repository
 {
     internal sealed class MangaHereRepository : RepositoryBase
     {
         private static readonly Uri MangaIndexUri = new Uri("http://www.mangahere.co/mangalist/");
 
-        private MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", new SeriesMetadataSupport(), "MangaHere.png") { }
+        public MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", new SeriesMetadataSupport(), "MangaHere.png")
+        {
+        }
 
         public override async Task<ISeries[]> GetSeriesAsync()
         {

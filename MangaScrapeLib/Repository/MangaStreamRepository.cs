@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MangaScrapeLib.Repositories
+namespace MangaScrapeLib.Repository
 {
     internal sealed class MangaStreamRepository : RepositoryBase
     {
         private static readonly Uri MangaIndexUri = new Uri("http://mangastream.com/manga/");
 
-        private MangaStreamRepository() : base("Mangastream", "http://mangastream.com/", new SeriesMetadataSupport(), "MangaStream.png")
+        public MangaStreamRepository() : base("Mangastream", "http://mangastream.com/", new SeriesMetadataSupport(), "MangaStream.png")
         {
         }
 

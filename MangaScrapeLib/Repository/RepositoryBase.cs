@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace MangaScrapeLib.Repositories
+namespace MangaScrapeLib.Repository
 {
     internal abstract class RepositoryBase : IRepository
     {

@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MangaScrapeLib.Repositories
+namespace MangaScrapeLib.Repository
 {
     internal sealed class MyMangaRepository : RepositoryBase
     {
@@ -22,7 +22,7 @@ namespace MangaScrapeLib.Repositories
 
         private static readonly Uri TopMangaPageUri = new Uri("http://www.mymanga.me/hot-manga/");
 
-        private MyMangaRepository() : base("My Manga", "http://www.mymanga.me/", new SeriesMetadataSupport(true), "MyManga.png")
+        public MyMangaRepository() : base("My Manga", "http://www.mymanga.me/", new SeriesMetadataSupport(true), "MyManga.png")
         {
         }
 

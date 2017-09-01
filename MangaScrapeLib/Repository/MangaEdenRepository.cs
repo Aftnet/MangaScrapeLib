@@ -4,13 +4,15 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MangaScrapeLib.Repositories
+namespace MangaScrapeLib.Repository
 {
     internal sealed class MangaEdenRepository : RepositoryBase
     {
         private static readonly Uri MangaIndexUri = new Uri("http://www.mangaeden.com/en/en-directory/");
 
-        private MangaEdenRepository() : base("Manga Eden", "http://www.mangaeden.com/", new SeriesMetadataSupport(true), "MangaEden.png") { }
+        public MangaEdenRepository() : base("Manga Eden", "http://www.mangaeden.com/", new SeriesMetadataSupport(true), "MangaEden.png")
+        {
+        }
 
         public override async Task<ISeries[]> SearchSeriesAsync(string query)
         {

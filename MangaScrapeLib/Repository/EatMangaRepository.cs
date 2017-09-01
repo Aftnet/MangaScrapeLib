@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MangaScrapeLib.Repositories
+namespace MangaScrapeLib.Repository
 {
     internal sealed class EatMangaRepository : RepositoryBase
     {
@@ -15,7 +15,7 @@ namespace MangaScrapeLib.Repositories
 
         private ISeries[] AllSeries = null;
 
-        private EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", new SeriesMetadataSupport(), "EatManga.png")
+        public EatMangaRepository() : base("Eat Manga", "http://eatmanga.com/", new SeriesMetadataSupport(), "EatManga.png")
         {
         }
 

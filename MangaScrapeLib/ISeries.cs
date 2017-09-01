@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using MangaScrapeLib.Repositories;
+using MangaScrapeLib.Repository;
 
 namespace MangaScrapeLib
 {

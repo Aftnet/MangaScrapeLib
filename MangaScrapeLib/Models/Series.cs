@@ -1,4 +1,4 @@
-﻿using MangaScrapeLib.Repositories;
+﻿using MangaScrapeLib.Repository;
 using MangaScrapeLib.Tools;
 using System;
 using System.IO;
