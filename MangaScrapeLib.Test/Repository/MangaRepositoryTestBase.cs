@@ -1,11 +1,10 @@
-﻿using MangaScrapeLib.Repositories;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace MangaScrapeLib.Test.Repositories
+namespace MangaScrapeLib.Test.Repository
 {
     /// <summary>
     ///This is a test class for MangaRepositoryTest and is intended
@@ -13,17 +12,10 @@ namespace MangaScrapeLib.Test.Repositories
     ///</summary>
     public abstract class MangaRepositoryTestBase
     {
-        protected abstract Repository GetRepository();
-
         private const string RootDir = "C:\\";
         private readonly HashSet<string> UniqueParsedValues = new HashSet<string>();
 
-        protected Repository Repository { get; set; }
-
-        public MangaRepositoryTestBase()
-        {
-            Repository = GetRepository();
-        }
+        protected abstract IRepository Repository { get; }
 
         [Fact]
         public async Task ParsingWorks()

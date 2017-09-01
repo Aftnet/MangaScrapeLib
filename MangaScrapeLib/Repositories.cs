@@ -1,5 +1,7 @@
 ﻿using MangaScrapeLib.Repository;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("MangaScrapeLib.Test")]
+
 namespace MangaScrapeLib
 {
     public static class Repositories

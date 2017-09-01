@@ -1,6 +1,4 @@
-﻿using MangaScrapeLib.Repositories;
-
-namespace MangaScrapeLib.Test.Repositories
+﻿namespace MangaScrapeLib.Test.Repository
 {
     /// <summary>
     ///This is a test class for EatMangaRepositoryTest and is intended

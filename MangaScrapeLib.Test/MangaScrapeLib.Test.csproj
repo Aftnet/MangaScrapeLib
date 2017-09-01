@@ -43,12 +43,12 @@
     <Compile Include="Models\ChapterTest.cs" />
     <Compile Include="Models\SeriesTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repositories\EatMangaRepositoryTest.cs" />
-    <Compile Include="Repositories\MangaEdenRepositoryTest.cs" />
-    <Compile Include="Repositories\MangaHereRepositoryTest.cs" />
-    <Compile Include="Repositories\MangaRepositoryTestBase.cs" />
-    <Compile Include="Repositories\MangaStreamRepositoryTest.cs" />
-    <Compile Include="Repositories\MyMangaRepositoryTest.cs" />
+    <Compile Include="Repository\EatMangaRepositoryTest.cs" />
+    <Compile Include="Repository\MangaEdenRepositoryTest.cs" />
+    <Compile Include="Repository\MangaHereRepositoryTest.cs" />
+    <Compile Include="Repository\MangaRepositoryTestBase.cs" />
+    <Compile Include="Repository\MangaStreamRepositoryTest.cs" />
+    <Compile Include="Repository\MyMangaRepositoryTest.cs" />
     <Compile Include="Tools\UriToolsTest.cs" />
   </ItemGroup>
   <ItemGroup>
