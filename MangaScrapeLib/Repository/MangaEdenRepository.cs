@@ -14,6 +14,11 @@ namespace MangaScrapeLib.Repository
         {
         }
 
+        public override Task<ISeries[]> GetSeriesAsync()
+        {
+            return SearchSeriesAsync(string.Empty);
+        }
+
         public override async Task<ISeries[]> SearchSeriesAsync(string query)
         {
             var uriQuery = Uri.EscapeDataString(query);
