@@ -3,6 +3,7 @@ using MangaScrapeLib.Tools;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repository
@@ -31,6 +32,61 @@ namespace MangaScrapeLib.Repository
 
         public MangaSupaRepository() : base("MangaSupa", RepoRootUriString, "MangaSupa.png", $"{RepoRootUriString}getsearchstory?searchword={{0}}")
         {
+        }
+
+        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
+        {
+            var inputAsSeries = (Series)input;
+
+            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri);
+            var document = Parser.Parse(html);
+
+            var imageNode = document.QuerySelector("div.truyen_info_left span.info_image img");
+            inputAsSeries.CoverImageUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
+
+            var infoNode = document.QuerySelector("ul.truyen_info_right");
+            var authorNode = infoNode.QuerySelector("li:nth-child(2) a");
+            inputAsSeries.Author = authorNode.TextContent;
+            var tagNodes = infoNode.QuerySelectorAll("li:nth-child(3) a");
+            inputAsSeries.Tags = string.Join(", ", tagNodes.Select(d => d.TextContent).ToArray());
+            var updatedNode = infoNode.QuerySelector("li:nth-child(6) em em");
+            inputAsSeries.Updated = updatedNode.TextContent;
+            var descriptionNode = document.QuerySelector("div#noidungm");
+            inputAsSeries.Description = descriptionNode.TextContent.Trim();
+            inputAsSeries.Description = Regex.Replace(inputAsSeries.Description, @"[ \t\r\n]+", " ");
+
+            var listNode = document.QuerySelector("div#list_chapter div.chapter-list");
+            var chapterNodes = listNode.QuerySelectorAll("div.row");
+            var output = chapterNodes.Select(d =>
+            {
+                var titleNode = d.QuerySelector("span:nth-child(1) a");
+                var dateNode = d.QuerySelector("span:nth-child(2)");
+
+                return new Chapter(inputAsSeries, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent)
+                {
+                    Updated = dateNode.TextContent
+                };
+            }).Reverse().ToArray();
+
+            return output;
+        }
+
+        internal override async Task<IPage[]> GetPagesAsync(IChapter input)
+        {
+            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri);
+            var document = Parser.Parse(html);
+
+            var listNode = document.QuerySelector("div.vung_doc");
+            var imageNodes = listNode.QuerySelectorAll("img");
+            var output = imageNodes.Select((d, e) =>
+            {
+                return new Page((Chapter)input, input.FirstPageUri, e + 1)
+                {
+                    ImageUri = new Uri(RootUri, d.Attributes["src"].Value)
+                };
+            }).ToArray();
+
+            return output;
         }
     }
 
