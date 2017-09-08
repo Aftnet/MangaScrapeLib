@@ -79,7 +79,7 @@ namespace MangaScrapeLib.Repository
             return AvailableSeries.Where(d => d.Title.Contains(lowerQuery)).OrderBy(d => d.Title).ToArray();
         }
 
-        public ISeries GetSingleSeriesFromData(Uri seriesPageUri, string name)
+        public ISeries GetSeriesFromData(Uri seriesPageUri, string name)
         {
             if (seriesPageUri == null)
                 return null;

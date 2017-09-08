@@ -11,7 +11,9 @@ namespace MangaScrapeLib.Test.Models
         [Fact]
         public void CreateFromDataWorks()
         {
-            Assert.NotNull(TargetRepository.GetSingleSeriesFromData(ValidSeriesUri, "SomeTitle"));
+            var output = Repositories.GetSeriesFromData(ValidSeriesUri, "SomeTitle");
+            Assert.NotNull(output);
+            Assert.Same(TargetRepository, output.ParentRepository);
         }
 
         [Fact]
@@ -21,7 +23,7 @@ namespace MangaScrapeLib.Test.Models
 
             foreach (var i in invalidUris)
             {
-                Assert.Null(TargetRepository.GetSingleSeriesFromData(i, "SomeTitle"));
+                Assert.Null(Repositories.GetSeriesFromData(i, "SomeTitle"));
             }
         }
 
@@ -31,7 +33,7 @@ namespace MangaScrapeLib.Test.Models
             var invalidTitles = new string[] { null, string.Empty, "  " };
             foreach (var i in invalidTitles)
             {
-                Assert.Null(TargetRepository.GetSingleSeriesFromData(ValidSeriesUri, i));
+                Assert.Null(Repositories.GetSeriesFromData(ValidSeriesUri, i));
             }
         }
     }
