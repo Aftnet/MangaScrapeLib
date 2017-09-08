@@ -18,6 +18,6 @@ namespace MangaScrapeLib
         Task<ISeries[]> GetSeriesAsync();
         Task<ISeries[]> SearchSeriesAsync(string query);
 
-        ISeries GetSingleSeriesFromData(Uri seriesPageUri, string name);
+        ISeries GetSeriesFromData(Uri seriesPageUri, string name);
     }
 }
