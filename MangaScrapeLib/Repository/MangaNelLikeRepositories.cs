@@ -141,7 +141,7 @@ namespace MangaScrapeLib.Repository
                 {
                     Updated = dateNode.TextContent
                 };
-            }).ToArray();
+            }).Reverse().ToArray();
 
             return output;
         }
