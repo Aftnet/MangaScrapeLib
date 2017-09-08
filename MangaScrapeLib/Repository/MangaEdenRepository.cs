@@ -50,8 +50,9 @@ namespace MangaScrapeLib.Repository
 
         internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
         {
+            var inputAsSeries = (Series)input;
             var html = await WebClient.GetStringAsync(input.SeriesPageUri, MangaIndexUri);
-            GetSeriesInfo((Series)input, html);
+            GetSeriesInfo(inputAsSeries, html);
             var document = Parser.Parse(html);
 
             var table = document.QuerySelector("table");
@@ -65,6 +66,7 @@ namespace MangaScrapeLib.Repository
                 return chapter;
             }).Reverse().ToArray();
 
+            inputAsSeries.Updated = output.Last().Updated;
             return output;
         }
 
