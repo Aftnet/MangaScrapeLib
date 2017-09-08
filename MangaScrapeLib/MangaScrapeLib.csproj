@@ -10,7 +10,7 @@
     <PackageTags>manga scraper</PackageTags>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <SignAssembly>False</SignAssembly>
-    <Version>4.1.0</Version>
+    <Version>4.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
