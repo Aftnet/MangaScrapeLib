@@ -120,6 +120,9 @@ namespace MangaScrapeLib.Repository
             var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri);
             var document = Parser.Parse(html);
 
+            var imageNode = document.QuerySelector("div.manga-info-pic img");
+            inputAsSeries.CoverImageUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
+
             var infoNode = document.QuerySelector("ul.manga-info-text");
             var authorNode = infoNode.QuerySelector("li:nth-child(2) a");
             inputAsSeries.Author = authorNode.TextContent;
