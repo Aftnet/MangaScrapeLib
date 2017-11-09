@@ -1,0 +1,12 @@
+﻿{
+  "frameworks": {
+    ".NETFramework,Version=v4.6.1": {}
+  },
+  "runtimes": {
+    "win": {}
+  },
+  "dependencies": {
+    "xunit": "2.2.0",
+    "xunit.runner.visualstudio": "2.2.0"
+  }
+}

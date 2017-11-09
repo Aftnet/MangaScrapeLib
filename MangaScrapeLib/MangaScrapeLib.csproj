@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.1</TargetFramework>
+    <Authors>Alberto Fustinoni</Authors>
+    <Description>A library to scrape publicly available manga repositories</Description>
+    <Company />
+    <PackageProjectUrl>https://github.com/Aftnet/mangascrapeLib</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Aftnet/MangaScrapeLib/blob/master/License.txt</PackageLicenseUrl>
+    <PackageTags>manga scraper</PackageTags>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+    <SignAssembly>False</SignAssembly>
+    <Version>4.1.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\EatManga.png" />
+    <None Remove="Resources\MangaEden.png" />
+    <None Remove="Resources\MangaHere.png" />
+    <None Remove="Resources\MangaKakalot.png" />
+    <None Remove="Resources\MangaNel.png" />
+    <None Remove="Resources\MangaStream.png" />
+    <None Remove="Resources\MangaSupa.png" />
+    <None Remove="Resources\MyManga.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\EatManga.png" />
+    <EmbeddedResource Include="Resources\MangaEden.png" />
+    <EmbeddedResource Include="Resources\MangaHere.png" />
+    <EmbeddedResource Include="Resources\MangaKakalot.png" />
+    <EmbeddedResource Include="Resources\MangaNel.png" />
+    <EmbeddedResource Include="Resources\MangaStream.png" />
+    <EmbeddedResource Include="Resources\MangaSupa.png" />
+    <EmbeddedResource Include="Resources\MyManga.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AngleSharp" Version="0.9.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>
