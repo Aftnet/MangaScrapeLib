@@ -1,7 +1,7 @@
 # MangaScrapeLib
 
 [![Build status](https://ci.appveyor.com/api/projects/status/sv7vl92s8128k6ak?svg=true)](https://ci.appveyor.com/project/Aftnet/mangascrapelib)
-[![NuGet version](https://badge.fury.io/nu/MangaScrapeLib.svg)](https://badge.fury.io/nu/MangaScrapeLib)
+[![NuGet version](https://img.shields.io/nuget/v/MangaScrapeLib.svg)](https://www.nuget.org/packages/MangaScrapeLib/)
 
 This is a library to parse public manga sites.
 
