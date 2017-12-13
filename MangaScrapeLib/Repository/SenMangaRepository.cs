@@ -1,15 +1,15 @@
 ﻿using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repository
 {
     internal sealed class SenMangaRepository : RepositoryBase
     {
+        private static readonly Uri MangaIndexPage = new Uri("https://raw.senmanga.com/directory/popular");
+
         public SenMangaRepository() : base("Sen Manga", "https://raw.senmanga.com/", "SenManga.png", true)
         {
 
@@ -44,9 +44,33 @@ namespace MangaScrapeLib.Repository
             return base.SearchSeriesAsync(query);
         }
 
-        internal override Task<IChapter[]> GetChaptersAsync(ISeries input)
+        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
         {
-            throw new NotImplementedException();
+            var html = await WebClient.GetStringAsync(RootUri, RootUri);
+            var document = Parser.Parse(html);
+
+            var series = input as Series;
+
+            var coverNode = document.QuerySelector("div.thumbnail img");
+            series.CoverImageUri = new Uri(RootUri, coverNode.Attributes["src"].Value);
+            var infoNode = document.QuerySelector("div.info ul.series-info");
+            var nodes = infoNode.QuerySelectorAll("li");
+
+            series.Author = nodes[4].QuerySelector("a").TextContent;
+            series.Description = nodes[1].QuerySelector("span p").TextContent;
+            series.Tags = string.Join(", ", nodes[2].QuerySelectorAll("a").Select(d => d.TextContent));
+            series.Updated = "";
+
+            var chaptersNode = document.QuerySelector("div#content div.list div.group");
+            nodes = chaptersNode.QuerySelectorAll("div div a");
+
+            var output = nodes.Select(d =>
+            {
+                var title = d.Attributes["title"].Value;
+                var link = new Uri(RootUri, d.Attributes["href"].Value);
+                return new Chapter(series, link, title);
+            }).Reverse().ToArray();
+            return output;
         }
 
         internal override Task<byte[]> GetImageAsync(IPage input)
