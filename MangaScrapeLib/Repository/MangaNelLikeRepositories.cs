@@ -10,7 +10,7 @@ namespace MangaScrapeLib.Repository
 {
     internal class MangaNelRepository : MangaNelLikeRepository
     {
-        private const string RepoRootUriString = "http://manganel.com/";
+        private const string RepoRootUriString = "http://manganelo.com/";
 
         public MangaNelRepository() : base("Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home/getjsonsearchstory?searchword={{0}}&search_style=tentruyen")
         {
