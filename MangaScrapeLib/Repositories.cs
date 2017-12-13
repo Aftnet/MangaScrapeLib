@@ -31,7 +31,10 @@ namespace MangaScrapeLib
         private static MyMangaRepository myManga = new MyMangaRepository();
         //public static IRepository MyManga => myManga;
 
-        private static IRepository[] allRepositories = { EatManga, MangaEden, MangaKakalot, MangaNel, MangaStream, MangaSupa };
+        private static SenMangaRepository senManga = new SenMangaRepository();
+        public static IRepository SenManga => senManga;
+
+        private static IRepository[] allRepositories = { EatManga, MangaEden, MangaKakalot, MangaNel, MangaStream, MangaSupa, SenManga };
         public static IRepository[] AllRepositories => allRepositories;
 
         public static ISeries GetSeriesFromData(Uri uri, string name)
