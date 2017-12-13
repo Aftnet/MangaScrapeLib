@@ -10,27 +10,6 @@ namespace MangaScrapeLib.Tools
     /// </summary>
     internal static class ExtensionMethods
     {
-        /// <summary>
-        /// Truncates the last URI segment.
-        /// </summary>
-        /// <param name="uri">The URI.</param>
-        /// <returns>The URI in string form without the last segment</returns>
-        public static string TruncateLastUriSegment(this string uri)
-        {
-            var tempUri = new Uri(uri);
-            return tempUri.AbsoluteUri.Remove(tempUri.AbsoluteUri.Length - tempUri.Segments.Last().Length);
-        }
-
-        /// <summary>
-        /// Gets the last URI segment.
-        /// </summary>
-        /// <param name="uri">The URI.</param>
-        /// <returns>The last URI segment as a string</returns>
-        public static string GetLastUriSegment(this string uri)
-        {
-            return uri.Split('/').Last();
-        }
-
         public static string MakeValidPathName(this string name)
         {
             var invalidChars = Regex.Escape(new string(Path.GetInvalidFileNameChars()));

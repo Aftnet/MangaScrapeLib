@@ -91,7 +91,7 @@ namespace MangaScrapeLib.Test.Repository
             {
                 Assert.Same(Repository, i.ParentRepository);
                 CheckParsedStringValidity(i.Title, true);
-                Assert.True(i.Title.ToLowerInvariant().Contains(searchQuery));
+                Assert.Contains(searchQuery, i.Title.ToLowerInvariant());
                 Assert.NotNull(i.SeriesPageUri);
                 CheckParsedStringValidity(i.SeriesPageUri.ToString(), true);
 
