@@ -25,5 +25,11 @@ namespace MangaScrapeLib.Tools
             Client.DefaultRequestHeaders.Referrer = referrer;
             return Client.GetByteArrayAsync(uri);
         }
+
+        public static Task<HttpResponseMessage> PostAsync(HttpContent content, Uri uri, Uri referrer)
+        {
+            Client.DefaultRequestHeaders.Referrer = referrer;
+            return Client.PostAsync(uri, content);
+        }
     }
 }

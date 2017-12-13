@@ -2,7 +2,9 @@
 using MangaScrapeLib.Tools;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -12,7 +14,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "http://manganelo.com/";
 
-        public MangaNelRepository() : base("Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home/getjsonsearchstory?searchword={{0}}&search_style=tentruyen")
+        public MangaNelRepository() : base("Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home/getjson_searchstory")
         {
         }
     }
@@ -21,7 +23,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "http://mangakakalot.com/";
 
-        public MangaKakalotRepository() : base("MangaKakalot", RepoRootUriString, "MangaKakalot.png", $"{RepoRootUriString}home/getjsonsearchstory?searchword={{0}}&search_style=tentruyen")
+        public MangaKakalotRepository() : base("MangaKakalot", RepoRootUriString, "MangaKakalot.png", $"{RepoRootUriString}home/getjson_searchstory")
         {
         }
     }
@@ -30,7 +32,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "http://mangasupa.com/";
 
-        public MangaSupaRepository() : base("MangaSupa", RepoRootUriString, "MangaSupa.png", $"{RepoRootUriString}getsearchstory?searchword={{0}}")
+        public MangaSupaRepository() : base("MangaSupa", RepoRootUriString, "MangaSupa.png", $"{RepoRootUriString}getsearchstory")
         {
         }
 
@@ -144,10 +146,14 @@ namespace MangaScrapeLib.Repository
 
         public override async Task<ISeries[]> SearchSeriesAsync(string query)
         {
-            var uriQuery = Uri.EscapeDataString(query);
-            var searchUri = new Uri(string.Format(SearchUriPattern, uriQuery));
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("searchword", query),
+                new KeyValuePair<string, string>("search_style", "tentruyen")
+            });
 
-            var json = await WebClient.GetStringAsync(searchUri, RootUri);
+            var response = await WebClient.PostAsync(content, new Uri(SearchUriPattern), RootUri);
+            var json = await response.Content.ReadAsStringAsync();
             var searchResult = JsonConvert.DeserializeObject<SearchEntry[]>(json);
 
             var output = searchResult.Select(d =>
