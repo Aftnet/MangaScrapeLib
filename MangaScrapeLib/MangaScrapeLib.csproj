@@ -22,6 +22,7 @@
     <None Remove="Resources\MangaStream.png" />
     <None Remove="Resources\MangaSupa.png" />
     <None Remove="Resources\MyManga.png" />
+    <None Remove="Resources\SenManga.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +34,7 @@
     <EmbeddedResource Include="Resources\MangaStream.png" />
     <EmbeddedResource Include="Resources\MangaSupa.png" />
     <EmbeddedResource Include="Resources\MyManga.png" />
+    <EmbeddedResource Include="Resources\SenManga.png" />
   </ItemGroup>
 
   <ItemGroup>
