@@ -8,7 +8,7 @@ namespace MangaScrapeLib.Test.Models
         private static IRepository TargetRepository => Repositories.EatManga;
         private static readonly Uri ValidChapterUri = new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/testch/");
 
-        private ISeries TestSeries = TargetRepository.GetSeriesFromData(SeriesTest.ValidSeriesUri, "SomeTitle");
+        private ISeries TestSeries = TargetRepository.GetSeriesFromData(new Uri(SeriesTest.ValidSeriesUri), "SomeTitle");
 
         [Fact]
         public void CreateFromDataWorks()

@@ -1,5 +1,6 @@
 ﻿using MangaScrapeLib.Repository;
 using System;
+using System.Linq;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("MangaScrapeLib.Test")]
 
@@ -39,17 +40,19 @@ namespace MangaScrapeLib
 
         public static ISeries GetSeriesFromData(Uri uri, string title)
         {
-            ISeries output = null;
-            foreach (var i in AllRepositories)
+            if(uri ==null || string.IsNullOrEmpty(title) || string.IsNullOrWhiteSpace(title))
             {
-                output = i.GetSeriesFromData(uri, title);
-                if (output != null)
-                {
-                    return output;
-                }
+                return null;
             }
 
+            var repository = DetermineOwnerRepository(uri);
+            var output = repository?.GetSeriesFromData(uri, title);
             return output;
+        }
+
+        internal static IRepository DetermineOwnerRepository(Uri uri)
+        {
+            return AllRepositories.FirstOrDefault(d => d.RootUri.Host == uri.Host);
         }
     }
 }
