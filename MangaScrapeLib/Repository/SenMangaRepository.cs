@@ -37,22 +37,22 @@ namespace MangaScrapeLib.Repository
 
         public override async Task<ISeries[]> GetSeriesAsync()
         {
-            var html = await WebClient.GetStringAsync(RootUri, RootUri);
+            var html = await WebClient.GetStringAsync(MangaIndexPage, RootUri);
             var document = Parser.Parse(html);
 
-            var listNode = document.QuerySelector("div#content div.list");
-            var titleNodes = listNode.QuerySelectorAll("div.group");
-            var detailNodes = listNode.QuerySelectorAll("div.element");
+            var listNode = document.QuerySelector("ul.post-list");
+            var titleNodes = listNode.QuerySelectorAll("li");
 
-            var output = titleNodes.Zip(detailNodes, (d, e) =>
+
+            var output = titleNodes.Select(d =>
             {
-                var titleNode = d.QuerySelector("div.title a");
-                var title = titleNode.Attributes["title"].Value;
-                var link = new Uri(RootUri, titleNode.Attributes["href"].Value);
-                var updatedNode = e.QuerySelector("div.meta_r");
-                var updated = updatedNode.TextContent;
+                var node = d.QuerySelector("a");
+                var title = node.Attributes["title"].Value;
+                var link = new Uri(RootUri, node.Attributes["href"].Value);
+                var coverNode = node.QuerySelector("img");
+                var cover = new Uri(RootUri, coverNode.Attributes["src"].Value);
 
-                ISeries series = new Series(this, link, title) { Updated = updated };
+                ISeries series = new Series(this, link, title) { CoverImageUri = cover };
                 return series;
             }).OrderBy(d => d.Title).ToArray();
 
