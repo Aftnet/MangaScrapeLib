@@ -1,7 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+
+[assembly: InternalsVisibleTo("MangaScrapeLib.Test")]
 
 namespace MangaScrapeLib.Tools
 {
