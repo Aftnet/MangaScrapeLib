@@ -37,12 +37,12 @@ namespace MangaScrapeLib
         private static IRepository[] allRepositories = { EatManga, MangaEden, MangaKakalot, MangaNel, MangaStream, MangaSupa, SenManga };
         public static IRepository[] AllRepositories => allRepositories;
 
-        public static ISeries GetSeriesFromData(Uri uri, string name)
+        public static ISeries GetSeriesFromData(Uri uri, string title)
         {
             ISeries output = null;
             foreach (var i in AllRepositories)
             {
-                output = i.GetSeriesFromData(uri, name);
+                output = i.GetSeriesFromData(uri, title);
                 if (output != null)
                 {
                     return output;

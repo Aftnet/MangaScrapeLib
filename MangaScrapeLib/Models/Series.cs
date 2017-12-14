@@ -20,11 +20,11 @@ namespace MangaScrapeLib.Models
         public string Tags { get; internal set; }
         public string Description { get; internal set; }
 
-        internal Series(RepositoryBase parent, Uri seriesPageUri, string name)
+        internal Series(RepositoryBase parent, Uri seriesPageUri, string title)
         {
             ParentRepositoryInternal = parent;
             SeriesPageUri = seriesPageUri;
-            Title = name;
+            Title = title;
             Updated = string.Empty;
         }
 
