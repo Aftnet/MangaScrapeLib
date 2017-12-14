@@ -30,7 +30,7 @@ namespace MangaScrapeLib.Repository
             public string Uri { get; set; }
         }
 
-        public SenMangaRepository() : base("Sen Manga", "https://raw.senmanga.com/", "SenManga.png", true)
+        public SenMangaRepository(IWebClient webClient) : base(webClient, "Sen Manga", "https://raw.senmanga.com/", "SenManga.png", true)
         {
 
         }

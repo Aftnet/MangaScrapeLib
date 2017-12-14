@@ -1,5 +1,6 @@
 ﻿using AngleSharp.Parser.Html;
 using MangaScrapeLib.Models;
+using MangaScrapeLib.Tools;
 using System;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace MangaScrapeLib.Repository
 {
     internal abstract class RepositoryBase : IRepository
     {
+        protected readonly IWebClient WebClient;
+
         internal abstract Task<IChapter[]> GetChaptersAsync(ISeries input);
         internal abstract Task<IPage[]> GetPagesAsync(IChapter input);
         internal abstract Task<byte[]> GetImageAsync(IPage input);
@@ -41,14 +44,16 @@ namespace MangaScrapeLib.Repository
         private readonly bool supportsDescription;
         public bool SupportsDescription => supportsDescription;
 
-        protected RepositoryBase(string name, string uriString, string iconFileName, bool supportsAllMetadata) :
-            this(name, uriString, iconFileName, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata)
+        protected RepositoryBase(IWebClient webClient, string name, string uriString, string iconFileName, bool supportsAllMetadata) :
+            this(webClient, name, uriString, iconFileName, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata)
         {
 
         }
 
-        protected RepositoryBase(string name, string uriString, string iconFileName, bool supportsCover, bool supportsAuthor, bool supportsLastUpdateTime, bool supportsTags, bool supportsDescription)
+        protected RepositoryBase(IWebClient webClient, string name, string uriString, string iconFileName, bool supportsCover, bool supportsAuthor, bool supportsLastUpdateTime, bool supportsTags, bool supportsDescription)
         {
+            WebClient = webClient;
+
             Name = name;
             RootUri = new Uri(uriString, UriKind.Absolute);
 

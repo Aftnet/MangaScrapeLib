@@ -10,7 +10,7 @@ namespace MangaScrapeLib.Repository
     {
         private static readonly Uri MangaIndexUri = new Uri("http://www.mangaeden.com/en/en-directory/");
 
-        public MangaEdenRepository() : base("Manga Eden", "http://www.mangaeden.com/", "MangaEden.png", true)
+        public MangaEdenRepository(IWebClient webClient) : base(webClient, "Manga Eden", "http://www.mangaeden.com/", "MangaEden.png", true)
         {
         }
 

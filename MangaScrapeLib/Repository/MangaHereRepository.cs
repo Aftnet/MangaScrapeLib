@@ -12,7 +12,7 @@ namespace MangaScrapeLib.Repository
     {
         private static readonly Uri MangaIndexUri = new Uri("http://www.mangahere.co/mangalist/");
 
-        public MangaHereRepository() : base("Manga Here", "http://www.mangahere.co/", "MangaHere.png", false)
+        public MangaHereRepository(WebClient webClient) : base(webClient, "Manga Here", "http://www.mangahere.co/", "MangaHere.png", false)
         {
         }
 

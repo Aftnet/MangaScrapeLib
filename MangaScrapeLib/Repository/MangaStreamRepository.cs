@@ -1,9 +1,7 @@
 ﻿using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repository
@@ -12,7 +10,7 @@ namespace MangaScrapeLib.Repository
     {
         private static readonly Uri MangaIndexUri = new Uri("https://readms.net/manga");
 
-        public MangaStreamRepository() : base("Mangastream", "https://readms.net/", "MangaStream.png", false)
+        public MangaStreamRepository(IWebClient webClient) : base(webClient, "Mangastream", "https://readms.net/", "MangaStream.png", false)
         {
         }
 

@@ -14,7 +14,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "http://manganelo.com/";
 
-        public MangaNelRepository() : base("Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home/getjson_searchstory")
+        public MangaNelRepository(IWebClient webClient) : base(webClient, "Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home/getjson_searchstory")
         {
         }
     }
@@ -23,7 +23,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "http://mangakakalot.com/";
 
-        public MangaKakalotRepository() : base("MangaKakalot", RepoRootUriString, "MangaKakalot.png", $"{RepoRootUriString}home/getjson_searchstory")
+        public MangaKakalotRepository(IWebClient webClient) : base(webClient, "MangaKakalot", RepoRootUriString, "MangaKakalot.png", $"{RepoRootUriString}home/getjson_searchstory")
         {
         }
     }
@@ -32,7 +32,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "http://mangasupa.com/";
 
-        public MangaSupaRepository() : base("MangaSupa", RepoRootUriString, "MangaSupa.png", $"{RepoRootUriString}getsearchstory")
+        public MangaSupaRepository(IWebClient webClient) : base(webClient, "MangaSupa", RepoRootUriString, "MangaSupa.png", $"{RepoRootUriString}getsearchstory")
         {
         }
 
@@ -112,7 +112,7 @@ namespace MangaScrapeLib.Repository
 
         private static readonly string[] SupuriousTitleText = { "<span style=\"color: #FF530D;font-weight: bold;\">", "</span>" };
 
-        protected MangaNelLikeRepository(string name, string uriString, string iconFileName, string searchUriPattern) : base(name, uriString, iconFileName, true)
+        protected MangaNelLikeRepository(IWebClient webClient, string name, string uriString, string iconFileName, string searchUriPattern) : base(webClient, name, uriString, iconFileName, true)
         {
             SearchUriPattern = searchUriPattern;
             ReadUriPattern = $"{RootUri.ToString()}manga/{{0}}";
