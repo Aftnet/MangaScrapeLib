@@ -8,13 +8,13 @@ namespace MangaScrapeLib.Test.Models
     {
         public static IRepository TargetRepository => Repositories.EatManga;
         public const string ValidSeriesUri = "http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/";
-        public const string ValidTitle = "SomeTitle";
+        public const string ValidSeriesTitle = "SomeTitle";
 
         public static IEnumerable<object[]> CreateFromDataWorksData()
         {
-            yield return new object[] { ValidSeriesUri, ValidTitle, true };
-            yield return new object[] { null, ValidTitle, false };
-            yield return new object[] { "http://omg.lol/", ValidTitle, false };
+            yield return new object[] { ValidSeriesUri, ValidSeriesTitle, true };
+            yield return new object[] { null, ValidSeriesTitle, false };
+            yield return new object[] { "http://omg.lol/", ValidSeriesTitle, false };
             yield return new object[] { ValidSeriesUri, null, false };
             yield return new object[] { ValidSeriesUri, string.Empty, false };
             yield return new object[] { ValidSeriesUri, " ", false };
@@ -24,7 +24,7 @@ namespace MangaScrapeLib.Test.Models
         [MemberData(nameof(CreateFromDataWorksData))]
         public void CreateFromDataWorks(string uri, string title, bool shouldSucceed)
         {
-            var output = Repositories.GetSeriesFromData(new Uri(uri), title);
+            var output = Repositories.GetSeriesFromData(uri == null ? null : new Uri(uri), title);
             if(shouldSucceed)
             {
                 Assert.NotNull(output);
