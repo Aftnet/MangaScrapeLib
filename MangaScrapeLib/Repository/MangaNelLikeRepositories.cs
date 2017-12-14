@@ -146,6 +146,11 @@ namespace MangaScrapeLib.Repository
 
         public override async Task<ISeries[]> SearchSeriesAsync(string query)
         {
+            if (string.IsNullOrEmpty(query) || string.IsNullOrWhiteSpace(query))
+            {
+                return new ISeries[0];
+            }
+
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("searchword", query),
@@ -154,6 +159,11 @@ namespace MangaScrapeLib.Repository
 
             var response = await WebClient.PostAsync(content, new Uri(SearchUriPattern), RootUri);
             var json = await response.Content.ReadAsStringAsync();
+            if (string.IsNullOrEmpty(json) || string.IsNullOrWhiteSpace(json))
+            {
+                return new ISeries[0];
+            }
+
             var searchResult = JsonConvert.DeserializeObject<SearchEntry[]>(json);
 
             var output = searchResult.Select(d =>
