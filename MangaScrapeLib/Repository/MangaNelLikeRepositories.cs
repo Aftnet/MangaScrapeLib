@@ -134,7 +134,7 @@ namespace MangaScrapeLib.Repository
                 var title = titleNode.TextContent;
 
                 var dateNode = d.QuerySelector("ul li:nth-child(2) i");
-                return new Series(this, uri, title)
+                return new Series(Repositories.DetermineOwnerRepository(uri) as RepositoryBase, uri, title)
                 {
                     CoverImageUri = coverUri,
                     Updated = dateNode.TextContent

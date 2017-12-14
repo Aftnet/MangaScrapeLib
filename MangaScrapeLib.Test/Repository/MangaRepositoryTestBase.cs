@@ -31,7 +31,6 @@ namespace MangaScrapeLib.Test.Repository
             Assert.NotEmpty(series);
             foreach (var i in series)
             {
-                Assert.Same(Repository, i.ParentRepository);
                 CheckParsedStringValidity(i.Title, true);
                 Assert.NotNull(i.SeriesPageUri);
                 CheckParsedStringValidity(i.SeriesPageUri.ToString(), true);
