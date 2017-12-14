@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace MangaScrapeLib.Test.Models
@@ -34,6 +35,14 @@ namespace MangaScrapeLib.Test.Models
             {
                 Assert.Null(output);
             }
+        }
+
+        [Fact]
+        public void RepositoriesAreSet()
+        {
+            var repositories = Repositories.AllRepositories;
+            Assert.NotEmpty(repositories);
+            Assert.DoesNotContain(repositories, d => d == null);
         }
     }
 }

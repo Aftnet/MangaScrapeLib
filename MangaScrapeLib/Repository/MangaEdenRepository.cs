@@ -1,30 +1,54 @@
 ﻿using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repository
 {
-    internal sealed class MangaEdenRepository : RepositoryBase
+    internal sealed class MangaEdenEnRepository : MangaEdenRepository
     {
-        private static readonly Uri MangaIndexUri = new Uri("http://www.mangaeden.com/en/en-directory/");
-
-        public MangaEdenRepository(IWebClient webClient) : base(webClient, "Manga Eden", "http://www.mangaeden.com/", "MangaEden.png", true)
+        public MangaEdenEnRepository(IWebClient webClient) : base(webClient, "Manga Eden (EN)", "en/en-directory/", " - EN")
         {
         }
+    }
 
-        public override Task<ISeries[]> GetSeriesAsync()
+    internal sealed class MangaEdenItRepository : MangaEdenRepository
+    {
+        public MangaEdenItRepository(IWebClient webClient) : base(webClient, "Manga Eden (IT)", "en/it-directory/", " - IT")
         {
-            return SearchSeriesAsync(string.Empty);
+        }
+    }
+
+    internal class MangaEdenRepository : RepositoryBase
+    {
+        private class JsonSeries
+        {
+            [JsonProperty("value")]
+            public string Title { get; set; }
+
+            [JsonProperty("url")]
+            public string Uri { get; set; }
+
+            [JsonProperty("label")]
+            public string Label { get; set; }
         }
 
-        public override async Task<ISeries[]> SearchSeriesAsync(string query)
-        {
-            var uriQuery = Uri.EscapeDataString(query);
-            var searchUri = new Uri(MangaIndexUri, string.Format("?title={0}", uriQuery));
+        private const string SearchUriPattern = "http://www.mangaeden.com/ajax/search-manga/?term={0}";
 
-            var html = await WebClient.GetStringAsync(searchUri, RootUri);
+        private readonly Uri MangaIndexUri;
+        private readonly string SearchLabelLanguageSuffix;
+
+        protected MangaEdenRepository(IWebClient webClient, string name, string mangaIndexUri, string searchLabelLanguageSuffix) : base(webClient, name, "http://www.mangaeden.com/", "MangaEden.png", true)
+        {
+            MangaIndexUri = new Uri(RootUri, mangaIndexUri);
+            SearchLabelLanguageSuffix = searchLabelLanguageSuffix;
+        }
+
+        public override async Task<ISeries[]> GetSeriesAsync()
+        {
+            var html = await WebClient.GetStringAsync(MangaIndexUri, RootUri);
             var document = Parser.Parse(html);
 
             var table = document.QuerySelector("#mangaList");
@@ -45,6 +69,19 @@ namespace MangaScrapeLib.Repository
                 return series;
             }).OrderBy(d => d.Title).ToArray();
 
+            return output;
+        }
+
+        public override async Task<ISeries[]> SearchSeriesAsync(string query)
+        {
+            var searchUri = new Uri(string.Format(SearchUriPattern, query));
+            var json = await WebClient.GetStringAsync(searchUri, RootUri);
+            var result = JsonConvert.DeserializeObject<JsonSeries[]>(json);
+
+            var output = result.Where(d => d.Label.EndsWith(SearchLabelLanguageSuffix))
+                .Where(d => d.Title.ToLowerInvariant().Contains(query.ToLowerInvariant()))
+                .Select(d => new Series(this as RepositoryBase, new Uri(RootUri, d.Uri), d.Title) as ISeries)
+                .OrderBy(d => d.Title).ToArray();
             return output;
         }
 
