@@ -97,12 +97,21 @@ namespace MangaScrapeLib.Test.Repository
                 Assert.Equal(ctr, i.PageNo);
                 ctr++;
             }
+        }
 
-            var selectedPage = pages[0];
+        [Fact]
+        public async Task GettingPageImageWorks()
+        {
+            var series = await Repository.GetSeriesAsync();
+            var selectedSeries = series.First(d => d.SeriesPageUri.Host == Repository.RootUri.Host);
+            var chapters = await selectedSeries.GetChaptersAsync();
+            var selectedChapter = chapters.First();
+            var pages = await selectedChapter.GetPagesAsync();
+            var selectedPage = pages.First();
+
             var imageBytes = await selectedPage.GetImageAsync();
-            Assert.NotNull(imageBytes);
-            Assert.NotEmpty(imageBytes);
             Assert.NotNull(selectedPage.ImageUri);
+            Assert.NotEmpty(imageBytes);
 
             CheckParsedStringValidity(selectedPage.SuggestPath(RootDir), true);
         }

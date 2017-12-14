@@ -80,7 +80,7 @@ namespace MangaScrapeLib.Repository
 
         internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
         {
-            var html = await WebClient.GetStringAsync(RootUri, RootUri);
+            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri);
             var document = Parser.Parse(html);
 
             var series = input as Series;
@@ -91,19 +91,24 @@ namespace MangaScrapeLib.Repository
             var nodes = infoNode.QuerySelectorAll("li");
 
             series.Author = nodes[4].QuerySelector("a").TextContent;
-            series.Description = nodes[1].QuerySelector("span p").TextContent;
-            series.Tags = string.Join(", ", nodes[2].QuerySelectorAll("a").Select(d => d.TextContent));
-            series.Updated = "";
+            series.Description = nodes[1].QuerySelector("span").TextContent;
+            series.Tags = string.Join(",", nodes[2].QuerySelectorAll("a").Select(d => d.TextContent));
 
             var chaptersNode = document.QuerySelector("div#content div.list div.group");
-            nodes = chaptersNode.QuerySelectorAll("div div a");
+            nodes = chaptersNode.QuerySelectorAll("div.element");
 
             var output = nodes.Select(d =>
             {
-                var title = d.Attributes["title"].Value;
-                var link = new Uri(RootUri, d.Attributes["href"].Value);
-                return new Chapter(series, link, title);
+                var titleNode = d.QuerySelector("div.title a");
+                var metaNode = d.QuerySelector("div.meta_r");
+
+                var title = titleNode.Attributes["title"].Value;
+                var link = new Uri(RootUri, titleNode.Attributes["href"].Value);
+                var date = metaNode.TextContent;
+                return new Chapter(series, link, title) { Updated = date };
             }).Reverse().ToArray();
+
+            series.Updated = output.Last().Updated;
             return output;
         }
 
