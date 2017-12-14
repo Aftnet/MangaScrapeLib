@@ -1,18 +1,16 @@
 ﻿using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repository
 {
     internal sealed class MangaStreamRepository : RepositoryBase
     {
-        private static readonly Uri MangaIndexUri = new Uri("http://mangastream.com/manga/");
+        private static readonly Uri MangaIndexUri = new Uri("https://readms.net/manga");
 
-        public MangaStreamRepository() : base("Mangastream", "http://mangastream.com/", "MangaStream.png", false)
+        public MangaStreamRepository(IWebClient webClient) : base(webClient, "Mangastream", "https://readms.net/", "MangaStream.png", false)
         {
         }
 
@@ -23,7 +21,12 @@ namespace MangaScrapeLib.Repository
             var tableNode = document.QuerySelector("table.table-striped") as AngleSharp.Dom.Html.IHtmlTableElement;
             var linkNodes = tableNode.QuerySelectorAll("strong a");
             var updateNodes = tableNode.QuerySelectorAll("a.chapter-link");
-            var output = linkNodes.Zip(updateNodes, (d, e) => new Series(this, new Uri(d.Attributes["href"].Value), d.TextContent) { Updated = e.TextContent }).ToArray();
+            var output = linkNodes.Zip(updateNodes, (d, e) =>
+            {
+                var uri = new Uri(RootUri, d.Attributes["href"].Value);
+                var series = new Series(this, uri, d.TextContent) { Updated = e.TextContent };
+                return series;
+            }).ToArray();
             return output;
         }
 
@@ -37,7 +40,7 @@ namespace MangaScrapeLib.Repository
             {
                 var linkNode = d.QuerySelector("a");
                 var datenode = d.QuerySelectorAll("td").Skip(1);
-                var chapter = new Chapter((Series)input, new Uri(linkNode.Attributes["href"].Value), linkNode.TextContent) { Updated = datenode.First().TextContent.Trim() };
+                var chapter = new Chapter((Series)input, new Uri(RootUri, linkNode.Attributes["href"].Value), linkNode.TextContent) { Updated = datenode.First().TextContent.Trim() };
                 return chapter;
             }).Reverse().ToArray();
 
@@ -60,7 +63,7 @@ namespace MangaScrapeLib.Repository
         {
             var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri);
             var document = Parser.Parse(html);
-            var listNode = document.QuerySelectorAll("ul.dropdown-menu")[2];
+            var listNode = document.QuerySelector("div.btn-reader-page ul.dropdown-menu");
 
             var linksNodes = listNode.QuerySelectorAll("a");
 
@@ -73,26 +76,22 @@ namespace MangaScrapeLib.Repository
             {
                 var lastLinkNode = linksNodes.Last();
 
-                var output = new List<Page>();
-
-                var uri = lastLinkNode.Attributes["href"].Value;
-                var lastPage = 0;
-
-                var couldParseLastPageNumber = int.TryParse(ExtensionMethods.GetLastUriSegment(uri), out lastPage);
-
-                if (!couldParseLastPageNumber)
+                var baseUri = new Uri(RootUri, lastLinkNode.Attributes["href"].Value);
+                if (!int.TryParse(baseUri.Segments.Last(), out int lastPageNumber))
                 {
                     return new Page[0];
                 }
 
-                var baseUri = ExtensionMethods.TruncateLastUriSegment(uri);
-
-                for (var i = 1; i <= lastPage; i++)
+                var baseUriString = baseUri.ToString();
+                var pageUris = Enumerable.Range(1, lastPageNumber).Select(d =>
                 {
-                    output.Add(new Page((Chapter)input, new Uri(baseUri + i), i));
-                }
+                    var pageUriString = baseUriString.Substring(0, baseUriString.LastIndexOf('/'));
+                    pageUriString = $"{pageUriString}/{d}";
+                    return new Uri(pageUriString);
+                }).ToArray();
 
-                return output.ToArray();
+                var output = pageUris.Select((d, e) => new Page((Chapter)input, d, e + 1)).ToArray();
+                return output;
             }
             catch (InvalidOperationException e)
             {

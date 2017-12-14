@@ -1,4 +1,4 @@
-﻿using System;
+﻿using MangaScrapeLib.Test.Tools;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,31 +10,53 @@ namespace MangaScrapeLib.Test.Repository
     ///This is a test class for MangaRepositoryTest and is intended
     ///to contain all MangaRepositoryTest Unit Tests
     ///</summary>
-    public abstract class MangaRepositoryTestBase
+    public abstract class MangaRepositoryTestBase : IClassFixture<WebCache>
     {
         private const string RootDir = "C:\\";
         private readonly HashSet<string> UniqueParsedValues = new HashSet<string>();
 
-        protected abstract IRepository Repository { get; }
+        protected abstract IRepository GenerateRepository(WebCache webClient);
+
+        private readonly IRepository Repository;
+
+        public MangaRepositoryTestBase(WebCache client)
+        {
+            Repository = GenerateRepository(client);
+        }
 
         [Fact]
-        public async Task ParsingWorks()
+        public async Task GettingDefaultSeriesWorks()
         {
             var series = await Repository.GetSeriesAsync();
-            Assert.True(series.Any());
+            Assert.NotEmpty(series);
             foreach (var i in series)
             {
-                Assert.Same(Repository, i.ParentRepository);
                 CheckParsedStringValidity(i.Title, true);
                 Assert.NotNull(i.SeriesPageUri);
                 CheckParsedStringValidity(i.SeriesPageUri.ToString(), true);
                 CheckParsedStringValidity(i.SuggestPath(RootDir), true);
             }
+        }
 
-            UniqueParsedValues.Clear();
+        [Fact]
+        public async Task LoadingSeriesFromDataWorks()
+        {
+            var series = await Repository.GetSeriesAsync();
+            var selectedSeries = series.First(d => d.SeriesPageUri.Host == Repository.RootUri.Host);
 
-            var selectedSeries = series.First();
-            selectedSeries = Repository.GetSeriesFromData(selectedSeries.SeriesPageUri, selectedSeries.Title);
+            selectedSeries = Repositories.GetSeriesFromData(selectedSeries.SeriesPageUri, selectedSeries.Title);
+            Assert.Equal(Repository.RootUri, selectedSeries.ParentRepository.RootUri);
+
+            var chapters = await selectedSeries.GetChaptersAsync();
+            Assert.NotEmpty(chapters);
+        }
+
+        [Fact]
+        public async Task GettingChaptersWorks()
+        {
+            var series = await Repository.GetSeriesAsync();
+            var selectedSeries = series.First(d => d.SeriesPageUri.Host == Repository.RootUri.Host);
+
             var chapters = await selectedSeries.GetChaptersAsync();
 
             if (Repository.SupportsCover) Assert.NotNull(selectedSeries.CoverImageUri);
@@ -43,24 +65,29 @@ namespace MangaScrapeLib.Test.Repository
             if (Repository.SupportsLastUpdateTime) Assert.True(!string.IsNullOrEmpty(selectedSeries.Updated));
             if (Repository.SupportsTags) Assert.True(!string.IsNullOrEmpty(selectedSeries.Tags));
 
-            Assert.True(chapters.Any());
+            Assert.NotEmpty(chapters);
             foreach (var i in chapters)
             {
                 CheckParsedStringValidity(i.Title, true);
-                Assert.False(string.IsNullOrEmpty(i.Updated));
+                Assert.NotEmpty(i.Updated);
                 Assert.Same(selectedSeries, i.ParentSeries);
                 Assert.NotNull(i.FirstPageUri);
                 CheckParsedStringValidity(i.FirstPageUri.ToString(), true);
 
                 CheckParsedStringValidity(i.SuggestPath(RootDir), true);
             }
+        }
 
-            //Some repositories have a chapter's first page placed at chapter page. Clear uniqies values before testing.
-            UniqueParsedValues.Clear();
+        [Fact]
+        public async Task GettingPagesWorks()
+        {
+            var series = await Repository.GetSeriesAsync();
+            var selectedSeries = series.First(d => d.SeriesPageUri.Host == Repository.RootUri.Host);
+            var chapters = await selectedSeries.GetChaptersAsync();
+            var selectedChapter = chapters.First();
 
-            var selectedChapter = chapters[0];
             var pages = await selectedChapter.GetPagesAsync();
-            Assert.True(pages.Any());
+            Assert.NotEmpty(pages);
             var ctr = 1;
             foreach (var i in pages)
             {
@@ -71,12 +98,21 @@ namespace MangaScrapeLib.Test.Repository
                 Assert.Equal(ctr, i.PageNo);
                 ctr++;
             }
+        }
 
-            var selectedPage = pages[0];
+        [Fact]
+        public async Task GettingPageImageWorks()
+        {
+            var series = await Repository.GetSeriesAsync();
+            var selectedSeries = series.First(d => d.SeriesPageUri.Host == Repository.RootUri.Host);
+            var chapters = await selectedSeries.GetChaptersAsync();
+            var selectedChapter = chapters.First();
+            var pages = await selectedChapter.GetPagesAsync();
+            var selectedPage = pages.First();
+
             var imageBytes = await selectedPage.GetImageAsync();
-            Assert.NotNull(imageBytes);
-            Assert.True(imageBytes.Any());
             Assert.NotNull(selectedPage.ImageUri);
+            Assert.NotEmpty(imageBytes);
 
             CheckParsedStringValidity(selectedPage.SuggestPath(RootDir), true);
         }
@@ -91,7 +127,7 @@ namespace MangaScrapeLib.Test.Repository
             {
                 Assert.Same(Repository, i.ParentRepository);
                 CheckParsedStringValidity(i.Title, true);
-                Assert.True(i.Title.ToLowerInvariant().Contains(searchQuery));
+                Assert.Contains(searchQuery, i.Title.ToLowerInvariant());
                 Assert.NotNull(i.SeriesPageUri);
                 CheckParsedStringValidity(i.SeriesPageUri.ToString(), true);
 

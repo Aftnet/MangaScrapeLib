@@ -10,7 +10,8 @@
     <PackageTags>manga scraper</PackageTags>
     <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <SignAssembly>False</SignAssembly>
-    <Version>4.2.1</Version>
+    <Version>4.3.1</Version>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,7 @@
     <None Remove="Resources\MangaStream.png" />
     <None Remove="Resources\MangaSupa.png" />
     <None Remove="Resources\MyManga.png" />
+    <None Remove="Resources\SenManga.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +35,7 @@
     <EmbeddedResource Include="Resources\MangaStream.png" />
     <EmbeddedResource Include="Resources\MangaSupa.png" />
     <EmbeddedResource Include="Resources\MyManga.png" />
+    <EmbeddedResource Include="Resources\SenManga.png" />
   </ItemGroup>
 
   <ItemGroup>

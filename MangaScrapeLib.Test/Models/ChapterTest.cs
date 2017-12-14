@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MangaScrapeLib.Test.Models
@@ -6,33 +7,34 @@ namespace MangaScrapeLib.Test.Models
     public class ChapterTest
     {
         private static IRepository TargetRepository => Repositories.EatManga;
-        private static readonly Uri ValidChapterUri = new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/testch/");
+        private const string ValidChapterUri = "http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/testch/";
+        private const string ValidChapterTitle = "Test chapter";
 
-        private ISeries TestSeries = TargetRepository.GetSeriesFromData(SeriesTest.ValidSeriesUri, "SomeTitle");
+        private ISeries TestSeries = Repositories.GetSeriesFromData(new Uri(SeriesTest.ValidSeriesUri), "SomeTitle");
 
-        [Fact]
-        public void CreateFromDataWorks()
+        public static IEnumerable<object[]> CreateFromDataWorksData()
         {
-            Assert.NotNull(TestSeries.GetSingleChapterFromData(ValidChapterUri, "Test chapter"));
+            yield return new object[] { ValidChapterUri, ValidChapterTitle, true };
+            yield return new object[] { null, ValidChapterTitle, false };
+            yield return new object[] { "http://omg.lol/", ValidChapterTitle, false };
+            yield return new object[] { ValidChapterUri, null, false };
+            yield return new object[] { ValidChapterUri, string.Empty, false };
+            yield return new object[] { ValidChapterUri, " ", false };
         }
 
-        [Fact]
-        public void CreateFromDataRejectsUnsupportedUri()
+        [Theory]
+        [MemberData(nameof(CreateFromDataWorksData))]
+        public void CreateFromDataWorks(string uri, string title, bool shouldSucceed)
         {
-            var invalidUris = new Uri[] { null, new Uri("http://omg.lol/") };
-            foreach (var i in invalidUris)
+            var output = TestSeries.GetSingleChapterFromData(uri == null ? null : new Uri(uri), title);
+            if (shouldSucceed)
             {
-                Assert.Null(TestSeries.GetSingleChapterFromData(i, "Test chapter"));
+                Assert.NotNull(output);
+                Assert.Same(TestSeries, output.ParentSeries);
             }
-        }
-
-        [Fact]
-        public void CreateFromDataRejectsInvalidTitle()
-        {
-            var invalidTitles = new string[] { null, string.Empty, "  " };
-            foreach (var i in invalidTitles)
+            else
             {
-                Assert.Null(TestSeries.GetSingleChapterFromData(ValidChapterUri, i));
+                Assert.Null(output);
             }
         }
     }

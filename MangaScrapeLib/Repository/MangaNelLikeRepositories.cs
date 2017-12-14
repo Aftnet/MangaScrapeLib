@@ -2,7 +2,9 @@
 using MangaScrapeLib.Tools;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -10,9 +12,9 @@ namespace MangaScrapeLib.Repository
 {
     internal class MangaNelRepository : MangaNelLikeRepository
     {
-        private const string RepoRootUriString = "http://manganel.com/";
+        private const string RepoRootUriString = "http://manganelo.com/";
 
-        public MangaNelRepository() : base("Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home/getjsonsearchstory?searchword={{0}}&search_style=tentruyen")
+        public MangaNelRepository(IWebClient webClient) : base(webClient, "Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home/getjson_searchstory")
         {
         }
     }
@@ -21,7 +23,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "http://mangakakalot.com/";
 
-        public MangaKakalotRepository() : base("MangaKakalot", RepoRootUriString, "MangaKakalot.png", $"{RepoRootUriString}home/getjsonsearchstory?searchword={{0}}&search_style=tentruyen")
+        public MangaKakalotRepository(IWebClient webClient) : base(webClient, "MangaKakalot", RepoRootUriString, "MangaKakalot.png", $"{RepoRootUriString}home/getjson_searchstory")
         {
         }
     }
@@ -30,7 +32,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "http://mangasupa.com/";
 
-        public MangaSupaRepository() : base("MangaSupa", RepoRootUriString, "MangaSupa.png", $"{RepoRootUriString}getsearchstory?searchword={{0}}")
+        public MangaSupaRepository(IWebClient webClient) : base(webClient, "MangaSupa", RepoRootUriString, "MangaSupa.png", $"{RepoRootUriString}getsearchstory")
         {
         }
 
@@ -110,7 +112,7 @@ namespace MangaScrapeLib.Repository
 
         private static readonly string[] SupuriousTitleText = { "<span style=\"color: #FF530D;font-weight: bold;\">", "</span>" };
 
-        protected MangaNelLikeRepository(string name, string uriString, string iconFileName, string searchUriPattern) : base(name, uriString, iconFileName, true)
+        protected MangaNelLikeRepository(IWebClient webClient, string name, string uriString, string iconFileName, string searchUriPattern) : base(webClient, name, uriString, iconFileName, true)
         {
             SearchUriPattern = searchUriPattern;
             ReadUriPattern = $"{RootUri.ToString()}manga/{{0}}";
@@ -132,7 +134,7 @@ namespace MangaScrapeLib.Repository
                 var title = titleNode.TextContent;
 
                 var dateNode = d.QuerySelector("ul li:nth-child(2) i");
-                return new Series(this, uri, title)
+                return new Series(Repositories.DetermineOwnerRepository(uri) as RepositoryBase, uri, title)
                 {
                     CoverImageUri = coverUri,
                     Updated = dateNode.TextContent
@@ -144,10 +146,14 @@ namespace MangaScrapeLib.Repository
 
         public override async Task<ISeries[]> SearchSeriesAsync(string query)
         {
-            var uriQuery = Uri.EscapeDataString(query);
-            var searchUri = new Uri(string.Format(SearchUriPattern, uriQuery));
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("searchword", query),
+                new KeyValuePair<string, string>("search_style", "tentruyen")
+            });
 
-            var json = await WebClient.GetStringAsync(searchUri, RootUri);
+            var response = await WebClient.PostAsync(content, new Uri(SearchUriPattern), RootUri);
+            var json = await response.Content.ReadAsStringAsync();
             var searchResult = JsonConvert.DeserializeObject<SearchEntry[]>(json);
 
             var output = searchResult.Select(d =>

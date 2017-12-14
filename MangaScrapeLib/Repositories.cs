@@ -1,5 +1,8 @@
-﻿using MangaScrapeLib.Repository;
+﻿using MangaScrapeLib.Models;
+using MangaScrapeLib.Repository;
+using MangaScrapeLib.Tools;
 using System;
+using System.Linq;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("MangaScrapeLib.Test")]
 
@@ -7,45 +10,60 @@ namespace MangaScrapeLib
 {
     public static class Repositories
     {
-        private static EatMangaRepository eatManga = new EatMangaRepository();
-        public static IRepository EatManga => eatManga;
+        public static IRepository EatManga { get; private set; }
 
-        private static MangaEdenRepository mangaEden = new MangaEdenRepository();
-        public static IRepository MangaEden => mangaEden;
+        public static IRepository MangaEden { get; private set; }
 
-        private static MangaHereRepository mangaHere = new MangaHereRepository();
         //public static IRepository MangaHere => mangaHere;
 
-        private static MangaKakalotRepository mangaKakalot = new MangaKakalotRepository();
-        public static IRepository MangaKakalot => mangaKakalot;
+        public static IRepository MangaKakalot { get; private set; }
 
-        private static MangaNelRepository mangaNel = new MangaNelRepository();
-        public static IRepository MangaNel => mangaNel;
+        public static IRepository MangaNel { get; private set; }
 
-        private static MangaStreamRepository mangaStream = new MangaStreamRepository();
-        public static IRepository MangaStream => mangaStream;
+        public static IRepository MangaStream { get; private set; }
 
-        private static MangaSupaRepository mangaSupa = new MangaSupaRepository();
-        public static IRepository MangaSupa => mangaSupa;
+        public static IRepository MangaSupa { get; private set; }
 
-        private static MyMangaRepository myManga = new MyMangaRepository();
         //public static IRepository MyManga => myManga;
 
-        private static IRepository[] allRepositories = { EatManga, MangaEden, MangaKakalot, MangaNel, MangaStream, MangaSupa };
-        public static IRepository[] AllRepositories => allRepositories;
+        public static IRepository SenManga { get; private set; }
 
-        public static ISeries GetSeriesFromData(Uri uri, string name)
+        public static IRepository[] AllRepositories { get; private set; }
+
+        static Repositories()
         {
-            ISeries output = null;
-            foreach (var i in AllRepositories)
+            var client = new WebClient();
+
+            EatManga = new EatMangaRepository(client);
+            MangaEden = new MangaEdenRepository(client);
+            MangaKakalot = new MangaKakalotRepository(client);
+            MangaNel = new MangaNelRepository(client);
+            MangaStream = new MangaStreamRepository(client);
+            MangaSupa = new MangaSupaRepository(client);
+            SenManga = new SenMangaRepository(client);
+
+            AllRepositories = new IRepository[] { EatManga, MangaEden, MangaKakalot, MangaNel, MangaStream, MangaSupa, SenManga };
+        }
+
+        internal static IRepository DetermineOwnerRepository(Uri uri)
+        {
+            return AllRepositories.FirstOrDefault(d => d.RootUri.Host == uri.Host);
+        }
+
+        public static ISeries GetSeriesFromData(Uri uri, string title)
+        {
+            if (uri == null || string.IsNullOrEmpty(title) || string.IsNullOrWhiteSpace(title))
             {
-                output = i.GetSeriesFromData(uri, name);
-                if (output != null)
-                {
-                    return output;
-                }
+                return null;
             }
 
+            var repository = DetermineOwnerRepository(uri) as RepositoryBase;
+            if (repository == null)
+            {
+                return null;
+            }
+
+            var output = new Series(repository, uri, title);
             return output;
         }
     }

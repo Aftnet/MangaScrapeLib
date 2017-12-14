@@ -1,39 +1,38 @@
 ﻿using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace MangaScrapeLib.Test.Models
 {
     public class SeriesTest
     {
-        private static IRepository TargetRepository => Repositories.EatManga;
-        public static readonly Uri ValidSeriesUri = new Uri("http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/");
+        public static IRepository TargetRepository => Repositories.EatManga;
+        public const string ValidSeriesUri = "http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/";
+        public const string ValidSeriesTitle = "SomeTitle";
 
-        [Fact]
-        public void CreateFromDataWorks()
+        public static IEnumerable<object[]> CreateFromDataWorksData()
         {
-            var output = Repositories.GetSeriesFromData(ValidSeriesUri, "SomeTitle");
-            Assert.NotNull(output);
-            Assert.Same(TargetRepository, output.ParentRepository);
+            yield return new object[] { ValidSeriesUri, ValidSeriesTitle, true };
+            yield return new object[] { null, ValidSeriesTitle, false };
+            yield return new object[] { "http://omg.lol/", ValidSeriesTitle, false };
+            yield return new object[] { ValidSeriesUri, null, false };
+            yield return new object[] { ValidSeriesUri, string.Empty, false };
+            yield return new object[] { ValidSeriesUri, " ", false };
         }
 
-        [Fact]
-        public void CreateFromDataRejectsUnsupportedUri()
+        [Theory]
+        [MemberData(nameof(CreateFromDataWorksData))]
+        public void CreateFromDataWorks(string uri, string title, bool shouldSucceed)
         {
-            var invalidUris = new Uri[] { null, new Uri("http://omg.lol/") };
-
-            foreach (var i in invalidUris)
+            var output = Repositories.GetSeriesFromData(uri == null ? null : new Uri(uri), title);
+            if(shouldSucceed)
             {
-                Assert.Null(Repositories.GetSeriesFromData(i, "SomeTitle"));
+                Assert.NotNull(output);
+                Assert.Same(TargetRepository, output.ParentRepository);
             }
-        }
-
-        [Fact]
-        public void CreateFromDataRejectsInvalidTitle()
-        {
-            var invalidTitles = new string[] { null, string.Empty, "  " };
-            foreach (var i in invalidTitles)
+            else
             {
-                Assert.Null(Repositories.GetSeriesFromData(ValidSeriesUri, i));
+                Assert.Null(output);
             }
         }
     }
