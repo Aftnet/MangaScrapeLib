@@ -112,14 +112,39 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override Task<byte[]> GetImageAsync(IPage input)
+        internal override async Task<byte[]> GetImageAsync(IPage input)
         {
-            throw new NotImplementedException();
+            var html = await WebClient.GetStringAsync(input.PageUri, RootUri);
+            var document = Parser.Parse(html);
+
+            var page = input as Page;
+
+            var node = document.QuerySelector("img#picture");
+            page.ImageUri = new Uri(RootUri, node.Attributes["src"].Value);
+
+            var output = await WebClient.GetByteArrayAsync(page.ImageUri, input.PageUri);
+            return output;
         }
 
-        internal override Task<IPage[]> GetPagesAsync(IChapter input)
+        internal override async Task<IPage[]> GetPagesAsync(IChapter input)
         {
-            throw new NotImplementedException();
+            var html = await WebClient.GetStringAsync(input.FirstPageUri, RootUri);
+            var document = Parser.Parse(html);
+
+            var chapter = input as Chapter;
+
+            var uriRoot = input.FirstPageUri.ToString();
+            uriRoot = uriRoot.Substring(0, uriRoot.LastIndexOf("/"));
+
+            var node = document.QuerySelectorAll("select[name=page] option").Last();
+            var lastPageNo = int.Parse(node.Attributes["value"].Value);
+            var output = Enumerable.Range(1, lastPageNo).Select(d =>
+            {
+                var uri = new Uri(RootUri, $"{uriRoot}/{d}");
+                return new Page(chapter, uri, d);
+            }).ToArray();
+
+            return output;
         }
     }
 }
