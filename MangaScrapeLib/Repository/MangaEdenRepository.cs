@@ -74,6 +74,11 @@ namespace MangaScrapeLib.Repository
 
         public override async Task<ISeries[]> SearchSeriesAsync(string query)
         {
+            if (string.IsNullOrEmpty(query) || string.IsNullOrWhiteSpace(query))
+            {
+                return new ISeries[0];
+            }
+
             var searchUri = new Uri(string.Format(SearchUriPattern, query));
             var json = await WebClient.GetStringAsync(searchUri, RootUri);
             var result = JsonConvert.DeserializeObject<JsonSeries[]>(json);

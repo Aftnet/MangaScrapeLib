@@ -117,12 +117,18 @@ namespace MangaScrapeLib.Test.Repository
             CheckParsedStringValidity(selectedPage.SuggestPath(RootDir), true);
         }
 
-        [Fact]
-        public async Task SearchWorks()
+        [Theory]
+        [InlineData("", false)]
+        [InlineData("a", false)]
+        [InlineData("one", true)]
+        public async Task SearchWorks(string searchQuery, bool requiresResults)
         {
-            var searchQuery = "one";
             var searchResult = await Repository.SearchSeriesAsync(searchQuery);
-            Assert.True(searchResult.Any());
+            if(requiresResults)
+            {
+                Assert.NotEmpty(searchResult);
+            }
+
             foreach (var i in searchResult)
             {
                 Assert.Same(Repository, i.ParentRepository);
@@ -140,7 +146,7 @@ namespace MangaScrapeLib.Test.Repository
         {
             var searchQuery = "fbywguewvugewf";
             var searchResult = await Repository.SearchSeriesAsync(searchQuery);
-            Assert.False(searchResult.Any());
+            Assert.Empty(searchResult);
         }
 
         [Fact]
@@ -167,7 +173,7 @@ namespace MangaScrapeLib.Test.Repository
             Assert.False(string.IsNullOrWhiteSpace(input));
             if(shouldBeUnique)
             {
-                Assert.False(UniqueParsedValues.Contains(input), "Duplicate value detected when parsing");
+                Assert.DoesNotContain(input, UniqueParsedValues);
                 UniqueParsedValues.Add(input);
             }
         }
