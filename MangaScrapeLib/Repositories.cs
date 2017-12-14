@@ -1,4 +1,5 @@
-﻿using MangaScrapeLib.Repository;
+﻿using MangaScrapeLib.Models;
+using MangaScrapeLib.Repository;
 using MangaScrapeLib.Tools;
 using System;
 using System.Linq;
@@ -44,6 +45,11 @@ namespace MangaScrapeLib
             AllRepositories = new IRepository[] { EatManga, MangaEden, MangaKakalot, MangaNel, MangaStream, MangaSupa, SenManga };
         }
 
+        internal static IRepository DetermineOwnerRepository(Uri uri)
+        {
+            return AllRepositories.FirstOrDefault(d => d.RootUri.Host == uri.Host);
+        }
+
         public static ISeries GetSeriesFromData(Uri uri, string title)
         {
             if (uri == null || string.IsNullOrEmpty(title) || string.IsNullOrWhiteSpace(title))
@@ -51,14 +57,14 @@ namespace MangaScrapeLib
                 return null;
             }
 
-            var repository = DetermineOwnerRepository(uri);
-            var output = repository?.GetSeriesFromData(uri, title);
-            return output;
-        }
+            var repository = DetermineOwnerRepository(uri) as RepositoryBase;
+            if (repository == null)
+            {
+                return null;
+            }
 
-        internal static IRepository DetermineOwnerRepository(Uri uri)
-        {
-            return AllRepositories.FirstOrDefault(d => d.RootUri.Host == uri.Host);
+            var output = new Series(repository, uri, title);
+            return output;
         }
     }
 }

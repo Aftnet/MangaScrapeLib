@@ -10,7 +10,7 @@ namespace MangaScrapeLib.Test.Models
         private const string ValidChapterUri = "http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/testch/";
         private const string ValidChapterTitle = "Test chapter";
 
-        private ISeries TestSeries = TargetRepository.GetSeriesFromData(new Uri(SeriesTest.ValidSeriesUri), "SomeTitle");
+        private ISeries TestSeries = Repositories.GetSeriesFromData(new Uri(SeriesTest.ValidSeriesUri), "SomeTitle");
 
         public static IEnumerable<object[]> CreateFromDataWorksData()
         {

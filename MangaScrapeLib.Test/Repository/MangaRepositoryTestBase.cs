@@ -44,7 +44,9 @@ namespace MangaScrapeLib.Test.Repository
             var series = await Repository.GetSeriesAsync();
             var selectedSeries = series.First(d => d.SeriesPageUri.Host == Repository.RootUri.Host);
 
-            selectedSeries = Repository.GetSeriesFromData(selectedSeries.SeriesPageUri, selectedSeries.Title);
+            selectedSeries = Repositories.GetSeriesFromData(selectedSeries.SeriesPageUri, selectedSeries.Title);
+            Assert.Equal(Repository.RootUri, selectedSeries.ParentRepository.RootUri);
+
             var chapters = await selectedSeries.GetChaptersAsync();
             Assert.NotEmpty(chapters);
         }
