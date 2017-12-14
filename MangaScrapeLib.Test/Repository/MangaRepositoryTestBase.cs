@@ -33,7 +33,7 @@ namespace MangaScrapeLib.Test.Repository
 
             UniqueParsedValues.Clear();
 
-            var selectedSeries = series.First();
+            var selectedSeries = series.First(d => d.SeriesPageUri.Host == Repository.RootUri.Host);
             selectedSeries = Repository.GetSeriesFromData(selectedSeries.SeriesPageUri, selectedSeries.Title);
             var chapters = await selectedSeries.GetChaptersAsync();
 
