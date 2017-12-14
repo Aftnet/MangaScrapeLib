@@ -38,7 +38,7 @@ namespace MangaScrapeLib
 
             EatManga = new EatMangaRepository(client);
             MangaEdenEn = new MangaEdenEnRepository(client);
-            MangaEdenEn = new MangaEdenItRepository(client);
+            MangaEdenIt = new MangaEdenItRepository(client);
             MangaKakalot = new MangaKakalotRepository(client);
             MangaNel = new MangaNelRepository(client);
             MangaStream = new MangaStreamRepository(client);
