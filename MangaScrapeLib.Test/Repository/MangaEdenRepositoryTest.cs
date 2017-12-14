@@ -1,7 +1,17 @@
-﻿namespace MangaScrapeLib.Test.Repository
+﻿using MangaScrapeLib.Repository;
+using MangaScrapeLib.Test.Tools;
+
+namespace MangaScrapeLib.Test.Repository
 {
     public class MangaEdenRepositoryTest : MangaRepositoryTestBase
     {
-        protected override IRepository Repository => Repositories.MangaEden;
+        public MangaEdenRepositoryTest(WebCache client) : base(client)
+        {
+        }
+
+        protected override IRepository GenerateRepository(WebCache client)
+        {
+            return new MangaEdenRepository(client);
+        }
     }
 }

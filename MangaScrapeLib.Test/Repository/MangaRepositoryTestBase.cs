@@ -1,4 +1,4 @@
-﻿using System;
+﻿using MangaScrapeLib.Test.Tools;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,12 +10,19 @@ namespace MangaScrapeLib.Test.Repository
     ///This is a test class for MangaRepositoryTest and is intended
     ///to contain all MangaRepositoryTest Unit Tests
     ///</summary>
-    public abstract class MangaRepositoryTestBase
+    public abstract class MangaRepositoryTestBase : IClassFixture<WebCache>
     {
         private const string RootDir = "C:\\";
         private readonly HashSet<string> UniqueParsedValues = new HashSet<string>();
 
-        protected abstract IRepository Repository { get; }
+        protected abstract IRepository GenerateRepository(WebCache webClient);
+
+        private readonly IRepository Repository;
+
+        public MangaRepositoryTestBase(WebCache client)
+        {
+            Repository = GenerateRepository(client);
+        }
 
         [Fact]
         public async Task ParsingWorks()
