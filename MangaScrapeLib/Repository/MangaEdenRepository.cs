@@ -7,7 +7,21 @@ using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repository
 {
-    internal sealed class MangaEdenRepository : RepositoryBase
+    internal sealed class MangaEdenEnRepository : MangaEdenRepository
+    {
+        public MangaEdenEnRepository(IWebClient webClient) : base(webClient, "Manga Eden (EN)", "en/en-directory/", " - EN")
+        {
+        }
+    }
+
+    internal sealed class MangaEdenItRepository : MangaEdenRepository
+    {
+        public MangaEdenItRepository(IWebClient webClient) : base(webClient, "Manga Eden (IT)", "en/it-directory/", " - IT")
+        {
+        }
+    }
+
+    internal class MangaEdenRepository : RepositoryBase
     {
         private class JsonSeries
         {
@@ -21,11 +35,15 @@ namespace MangaScrapeLib.Repository
             public string Label { get; set; }
         }
 
-        private static readonly Uri MangaIndexUri = new Uri("http://www.mangaeden.com/en/en-directory/");
         private const string SearchUriPattern = "http://www.mangaeden.com/ajax/search-manga/?term={0}";
 
-        public MangaEdenRepository(IWebClient webClient) : base(webClient, "Manga Eden", "http://www.mangaeden.com/", "MangaEden.png", true)
+        private readonly Uri MangaIndexUri;
+        private readonly string SearchLabelLanguageSuffix;
+
+        protected MangaEdenRepository(IWebClient webClient, string name, string mangaIndexUri, string searchLabelLanguageSuffix) : base(webClient, name, "http://www.mangaeden.com/", "MangaEden.png", true)
         {
+            MangaIndexUri = new Uri(RootUri, mangaIndexUri);
+            SearchLabelLanguageSuffix = searchLabelLanguageSuffix;
         }
 
         public override async Task<ISeries[]> GetSeriesAsync()
@@ -60,7 +78,8 @@ namespace MangaScrapeLib.Repository
             var json = await WebClient.GetStringAsync(searchUri, RootUri);
             var result = JsonConvert.DeserializeObject<JsonSeries[]>(json);
 
-            var output = result.Where(d => d.Title.ToLowerInvariant().Contains(query.ToLowerInvariant()))
+            var output = result.Where(d => d.Label.EndsWith(SearchLabelLanguageSuffix))
+                .Where(d => d.Title.ToLowerInvariant().Contains(query.ToLowerInvariant()))
                 .Select(d => new Series(this as RepositoryBase, new Uri(RootUri, d.Uri), d.Title) as ISeries)
                 .OrderBy(d => d.Title).ToArray();
             return output;
