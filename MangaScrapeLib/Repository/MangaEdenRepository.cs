@@ -3,6 +3,7 @@ using MangaScrapeLib.Tools;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repository
@@ -46,9 +47,14 @@ namespace MangaScrapeLib.Repository
             SearchLabelLanguageSuffix = searchLabelLanguageSuffix;
         }
 
-        public override async Task<ISeries[]> GetSeriesAsync()
+        public override async Task<ISeries[]> GetSeriesAsync(CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(MangaIndexUri, RootUri);
+            var html = await WebClient.GetStringAsync(MangaIndexUri, RootUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var table = document.QuerySelector("#mangaList");
@@ -72,7 +78,7 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        public override async Task<ISeries[]> SearchSeriesAsync(string query)
+        public override async Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token)
         {
             if (string.IsNullOrEmpty(query) || string.IsNullOrWhiteSpace(query))
             {
@@ -80,7 +86,12 @@ namespace MangaScrapeLib.Repository
             }
 
             var searchUri = new Uri(string.Format(SearchUriPattern, query));
-            var json = await WebClient.GetStringAsync(searchUri, RootUri);
+            var json = await WebClient.GetStringAsync(searchUri, RootUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             var result = JsonConvert.DeserializeObject<JsonSeries[]>(json);
 
             var output = result.Where(d => d.Label.EndsWith(SearchLabelLanguageSuffix))
@@ -90,10 +101,15 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
+        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token)
         {
             var inputAsSeries = (Series)input;
-            var html = await WebClient.GetStringAsync(input.SeriesPageUri, MangaIndexUri);
+            var html = await WebClient.GetStringAsync(input.SeriesPageUri, MangaIndexUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             GetSeriesInfo(inputAsSeries, html);
             var document = Parser.Parse(html);
 
@@ -112,9 +128,14 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IPage[]> GetPagesAsync(IChapter input)
+        internal override async Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri);
+            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var selectNode = document.QuerySelector("select#pageSelect");
@@ -123,16 +144,26 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<byte[]> GetImageAsync(IPage input)
+        internal override async Task<byte[]> GetImageAsync(IPage input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.PageUri, input.ParentChapter.FirstPageUri);
+            var html = await WebClient.GetStringAsync(input.PageUri, input.ParentChapter.FirstPageUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var imageNode = document.QuerySelector("img#mainImg");
             var imageUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
 
             ((Page)input).ImageUri = new Uri(RootUri, imageUri);
-            var output = await WebClient.GetByteArrayAsync(imageUri, input.PageUri);
+            var output = await WebClient.GetByteArrayAsync(imageUri, input.PageUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             return output;
         }
 

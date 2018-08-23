@@ -3,6 +3,7 @@ using MangaScrapeLib.Tools;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repository
@@ -35,9 +36,14 @@ namespace MangaScrapeLib.Repository
 
         }
 
-        public override async Task<ISeries[]> GetSeriesAsync()
+        public override async Task<ISeries[]> GetSeriesAsync(CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(MangaIndexPage, RootUri);
+            var html = await WebClient.GetStringAsync(MangaIndexPage, RootUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var listNode = document.QuerySelector("ul.post-list");
@@ -59,10 +65,14 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        public override async Task<ISeries[]> SearchSeriesAsync(string query)
+        public override async Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token)
         {
             var searchUri = new Uri(string.Format(UriSearchPattern, query));
-            var json = await WebClient.GetStringAsync(searchUri, RootUri);
+            var json = await WebClient.GetStringAsync(searchUri, RootUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             try
             {
@@ -78,9 +88,14 @@ namespace MangaScrapeLib.Repository
             }
         }
 
-        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
+        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri);
+            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var series = input as Series;
@@ -112,9 +127,14 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<byte[]> GetImageAsync(IPage input)
+        internal override async Task<byte[]> GetImageAsync(IPage input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.PageUri, RootUri);
+            var html = await WebClient.GetStringAsync(input.PageUri, RootUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var page = input as Page;
@@ -122,13 +142,23 @@ namespace MangaScrapeLib.Repository
             var node = document.QuerySelector("img#picture");
             page.ImageUri = new Uri(RootUri, node.Attributes["src"].Value);
 
-            var output = await WebClient.GetByteArrayAsync(page.ImageUri, input.PageUri);
+            var output = await WebClient.GetByteArrayAsync(page.ImageUri, input.PageUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             return output;
         }
 
-        internal override async Task<IPage[]> GetPagesAsync(IChapter input)
+        internal override async Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.FirstPageUri, RootUri);
+            var html = await WebClient.GetStringAsync(input.FirstPageUri, RootUri, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var chapter = input as Chapter;
