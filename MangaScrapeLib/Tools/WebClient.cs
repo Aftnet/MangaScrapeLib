@@ -11,7 +11,8 @@ namespace MangaScrapeLib.Tools
         static WebClient()
         {
             Client = new HttpClient();
-            Client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64; rv:33.0) Gecko/20100101 Firefox/33.0");
+            Client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Android 8.1.0; Tablet; rv:59.0) Gecko/59.0 Firefox/59.0");
+            Client.DefaultRequestHeaders.Add("Accept", "text/html, application/xhtml+xml, */*");
         }
 
         public Task<string> GetStringAsync(Uri uri, Uri referrer)

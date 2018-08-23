@@ -1,6 +1,7 @@
 ﻿using MangaScrapeLib.Tools;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
@@ -22,9 +23,9 @@ namespace MangaScrapeLib.Models
             Updated = string.Empty;
         }
 
-        public virtual Task<IPage[]> GetPagesAsync()
+        public virtual Task<IPage[]> GetPagesAsync(CancellationToken token)
         {
-            return ParentSeriesInternal.ParentRepositoryInternal.GetPagesAsync(this);
+            return ParentSeriesInternal.ParentRepositoryInternal.GetPagesAsync(this, token);
         }
 
         public virtual string SuggestPath(string rootDirectoryPath)

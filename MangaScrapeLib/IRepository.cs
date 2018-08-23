@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib
@@ -15,7 +16,7 @@ namespace MangaScrapeLib
         bool SupportsTags { get; }
         bool SupportsDescription { get; }
 
-        Task<ISeries[]> GetSeriesAsync();
-        Task<ISeries[]> SearchSeriesAsync(string query);
+        Task<ISeries[]> GetSeriesAsync(CancellationToken token);
+        Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token);
     }
 }

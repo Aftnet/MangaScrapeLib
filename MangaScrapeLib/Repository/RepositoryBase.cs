@@ -1,10 +1,10 @@
 ﻿using AngleSharp.Parser.Html;
-using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repository
@@ -13,9 +13,9 @@ namespace MangaScrapeLib.Repository
     {
         protected readonly IWebClient WebClient;
 
-        internal abstract Task<IChapter[]> GetChaptersAsync(ISeries input);
-        internal abstract Task<IPage[]> GetPagesAsync(IChapter input);
-        internal abstract Task<byte[]> GetImageAsync(IPage input);
+        internal abstract Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token);
+        internal abstract Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token);
+        internal abstract Task<byte[]> GetImageAsync(IPage input, CancellationToken token);
 
         private ISeries[] AvailableSeries { get; set; }
 
@@ -68,16 +68,16 @@ namespace MangaScrapeLib.Repository
             this.supportsDescription = supportsDescription;
         }
 
-        public virtual Task<ISeries[]> GetSeriesAsync()
+        public virtual Task<ISeries[]> GetSeriesAsync(CancellationToken token)
         {
             return Task.FromResult(new ISeries[0]);
         }
 
-        public virtual async Task<ISeries[]> SearchSeriesAsync(string query)
+        public virtual async Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token)
         {
             if (AvailableSeries == null)
             {
-                AvailableSeries = await GetSeriesAsync();
+                AvailableSeries = await GetSeriesAsync(token);
             }
 
             var lowerQuery = query.ToLowerInvariant();

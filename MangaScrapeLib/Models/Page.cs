@@ -1,6 +1,7 @@
 ﻿using MangaScrapeLib.Tools;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
@@ -22,9 +23,9 @@ namespace MangaScrapeLib.Models
             PageNo = pageNo;
         }
 
-        public virtual Task<byte[]> GetImageAsync()
+        public virtual Task<byte[]> GetImageAsync(CancellationToken token)
         {
-            return ParentChapterInternal.ParentSeriesInternal.ParentRepositoryInternal.GetImageAsync(this);
+            return ParentChapterInternal.ParentSeriesInternal.ParentRepositoryInternal.GetImageAsync(this, token);
         }
 
         public virtual string SuggestPath(string rootDirectoryPath)

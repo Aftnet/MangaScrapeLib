@@ -2,6 +2,7 @@
 using MangaScrapeLib.Tools;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Models
@@ -9,7 +10,7 @@ namespace MangaScrapeLib.Models
     internal class Series : ISeries
     {
         public RepositoryBase ParentRepositoryInternal { get; private set; }
-        public IRepository ParentRepository => ParentRepositoryInternal;
+        public IRepository ParentRepository { get; }
 
         public Uri SeriesPageUri { get; private set; }
         public string Title { get; private set; }
@@ -28,9 +29,9 @@ namespace MangaScrapeLib.Models
             Updated = string.Empty;
         }
 
-        public virtual Task<IChapter[]> GetChaptersAsync()
+        public virtual Task<IChapter[]> GetChaptersAsync(CancellationToken token)
         {
-            return ParentRepositoryInternal.GetChaptersAsync(this);
+            return ParentRepositoryInternal.GetChaptersAsync(this, token);
         }
 
         public virtual string SuggestPath(string rootDirectoryPath)
