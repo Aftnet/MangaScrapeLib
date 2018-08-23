@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Tools
 {
     internal class WebClient : IWebClient
     {
-        protected static readonly HttpClient Client;
+        protected static HttpClient Client { get; }
 
         static WebClient()
         {
@@ -15,22 +16,36 @@ namespace MangaScrapeLib.Tools
             Client.DefaultRequestHeaders.Add("Accept", "text/html, application/xhtml+xml, */*");
         }
 
-        public Task<string> GetStringAsync(Uri uri, Uri referrer)
+        public async Task<string> GetStringAsync(Uri uri, Uri referrer, CancellationToken token)
         {
+            var output = default(string);
             Client.DefaultRequestHeaders.Referrer = referrer;
-            return Client.GetStringAsync(uri);
+            var result = await Client.GetAsync(uri, token);
+            if (result.IsSuccessStatusCode && !token.IsCancellationRequested)
+            {
+                output = await result.Content.ReadAsStringAsync();
+            }
+
+            return output;
         }
 
-        public Task<byte[]> GetByteArrayAsync(Uri uri, Uri referrer)
+        public async Task<byte[]> GetByteArrayAsync(Uri uri, Uri referrer, CancellationToken token)
         {
+            var output = default(byte[]);
             Client.DefaultRequestHeaders.Referrer = referrer;
-            return Client.GetByteArrayAsync(uri);
+            var result = await Client.GetAsync(uri, token);
+            if (result.IsSuccessStatusCode && !token.IsCancellationRequested)
+            {
+                output = await result.Content.ReadAsByteArrayAsync();
+            }
+
+            return output;
         }
 
-        public Task<HttpResponseMessage> PostAsync(HttpContent content, Uri uri, Uri referrer)
+        public Task<HttpResponseMessage> PostAsync(HttpContent content, Uri uri, Uri referrer, CancellationToken token)
         {
             Client.DefaultRequestHeaders.Referrer = referrer;
-            return Client.PostAsync(uri, content);
+            return Client.PostAsync(uri, content, token);
         }
     }
 }
