@@ -14,32 +14,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\EatManga.png" />
-    <None Remove="Resources\MangaEden.png" />
-    <None Remove="Resources\MangaHere.png" />
-    <None Remove="Resources\MangaKakalot.png" />
-    <None Remove="Resources\MangaNel.png" />
-    <None Remove="Resources\MangaStream.png" />
-    <None Remove="Resources\MangaSupa.png" />
-    <None Remove="Resources\MyManga.png" />
-    <None Remove="Resources\SenManga.png" />
+    <None Remove="Resources\*" />
+    <EmbeddedResource Include="Resources\*" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <EmbeddedResource Include="Resources\EatManga.png" />
-    <EmbeddedResource Include="Resources\MangaEden.png" />
-    <EmbeddedResource Include="Resources\MangaHere.png" />
-    <EmbeddedResource Include="Resources\MangaKakalot.png" />
-    <EmbeddedResource Include="Resources\MangaNel.png" />
-    <EmbeddedResource Include="Resources\MangaStream.png" />
-    <EmbeddedResource Include="Resources\MangaSupa.png" />
-    <EmbeddedResource Include="Resources\MyManga.png" />
-    <EmbeddedResource Include="Resources\SenManga.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="0.9.9" />
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+    <PackageReference Include="AngleSharp" Version="0.9.10" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
   <ItemGroup>

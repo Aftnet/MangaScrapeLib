@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib
@@ -11,6 +12,8 @@ namespace MangaScrapeLib
         IChapter ParentChapter { get; }
 
         Task<byte[]> GetImageAsync();
+        Task<byte[]> GetImageAsync(CancellationToken token);
+
         string SuggestFileName();
     }
 }

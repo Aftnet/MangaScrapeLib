@@ -3,15 +3,15 @@ using MangaScrapeLib.Test.Tools;
 
 namespace MangaScrapeLib.Test.Repository
 {
-    public class MangaSupaRepositoryTest : MangaRepositoryTestBase
+    public class MangaBatRepositoryTest : MangaRepositoryTestBase
     {
-        public MangaSupaRepositoryTest(WebCache client) : base(client)
+        public MangaBatRepositoryTest(WebCache client) : base(client)
         {
         }
 
         protected override IRepository GenerateRepository(WebCache client)
         {
-            return new MangaSupaRepository(client);
+            return new MangaBatRepository(client);
         }
     }
 }

@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MangaScrapeLib.Repository
 {
     internal class MangaNelRepository : MangaNelLikeRepository
     {
-        private const string RepoRootUriString = "http://manganelo.com/";
+        private const string RepoRootUriString = "https://manganelo.com/";
 
         public MangaNelRepository(IWebClient webClient) : base(webClient, "Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home_json_search")
         {
@@ -28,19 +29,24 @@ namespace MangaScrapeLib.Repository
         }
     }
 
-    internal class MangaSupaRepository : MangaNelLikeRepository
+    internal class MangaBatRepository : MangaNelLikeRepository
     {
-        private const string RepoRootUriString = "http://mangasupa.com/";
+        private const string RepoRootUriString = "https://mangabat.com/";
 
-        public MangaSupaRepository(IWebClient webClient) : base(webClient, "MangaSupa", RepoRootUriString, "MangaSupa.png", $"{RepoRootUriString}getsearchstory")
+        public MangaBatRepository(IWebClient webClient) : base(webClient, "MangaBat", RepoRootUriString, "MangaBat.png", $"{RepoRootUriString}getsearchstory")
         {
         }
 
-        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
+        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token)
         {
             var inputAsSeries = (Series)input;
 
-            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri);
+            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri, token);
+            if (html == null)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var imageNode = document.QuerySelector("div.truyen_info_left span.info_image img");
@@ -50,7 +56,15 @@ namespace MangaScrapeLib.Repository
             var authorNode = infoNode.QuerySelector("li:nth-child(2) a");
             inputAsSeries.Author = authorNode.TextContent;
             var tagNodes = infoNode.QuerySelectorAll("li:nth-child(3) a");
-            inputAsSeries.Tags = string.Join(", ", tagNodes.Select(d => d.TextContent).ToArray());
+            if (tagNodes.Any())
+            {
+                inputAsSeries.Tags = string.Join(", ", tagNodes.Select(d => d.TextContent).ToArray());
+            }
+            else
+            {
+                inputAsSeries.Tags = "NA";
+            }
+
             var updatedNode = infoNode.QuerySelector("li:nth-child(6) em em");
             inputAsSeries.Updated = updatedNode.TextContent;
             var descriptionNode = document.QuerySelector("div#noidungm");
@@ -73,9 +87,14 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IPage[]> GetPagesAsync(IChapter input)
+        internal override async Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri);
+            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri, token);
+            if (html == null)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var listNode = document.QuerySelector("div.vung_doc");
@@ -118,9 +137,14 @@ namespace MangaScrapeLib.Repository
             ReadUriPattern = $"{RootUri.ToString()}manga/{{0}}";
         }
 
-        public override async Task<ISeries[]> GetSeriesAsync()
+        public override async Task<ISeries[]> GetSeriesAsync(CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(RootUri, RootUri);
+            var html = await WebClient.GetStringAsync(RootUri, RootUri, token);
+            if (html == null)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var seriesNodes = document.QuerySelectorAll("div.itemupdate.first");
@@ -144,7 +168,7 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        public override async Task<ISeries[]> SearchSeriesAsync(string query)
+        public override async Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token)
         {
             if (string.IsNullOrEmpty(query) || string.IsNullOrWhiteSpace(query))
             {
@@ -157,7 +181,12 @@ namespace MangaScrapeLib.Repository
                 new KeyValuePair<string, string>("search_style", "tentruyen")
             });
 
-            var response = await WebClient.PostAsync(content, new Uri(SearchUriPattern), RootUri);
+            var response = await WebClient.PostAsync(content, new Uri(SearchUriPattern), RootUri, token);
+            if (response == null)
+            {
+                return null;
+            }
+
             var json = await response.Content.ReadAsStringAsync();
             if (string.IsNullOrEmpty(json) || string.IsNullOrWhiteSpace(json))
             {
@@ -185,11 +214,16 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input)
+        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token)
         {
             var inputAsSeries = (Series)input;
 
-            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri);
+            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri, token);
+            if (html == null)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var imageNode = document.QuerySelector("div.manga-info-pic img");
@@ -221,9 +255,14 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IPage[]> GetPagesAsync(IChapter input)
+        internal override async Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri);
+            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri, token);
+            if (html == null)
+            {
+                return null;
+            }
+
             var document = Parser.Parse(html);
 
             var listNode = document.QuerySelector("div#vungdoc");
@@ -239,9 +278,9 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override Task<byte[]> GetImageAsync(IPage input)
+        internal override Task<byte[]> GetImageAsync(IPage input, CancellationToken token)
         {
-            return WebClient.GetByteArrayAsync(input.ImageUri, input.PageUri);
+            return WebClient.GetByteArrayAsync(input.ImageUri, input.PageUri, token);
         }
     }
 }
