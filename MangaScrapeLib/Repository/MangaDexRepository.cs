@@ -45,15 +45,36 @@ namespace MangaScrapeLib.Repository
         public override async Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token)
         {
             query = Uri.EscapeDataString(query);
-            var builder = new Uri(string.Format(SearchUriBase, query));
+            var searchUri = new Uri(string.Format(SearchUriBase, query));
 
-            var html = await WebClient.GetStringAsync(RootUri, RootUri, token);
+            var html = await WebClient.GetStringAsync(searchUri, RootUri, token);
             if (html == null)
             {
                 return null;
             }
 
-            return null;
+            var document = Parser.Parse(html);
+
+            var noResultsAlert = document.QuerySelector("div#content div.alert-info");
+            if (noResultsAlert != null)
+            {
+                return new ISeries[0];
+            }
+
+            var table = document.QuerySelector("div#content div.row.mt-1");
+            var items = table.QuerySelectorAll("div.col-lg-6").ToArray();
+
+            var output = items.Select(d =>
+            {
+                var imageNode = d.QuerySelector("div.rounded.large_logo a img");
+                var imgUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
+                var titleNode = d.QuerySelector("div.text-truncate.d-flex a");
+                var descriptionNode = d.QuerySelector("p");
+                var series = new Series(this, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent.Trim()) { CoverImageUri = imgUri, Description = descriptionNode.TextContent };
+                return series;
+            }).OrderBy(d => d.Title).ToArray();
+
+            return output;
         }
 
         internal override Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token)
