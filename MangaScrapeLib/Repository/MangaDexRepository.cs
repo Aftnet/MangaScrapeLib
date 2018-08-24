@@ -1,9 +1,11 @@
 ﻿using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,7 +13,18 @@ namespace MangaScrapeLib.Repository
 {
     internal sealed class MangaDexRepository : RepositoryBase
     {
-        private const string SearchUriBase = "https://mangadex.org/?page=search&title={0}";
+        [JsonObject]
+        private class ChapterEntry
+        {
+            [JsonProperty("id")]
+            public string ChapterId { get; set; }
+            [JsonProperty("server")]
+            public string Server { get; set; }
+            [JsonProperty("hash")]
+            public string Hash { get; set; }
+            [JsonProperty("page_array")]
+            public string[] ImageFileNames { get; set; }
+        }
 
         public MangaDexRepository(IWebClient webClient) : base(webClient, "MangaDex", "https://mangadex.org/", "MangaDex.png", true, true, false, true, true)
         {
@@ -45,7 +58,8 @@ namespace MangaScrapeLib.Repository
         public override async Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token)
         {
             query = Uri.EscapeDataString(query);
-            var searchUri = new Uri(string.Format(SearchUriBase, query));
+            var searchUriBase = "https://mangadex.org/?page=search&title={0}";
+            var searchUri = new Uri(string.Format(searchUriBase, Uri.EscapeDataString(query)));
 
             var html = await WebClient.GetStringAsync(searchUri, RootUri, token);
             if (html == null)
@@ -115,14 +129,32 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<byte[]> GetImageAsync(IPage input, CancellationToken token)
-        {
-            throw new NotImplementedException();
-        }
-
         internal override async Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
         {
-            throw new NotImplementedException();
+            var regex = new Regex(@"chapter/([^/]+)");
+            var chapterId = regex.Match(input.FirstPageUri.ToString()).Groups[1].Value;
+            var apiUriBase = "https://mangadex.org/api/?id={0}&type=chapter";
+            var apiUri = new Uri(string.Format(apiUriBase, Uri.EscapeDataString(chapterId)));
+
+            var json = await WebClient.GetStringAsync(apiUri, RootUri, token);
+            if (json == null)
+            {
+                return null;
+            }
+
+            var chapterInfo = JsonConvert.DeserializeObject<ChapterEntry>(json);
+            var imageUriFormat = @"{0}{1}/{2}";
+            var output = chapterInfo.ImageFileNames.Select((d, e) => new Page((Chapter)input, input.FirstPageUri, e + 1)
+            {
+                ImageUri = new Uri(RootUri, string.Format(imageUriFormat, chapterInfo.Server, chapterInfo.Hash, d))
+            }).ToArray();
+
+            return output;
+        }
+
+        internal override Task<byte[]> GetImageAsync(IPage input, CancellationToken token)
+        {
+            return WebClient.GetByteArrayAsync(input.ImageUri, input.PageUri, token);
         }
     }
 }
