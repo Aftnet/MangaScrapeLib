@@ -29,11 +29,11 @@ namespace MangaScrapeLib.Repository
         }
     }
 
-    internal class MangaSupaRepository : MangaNelLikeRepository
+    internal class MangaBatRepository : MangaNelLikeRepository
     {
-        private const string RepoRootUriString = "http://mangasupa.com/";
+        private const string RepoRootUriString = "https://mangabat.com/";
 
-        public MangaSupaRepository(IWebClient webClient) : base(webClient, "MangaSupa", RepoRootUriString, "MangaSupa.png", $"{RepoRootUriString}getsearchstory")
+        public MangaBatRepository(IWebClient webClient) : base(webClient, "MangaBat", RepoRootUriString, "MangaBat.png", $"{RepoRootUriString}getsearchstory")
         {
         }
 
