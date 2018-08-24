@@ -16,7 +16,10 @@ namespace MangaScrapeLib
         bool SupportsTags { get; }
         bool SupportsDescription { get; }
 
+        Task<ISeries[]> GetSeriesAsync();
         Task<ISeries[]> GetSeriesAsync(CancellationToken token);
+
+        Task<ISeries[]> SearchSeriesAsync(string query);
         Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token);
     }
 }

@@ -23,6 +23,14 @@ namespace MangaScrapeLib.Models
             PageNo = pageNo;
         }
 
+        public Task<byte[]> GetImageAsync()
+        {
+            using (var cts = new CancellationTokenSource())
+            {
+                return GetImageAsync(cts.Token);
+            }
+        }
+
         public virtual Task<byte[]> GetImageAsync(CancellationToken token)
         {
             return ParentChapterInternal.ParentSeriesInternal.ParentRepositoryInternal.GetImageAsync(this, token);

@@ -58,9 +58,25 @@ namespace MangaScrapeLib.Repository
             SupportsDescription = supportsDescription;
         }
 
+        public Task<ISeries[]> GetSeriesAsync()
+        {
+            using (var cts = new CancellationTokenSource())
+            {
+                return GetSeriesAsync(cts.Token);
+            }
+        }
+
         public virtual Task<ISeries[]> GetSeriesAsync(CancellationToken token)
         {
             return Task.FromResult(new ISeries[0]);
+        }
+
+        public Task<ISeries[]> SearchSeriesAsync(string query)
+        {
+            using (var cts = new CancellationTokenSource())
+            {
+                return SearchSeriesAsync(query, cts.Token);
+            }
         }
 
         public virtual async Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token)
