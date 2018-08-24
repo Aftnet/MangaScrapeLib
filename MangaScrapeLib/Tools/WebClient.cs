@@ -16,7 +16,7 @@ namespace MangaScrapeLib.Tools
                 AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
             });
 
-            Client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Android 8.1.0; Tablet; rv:59.0) Gecko/59.0 Firefox/59.0");
+            Client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
             Client.DefaultRequestHeaders.Add("Accept", "text/html, application/xhtml+xml, application/json, text/javascript, */*");
             Client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
         }
