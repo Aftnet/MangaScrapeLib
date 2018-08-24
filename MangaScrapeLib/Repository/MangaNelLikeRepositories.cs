@@ -42,7 +42,7 @@ namespace MangaScrapeLib.Repository
             var inputAsSeries = (Series)input;
 
             var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri, token);
-            if (token.IsCancellationRequested)
+            if (html == null)
             {
                 return null;
             }
@@ -90,7 +90,7 @@ namespace MangaScrapeLib.Repository
         internal override async Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
         {
             var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri, token);
-            if (token.IsCancellationRequested)
+            if (html == null)
             {
                 return null;
             }
@@ -140,7 +140,7 @@ namespace MangaScrapeLib.Repository
         public override async Task<ISeries[]> GetSeriesAsync(CancellationToken token)
         {
             var html = await WebClient.GetStringAsync(RootUri, RootUri, token);
-            if (token.IsCancellationRequested)
+            if (html == null)
             {
                 return null;
             }
@@ -182,7 +182,7 @@ namespace MangaScrapeLib.Repository
             });
 
             var response = await WebClient.PostAsync(content, new Uri(SearchUriPattern), RootUri, token);
-            if (token.IsCancellationRequested)
+            if (response == null)
             {
                 return null;
             }
@@ -219,7 +219,7 @@ namespace MangaScrapeLib.Repository
             var inputAsSeries = (Series)input;
 
             var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri, token);
-            if (token.IsCancellationRequested)
+            if (html == null)
             {
                 return null;
             }
@@ -258,7 +258,7 @@ namespace MangaScrapeLib.Repository
         internal override async Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
         {
             var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri, token);
-            if (token.IsCancellationRequested)
+            if (html == null)
             {
                 return null;
             }
