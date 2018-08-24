@@ -77,17 +77,50 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token)
+        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token)
+        {
+            var inputAsSeries = (Series)input;
+            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri, token);
+            if (html == null)
+            {
+                return null;
+            }
+
+            var document = Parser.Parse(html);
+
+            var infoNode = document.QuerySelector("div.card-body div.row.edit");
+            var imgNode = infoNode.QuerySelector("img.rounded");
+            inputAsSeries.CoverImageUri = new Uri(RootUri, imgNode.Attributes["src"].Value);
+
+            var infoNodes = infoNode.QuerySelectorAll("div.col-xl-9 div.row.border-top");
+            var authorNode = infoNodes[0].QuerySelector("div a");
+            inputAsSeries.Author = authorNode.TextContent.Trim();
+            var tagNodes = infoNodes[2].QuerySelectorAll("a.genre");
+            inputAsSeries.Tags = string.Join(", ", tagNodes.Select(d => d.TextContent.Trim()));
+            var descriptionNode = infoNodes[6].QuerySelector("div.col-lg-9");
+            inputAsSeries.Description = descriptionNode.TextContent.Trim();
+
+            var table = document.QuerySelector("div.chapter-container");
+            var rows = table.Children.Skip(1);
+            var output = rows.Select(d =>
+            {
+                d = d.QuerySelector("div div");
+                var titleNode = d.QuerySelector("div.col.row.no-gutters.pr-1 a");
+                var updateNode = d.QuerySelector("div.ml-1.order-lg-8");
+                var chapter = new Chapter((Series)input, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent.Trim()) { Updated = updateNode.TextContent.Trim() };
+                return chapter;
+            }).Reverse().ToArray();
+
+            inputAsSeries.Updated = output.Last().Updated;
+            return output;
+        }
+
+        internal override async Task<byte[]> GetImageAsync(IPage input, CancellationToken token)
         {
             throw new NotImplementedException();
         }
 
-        internal override Task<byte[]> GetImageAsync(IPage input, CancellationToken token)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal override Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
+        internal override async Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
         {
             throw new NotImplementedException();
         }

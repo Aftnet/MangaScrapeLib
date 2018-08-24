@@ -27,6 +27,7 @@ namespace MangaScrapeLib
             var client = new WebClient();
 
             EatManga = new EatMangaRepository(client);
+            MangaDex = new MangaDexRepository(client);
             MangaEdenEn = new MangaEdenEnRepository(client);
             MangaEdenIt = new MangaEdenItRepository(client);
             MangaKakalot = new MangaKakalotRepository(client);
@@ -35,7 +36,7 @@ namespace MangaScrapeLib
             MangaSupa = new MangaBatRepository(client);
             SenManga = new SenMangaRepository(client);
 
-            AllRepositories = new IRepository[] { EatManga, MangaEdenEn, MangaEdenIt, MangaKakalot, MangaNel, MangaStream, MangaSupa, SenManga };
+            AllRepositories = new IRepository[] { EatManga, MangaDex, MangaEdenEn, MangaEdenIt, MangaKakalot, MangaNel, MangaStream, MangaSupa, SenManga };
         }
 
         internal static IRepository DetermineOwnerRepository(Uri uri)
