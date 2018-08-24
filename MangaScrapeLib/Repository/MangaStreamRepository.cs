@@ -119,7 +119,7 @@ namespace MangaScrapeLib.Repository
                 var output = pageUris.Select((d, e) => new Page((Chapter)input, d, e + 1)).ToArray();
                 return output;
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 return new Page[0];
             }
