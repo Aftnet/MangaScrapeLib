@@ -11,9 +11,14 @@ namespace MangaScrapeLib.Tools
 
         static WebClient()
         {
-            Client = new HttpClient();
+            Client = new HttpClient(new HttpClientHandler
+            {
+                AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
+            });
+
             Client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Android 8.1.0; Tablet; rv:59.0) Gecko/59.0 Firefox/59.0");
-            Client.DefaultRequestHeaders.Add("Accept", "text/html, application/xhtml+xml, */*");
+            Client.DefaultRequestHeaders.Add("Accept", "text/html, application/xhtml+xml, application/json, text/javascript, */*");
+            Client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
         }
 
         public async Task<string> GetStringAsync(Uri uri, Uri referrer, CancellationToken token)
