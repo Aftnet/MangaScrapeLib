@@ -10,27 +10,17 @@ namespace MangaScrapeLib
 {
     public static class Repositories
     {
-        public static IRepository EatManga { get; private set; }
+        public static IRepository EatManga { get; }
+        public static IRepository MangaDex { get; }
+        public static IRepository MangaEdenEn { get; }
+        public static IRepository MangaEdenIt { get; }
+        public static IRepository MangaKakalot { get; }
+        public static IRepository MangaNel { get; }
+        public static IRepository MangaStream { get; }
+        public static IRepository MangaSupa { get; }
+        public static IRepository SenManga { get; }
 
-        public static IRepository MangaEdenEn { get; private set; }
-
-        public static IRepository MangaEdenIt { get; private set; }
-
-        //public static IRepository MangaHere => mangaHere;
-
-        public static IRepository MangaKakalot { get; private set; }
-
-        public static IRepository MangaNel { get; private set; }
-
-        public static IRepository MangaStream { get; private set; }
-
-        public static IRepository MangaSupa { get; private set; }
-
-        //public static IRepository MyManga => myManga;
-
-        public static IRepository SenManga { get; private set; }
-
-        public static IRepository[] AllRepositories { get; private set; }
+        public static IRepository[] AllRepositories { get; }
 
         static Repositories()
         {
