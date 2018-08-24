@@ -28,21 +28,11 @@ namespace MangaScrapeLib.Repository
         public string Name { get; private set; }
         public Uri RootUri { get; private set; }
 
-
-        private readonly bool supportsCover;
-        public bool SupportsCover => supportsCover;
-
-        private readonly bool supportsAuthor;
-        public bool SupportsAuthor => supportsAuthor;
-
-        private readonly bool supportsLastUpdateTime;
-        public bool SupportsLastUpdateTime => supportsLastUpdateTime;
-
-        private readonly bool supportsTags;
-        public bool SupportsTags => supportsTags;
-
-        private readonly bool supportsDescription;
-        public bool SupportsDescription => supportsDescription;
+        public bool SupportsCover { get; }
+        public bool SupportsAuthor { get; }
+        public bool SupportsLastUpdateTime { get; }
+        public bool SupportsTags { get; }
+        public bool SupportsDescription { get; }
 
         protected RepositoryBase(IWebClient webClient, string name, string uriString, string iconFileName, bool supportsAllMetadata) :
             this(webClient, name, uriString, iconFileName, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata, supportsAllMetadata)
@@ -61,11 +51,11 @@ namespace MangaScrapeLib.Repository
 
             icon = new Lazy<byte[]>(LoadIcon);
 
-            this.supportsCover = supportsCover;
-            this.supportsAuthor = supportsAuthor;
-            this.supportsLastUpdateTime = supportsLastUpdateTime;
-            this.supportsTags = supportsTags;
-            this.supportsDescription = supportsDescription;
+            SupportsCover = supportsCover;
+            SupportsAuthor = supportsAuthor;
+            SupportsLastUpdateTime = supportsLastUpdateTime;
+            SupportsTags = supportsTags;
+            SupportsDescription = supportsDescription;
         }
 
         public virtual Task<ISeries[]> GetSeriesAsync(CancellationToken token)
