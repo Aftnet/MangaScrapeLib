@@ -56,7 +56,15 @@ namespace MangaScrapeLib.Repository
             var authorNode = infoNode.QuerySelector("li:nth-child(2) a");
             inputAsSeries.Author = authorNode.TextContent;
             var tagNodes = infoNode.QuerySelectorAll("li:nth-child(3) a");
-            inputAsSeries.Tags = string.Join(", ", tagNodes.Select(d => d.TextContent).ToArray());
+            if (tagNodes.Any())
+            {
+                inputAsSeries.Tags = string.Join(", ", tagNodes.Select(d => d.TextContent).ToArray());
+            }
+            else
+            {
+                inputAsSeries.Tags = "NA";
+            }
+
             var updatedNode = infoNode.QuerySelector("li:nth-child(6) em em");
             inputAsSeries.Updated = updatedNode.TextContent;
             var descriptionNode = document.QuerySelector("div#noidungm");
