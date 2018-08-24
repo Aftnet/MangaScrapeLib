@@ -26,7 +26,7 @@ namespace MangaScrapeLib.Test.Models
         public void CreateFromDataWorks(string uri, string title, bool shouldSucceed)
         {
             var output = Repositories.GetSeriesFromData(uri == null ? null : new Uri(uri), title);
-            if(shouldSucceed)
+            if (shouldSucceed)
             {
                 Assert.NotNull(output);
                 Assert.Same(TargetRepository, output.ParentRepository);
