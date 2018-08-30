@@ -25,10 +25,17 @@ namespace MangaScrapeLib.Tools
         {
             var output = default(string);
             Client.DefaultRequestHeaders.Referrer = referrer;
-            var result = await Client.GetAsync(uri, token);
-            if (result.IsSuccessStatusCode && !token.IsCancellationRequested)
+            try
             {
-                output = await result.Content.ReadAsStringAsync();
+                var result = await Client.GetAsync(uri, token);
+                if (result.IsSuccessStatusCode && !token.IsCancellationRequested)
+                {
+                    output = await result.Content.ReadAsStringAsync();
+                }
+            }
+            catch
+            {
+                return null;
             }
 
             return output;
@@ -38,10 +45,17 @@ namespace MangaScrapeLib.Tools
         {
             var output = default(byte[]);
             Client.DefaultRequestHeaders.Referrer = referrer;
-            var result = await Client.GetAsync(uri, token);
-            if (result.IsSuccessStatusCode && !token.IsCancellationRequested)
+            try
             {
-                output = await result.Content.ReadAsByteArrayAsync();
+                var result = await Client.GetAsync(uri, token);
+                if (result.IsSuccessStatusCode && !token.IsCancellationRequested)
+                {
+                    output = await result.Content.ReadAsByteArrayAsync();
+                }
+            }
+            catch
+            {
+                return null;
             }
 
             return output;
