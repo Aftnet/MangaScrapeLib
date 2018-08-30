@@ -1,6 +1,7 @@
 ﻿using AngleSharp.Parser.Html;
 using MangaScrapeLib.Tools;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -13,11 +14,11 @@ namespace MangaScrapeLib.Repository
     {
         protected readonly IWebClient WebClient;
 
-        internal abstract Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token);
-        internal abstract Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token);
+        internal abstract Task<IReadOnlyList<IChapter>> GetChaptersAsync(ISeries input, CancellationToken token);
+        internal abstract Task<IReadOnlyList<IPage>> GetPagesAsync(IChapter input, CancellationToken token);
         internal abstract Task<byte[]> GetImageAsync(IPage input, CancellationToken token);
 
-        private ISeries[] AvailableSeries { get; set; }
+        private IReadOnlyList<ISeries> AvailableSeries { get; set; }
 
         protected static readonly HtmlParser Parser = new HtmlParser();
 
@@ -58,7 +59,7 @@ namespace MangaScrapeLib.Repository
             SupportsDescription = supportsDescription;
         }
 
-        public Task<ISeries[]> GetSeriesAsync()
+        public Task<IReadOnlyList<ISeries>> GetSeriesAsync()
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -66,12 +67,12 @@ namespace MangaScrapeLib.Repository
             }
         }
 
-        public virtual Task<ISeries[]> GetSeriesAsync(CancellationToken token)
+        public virtual Task<IReadOnlyList<ISeries>> GetSeriesAsync(CancellationToken token)
         {
-            return Task.FromResult(new ISeries[0]);
+            return Task.FromResult<IReadOnlyList<ISeries>>(new ISeries[0]);
         }
 
-        public Task<ISeries[]> SearchSeriesAsync(string query)
+        public Task<IReadOnlyList<ISeries>> SearchSeriesAsync(string query)
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -79,7 +80,7 @@ namespace MangaScrapeLib.Repository
             }
         }
 
-        public virtual async Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token)
+        public virtual async Task<IReadOnlyList<ISeries>> SearchSeriesAsync(string query, CancellationToken token)
         {
             if (AvailableSeries == null)
             {
@@ -88,6 +89,27 @@ namespace MangaScrapeLib.Repository
 
             var lowerQuery = query.ToLowerInvariant();
             return AvailableSeries.Where(d => d.Title.Contains(lowerQuery)).OrderBy(d => d.Title).ToArray();
+        }
+
+        internal virtual async Task<byte[]> GetImageAsync(ISeries input, CancellationToken token)
+        {
+            var output = default(byte[]);
+            if (!SupportsCover)
+            {
+                return null;
+            }
+
+            if (input.CoverImageUri == null)
+            {
+                await input.GetChaptersAsync(token);
+            }
+
+            if (input.CoverImageUri != null && !token.IsCancellationRequested)
+            {
+                output = await WebClient.GetByteArrayAsync(input.CoverImageUri, input.SeriesPageUri, token);
+            }
+
+            return output;
         }
 
         public override string ToString()

@@ -20,7 +20,7 @@ namespace MangaScrapeLib.Repository
         {
         }
 
-        public override async Task<ISeries[]> GetSeriesAsync(CancellationToken token)
+        public override async Task<IReadOnlyList<ISeries>> GetSeriesAsync(CancellationToken token)
         {
             if (AllSeries != null)
             {
@@ -57,7 +57,7 @@ namespace MangaScrapeLib.Repository
             return output.ToArray();
         }
 
-        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token)
+        internal override async Task<IReadOnlyList<IChapter>> GetChaptersAsync(ISeries input, CancellationToken token)
         {
             var html = await WebClient.GetStringAsync(input.SeriesPageUri, MangaIndexUri, token);
             if (html == null)
@@ -77,7 +77,7 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
+        internal override async Task<IReadOnlyList<IPage>> GetPagesAsync(IChapter input, CancellationToken token)
         {
             var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri, token);
             if (html == null)

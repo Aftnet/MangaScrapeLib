@@ -1,6 +1,7 @@
 ﻿using MangaScrapeLib.Repository;
 using MangaScrapeLib.Tools;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +30,20 @@ namespace MangaScrapeLib.Models
             Updated = string.Empty;
         }
 
-        public Task<IChapter[]> GetChaptersAsync()
+        public Task<byte[]> GetCoverAsync()
+        {
+            using (var cts = new CancellationTokenSource())
+            {
+                return GetCoverAsync(cts.Token);
+            }
+        }
+
+        public Task<byte[]> GetCoverAsync(CancellationToken token)
+        {
+            return ParentRepositoryInternal.GetImageAsync(this, token);
+        }
+
+        public Task<IReadOnlyList<IChapter>> GetChaptersAsync()
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -37,7 +51,7 @@ namespace MangaScrapeLib.Models
             }
         }
 
-        public virtual Task<IChapter[]> GetChaptersAsync(CancellationToken token)
+        public virtual Task<IReadOnlyList<IChapter>> GetChaptersAsync(CancellationToken token)
         {
             return ParentRepositoryInternal.GetChaptersAsync(this, token);
         }

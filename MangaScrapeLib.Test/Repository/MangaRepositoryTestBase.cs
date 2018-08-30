@@ -159,6 +159,21 @@ namespace MangaScrapeLib.Test.Repository
         }
 
         [Fact]
+        public async Task GetSeriesCoverWorks()
+        {
+            if (!Repository.SupportsCover)
+            {
+                return;
+            }
+
+            var series = await Repository.GetSeriesAsync(CTS.Token);
+            var selectedSeries = series.First(d => d.SeriesPageUri.Host == Repository.RootUri.Host);
+
+            var coverImage = selectedSeries.GetCoverAsync();
+            Assert.NotNull(coverImage);
+        }
+
+        [Fact]
         public void NameIsSet()
         {
             Assert.NotNull(Repository.Name);

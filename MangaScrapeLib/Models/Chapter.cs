@@ -1,5 +1,6 @@
 ﻿using MangaScrapeLib.Tools;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace MangaScrapeLib.Models
             Updated = string.Empty;
         }
 
-        public Task<IPage[]> GetPagesAsync()
+        public Task<IReadOnlyList<IPage>> GetPagesAsync()
         {
             using (var cts = new CancellationTokenSource())
             {
@@ -31,7 +32,7 @@ namespace MangaScrapeLib.Models
             }
         }
 
-        public virtual Task<IPage[]> GetPagesAsync(CancellationToken token)
+        public virtual Task<IReadOnlyList<IPage>> GetPagesAsync(CancellationToken token)
         {
             return ParentSeriesInternal.ParentRepositoryInternal.GetPagesAsync(this, token);
         }
