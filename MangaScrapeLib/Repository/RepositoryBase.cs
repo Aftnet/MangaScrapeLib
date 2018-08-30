@@ -91,6 +91,27 @@ namespace MangaScrapeLib.Repository
             return AvailableSeries.Where(d => d.Title.Contains(lowerQuery)).OrderBy(d => d.Title).ToArray();
         }
 
+        internal virtual async Task<byte[]> GetImageAsync(ISeries input, CancellationToken token)
+        {
+            var output = default(byte[]);
+            if (!SupportsCover)
+            {
+                return null;
+            }
+
+            if (input.CoverImageUri == null)
+            {
+                await input.GetChaptersAsync(token);
+            }
+
+            if (input.CoverImageUri != null && !token.IsCancellationRequested)
+            {
+                output = await WebClient.GetByteArrayAsync(input.CoverImageUri, input.SeriesPageUri, token);
+            }
+
+            return output;
+        }
+
         public override string ToString()
         {
             return Name;

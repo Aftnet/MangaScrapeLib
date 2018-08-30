@@ -30,6 +30,19 @@ namespace MangaScrapeLib.Models
             Updated = string.Empty;
         }
 
+        public Task<byte[]> GetCoverAsync()
+        {
+            using (var cts = new CancellationTokenSource())
+            {
+                return GetCoverAsync(cts.Token);
+            }
+        }
+
+        public Task<byte[]> GetCoverAsync(CancellationToken token)
+        {
+            return ParentRepositoryInternal.GetImageAsync(this, token);
+        }
+
         public Task<IReadOnlyList<IChapter>> GetChaptersAsync()
         {
             using (var cts = new CancellationTokenSource())

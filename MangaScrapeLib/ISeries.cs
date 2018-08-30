@@ -18,6 +18,9 @@ namespace MangaScrapeLib
         string Tags { get; }
         string Description { get; }
 
+        Task<byte[]> GetCoverAsync();
+        Task<byte[]> GetCoverAsync(CancellationToken token);
+
         Task<IReadOnlyList<IChapter>> GetChaptersAsync();
         Task<IReadOnlyList<IChapter>> GetChaptersAsync(CancellationToken token);
 
