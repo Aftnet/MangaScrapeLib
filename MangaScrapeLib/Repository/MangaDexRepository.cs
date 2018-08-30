@@ -83,7 +83,7 @@ namespace MangaScrapeLib.Repository
                 var imageNode = d.QuerySelector("div.rounded.large_logo a img");
                 var imgUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
                 var titleNode = d.QuerySelector("div.text-truncate.d-flex a");
-                var descriptionNode = d.QuerySelector("p");
+                var descriptionNode = d.Children[3];
                 var series = new Series(this, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent.Trim()) { CoverImageUri = imgUri, Description = descriptionNode.TextContent };
                 return series;
             }).OrderBy(d => d.Title).ToArray();
