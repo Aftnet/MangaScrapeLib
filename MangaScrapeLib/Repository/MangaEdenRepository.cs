@@ -2,6 +2,7 @@
 using MangaScrapeLib.Tools;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,7 +48,7 @@ namespace MangaScrapeLib.Repository
             SearchLabelLanguageSuffix = searchLabelLanguageSuffix;
         }
 
-        public override async Task<ISeries[]> GetSeriesAsync(CancellationToken token)
+        public override async Task<IReadOnlyList<ISeries>> GetSeriesAsync(CancellationToken token)
         {
             var html = await WebClient.GetStringAsync(MangaIndexUri, RootUri, token);
             if (html == null)
@@ -78,7 +79,7 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        public override async Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token)
+        public override async Task<IReadOnlyList<ISeries>> SearchSeriesAsync(string query, CancellationToken token)
         {
             if (string.IsNullOrEmpty(query) || string.IsNullOrWhiteSpace(query))
             {
@@ -101,7 +102,7 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token)
+        internal override async Task<IReadOnlyList<IChapter>> GetChaptersAsync(ISeries input, CancellationToken token)
         {
             var inputAsSeries = (Series)input;
             var html = await WebClient.GetStringAsync(input.SeriesPageUri, MangaIndexUri, token);
@@ -128,7 +129,7 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
+        internal override async Task<IReadOnlyList<IPage>> GetPagesAsync(IChapter input, CancellationToken token)
         {
             var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri, token);
             if (html == null)

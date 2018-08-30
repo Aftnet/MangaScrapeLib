@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,8 +18,8 @@ namespace MangaScrapeLib
         string Tags { get; }
         string Description { get; }
 
-        Task<IChapter[]> GetChaptersAsync();
-        Task<IChapter[]> GetChaptersAsync(CancellationToken token);
+        Task<IReadOnlyList<IChapter>> GetChaptersAsync();
+        Task<IReadOnlyList<IChapter>> GetChaptersAsync(CancellationToken token);
 
         IChapter GetSingleChapterFromData(Uri firstPageUri, string title);
     }

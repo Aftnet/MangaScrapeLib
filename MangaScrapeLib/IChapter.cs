@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace MangaScrapeLib
         ISeries ParentSeries { get; }
         Uri FirstPageUri { get; }
 
-        Task<IPage[]> GetPagesAsync();
-        Task<IPage[]> GetPagesAsync(CancellationToken token);
+        Task<IReadOnlyList<IPage>> GetPagesAsync();
+        Task<IReadOnlyList<IPage>> GetPagesAsync(CancellationToken token);
     }
 }

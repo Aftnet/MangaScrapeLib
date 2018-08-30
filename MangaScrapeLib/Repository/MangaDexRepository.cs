@@ -30,7 +30,7 @@ namespace MangaScrapeLib.Repository
         {
         }
 
-        public override async Task<ISeries[]> GetSeriesAsync(CancellationToken token)
+        public override async Task<IReadOnlyList<ISeries>> GetSeriesAsync(CancellationToken token)
         {
             var html = await WebClient.GetStringAsync(RootUri, RootUri, token);
             if (html == null)
@@ -55,7 +55,7 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        public override async Task<ISeries[]> SearchSeriesAsync(string query, CancellationToken token)
+        public override async Task<IReadOnlyList<ISeries>> SearchSeriesAsync(string query, CancellationToken token)
         {
             query = Uri.EscapeDataString(query);
             var searchUriBase = "https://mangadex.org/?page=search&title={0}";
@@ -91,7 +91,7 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IChapter[]> GetChaptersAsync(ISeries input, CancellationToken token)
+        internal override async Task<IReadOnlyList<IChapter>> GetChaptersAsync(ISeries input, CancellationToken token)
         {
             var inputAsSeries = (Series)input;
             var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri, token);
@@ -129,7 +129,7 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IPage[]> GetPagesAsync(IChapter input, CancellationToken token)
+        internal override async Task<IReadOnlyList<IPage>> GetPagesAsync(IChapter input, CancellationToken token)
         {
             var regex = new Regex(@"chapter/([^/]+)");
             var chapterId = regex.Match(input.FirstPageUri.ToString()).Groups[1].Value;
