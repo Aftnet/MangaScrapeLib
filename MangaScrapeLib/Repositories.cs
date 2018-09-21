@@ -2,6 +2,7 @@
 using MangaScrapeLib.Repository;
 using MangaScrapeLib.Tools;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("MangaScrapeLib.Test")]
@@ -10,33 +11,30 @@ namespace MangaScrapeLib
 {
     public static class Repositories
     {
-        public static IRepository EatManga { get; }
-        public static IRepository MangaDex { get; }
-        public static IRepository MangaEdenEn { get; }
-        public static IRepository MangaEdenIt { get; }
-        public static IRepository MangaKakalot { get; }
-        public static IRepository MangaNel { get; }
-        public static IRepository MangaStream { get; }
-        public static IRepository MangaSupa { get; }
-        public static IRepository SenManga { get; }
-
-        public static IRepository[] AllRepositories { get; }
+        private static IDictionary<string, IRepository> HostToRepoDictionary { get; }
+        public static IReadOnlyList<IRepository> AllRepositories { get; }
 
         static Repositories()
         {
+            void AddToDictionary(IRepository repo)
+            {
+                HostToRepoDictionary.Add(repo.RootUri.Host, repo);
+            }
+
+            HostToRepoDictionary = new Dictionary<string, IRepository>();
             var client = new WebClient();
 
-            EatManga = new EatMangaRepository(client);
-            MangaDex = new MangaDexRepository(client);
-            MangaEdenEn = new MangaEdenEnRepository(client);
-            MangaEdenIt = new MangaEdenItRepository(client);
-            MangaKakalot = new MangaKakalotRepository(client);
-            MangaNel = new MangaNelRepository(client);
-            MangaStream = new MangaStreamRepository(client);
-            MangaSupa = new MangaBatRepository(client);
-            SenManga = new SenMangaRepository(client);
+            AddToDictionary(new EatMangaRepository(client));
+            AddToDictionary(new MangaDexRepository(client));
+            AddToDictionary(new MangaEdenEnRepository(client));
+            AddToDictionary(new MangaEdenItRepository(client));
+            AddToDictionary(new MangaKakalotRepository(client));
+            AddToDictionary(new MangaNelRepository(client));
+            AddToDictionary(new MangaStreamRepository(client));
+            AddToDictionary(new MangaBatRepository(client));
+            AddToDictionary(new SenMangaRepository(client));
 
-            AllRepositories = new IRepository[] { EatManga, MangaDex, MangaEdenEn, MangaEdenIt, MangaKakalot, MangaNel, MangaStream, MangaSupa, SenManga };
+            AllRepositories = HostToRepoDictionary.Values.OrderBy(d => d.Name).ToArray();
         }
 
         internal static IRepository DetermineOwnerRepository(Uri uri)
