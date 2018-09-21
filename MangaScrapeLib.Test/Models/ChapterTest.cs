@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace MangaScrapeLib.Test.Models
 {
     public class ChapterTest
     {
-        private static IRepository TargetRepository => Repositories.EatManga;
+        private static IRepository TargetRepository => Repositories.AllRepositories.First(d => d.RootUri.Host.Contains("eatmanga"));
         private const string ValidChapterUri = "http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/testch/";
         private const string ValidChapterTitle = "Test chapter";
 

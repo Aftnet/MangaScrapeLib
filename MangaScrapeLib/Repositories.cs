@@ -49,14 +49,16 @@ namespace MangaScrapeLib
                 return null;
             }
 
-            var repository = DetermineOwnerRepository(uri) as RepositoryBase;
-            if (repository == null)
+            if (HostToRepoDictionary.ContainsKey(uri.Host))
             {
-                return null;
+                if (HostToRepoDictionary[uri.Host] is RepositoryBase repository)
+                {
+                    var output = new Series(repository, uri, title);
+                    return output;
+                }
             }
 
-            var output = new Series(repository, uri, title);
-            return output;
+            return null;
         }
     }
 }
