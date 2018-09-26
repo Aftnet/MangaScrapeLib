@@ -5,8 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("MangaScrapeLib.Test")]
-
 namespace MangaScrapeLib
 {
     public static class Repositories
