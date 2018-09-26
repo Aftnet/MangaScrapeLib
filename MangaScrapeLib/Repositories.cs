@@ -11,18 +11,24 @@ namespace MangaScrapeLib
 {
     public static class Repositories
     {
-        private static IDictionary<string, IRepository> HostToRepoDictionary { get; }
+        private static IDictionary<string, IRepository> HostToRepoDictionary { get; } = new Dictionary<string, IRepository>();
         public static IReadOnlyList<IRepository> AllRepositories { get; }
 
         static Repositories()
         {
+            var client = new WebClient();
+            var allRepositories = new List<IRepository>();
+
             void AddToDictionary(IRepository repo)
             {
-                HostToRepoDictionary.Add(repo.RootUri.Host, repo);
-            }
+                allRepositories.Add(repo);
 
-            HostToRepoDictionary = new Dictionary<string, IRepository>();
-            var client = new WebClient();
+                var key = repo.RootUri.Host;
+                if (!HostToRepoDictionary.ContainsKey(key))
+                {
+                    HostToRepoDictionary.Add(repo.RootUri.Host, repo);
+                }
+            }
 
             AddToDictionary(new EatMangaRepository(client));
             AddToDictionary(new MangaDexRepository(client));
@@ -34,7 +40,7 @@ namespace MangaScrapeLib
             AddToDictionary(new MangaBatRepository(client));
             AddToDictionary(new SenMangaRepository(client));
 
-            AllRepositories = HostToRepoDictionary.Values.OrderBy(d => d.Name).ToArray();
+            AllRepositories = allRepositories.OrderBy(d => d.Name).ToArray();
         }
 
         internal static IRepository DetermineOwnerRepository(Uri uri)
