@@ -15,7 +15,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "https://manganelo.com/";
 
-        public MangaNelRepository(IWebClient webClient) : base(webClient, "Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home_json_search")
+        public MangaNelRepository(IWebClient webClient) : base(webClient, "Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home", $"{RepoRootUriString}home_json_search")
         {
         }
     }
@@ -24,7 +24,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "http://mangakakalot.com/";
 
-        public MangaKakalotRepository(IWebClient webClient) : base(webClient, "MangaKakalot", RepoRootUriString, "MangaKakalot.png", $"{RepoRootUriString}home_json_search")
+        public MangaKakalotRepository(IWebClient webClient) : base(webClient, "MangaKakalot", RepoRootUriString, "MangaKakalot.png", RepoRootUriString, $"{RepoRootUriString}home_json_search")
         {
         }
     }
@@ -33,7 +33,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "https://mangabat.com/";
 
-        public MangaBatRepository(IWebClient webClient) : base(webClient, "MangaBat", RepoRootUriString, "MangaBat.png", $"{RepoRootUriString}getsearchstory")
+        public MangaBatRepository(IWebClient webClient) : base(webClient, "MangaBat", RepoRootUriString, "MangaBat.png", RepoRootUriString, $"{RepoRootUriString}getsearchstory")
         {
         }
 
@@ -126,20 +126,22 @@ namespace MangaScrapeLib.Repository
             public string Author { get; set; }
         }
 
-        protected readonly string SearchUriPattern;
-        protected readonly string ReadUriPattern;
+        protected Uri FeaturedSeriesPageUri { get; }
+        protected string SearchUriPattern { get; }
+        protected string ReadUriPattern { get; }
 
         private static readonly string[] SupuriousTitleText = { "<span style=\"color: #FF530D;font-weight: bold;\">", "</span>" };
 
-        protected MangaNelLikeRepository(IWebClient webClient, string name, string uriString, string iconFileName, string searchUriPattern) : base(webClient, name, uriString, iconFileName, true)
+        protected MangaNelLikeRepository(IWebClient webClient, string name, string uriString, string iconFileName, string featuredSeriesPageUri, string searchUriPattern) : base(webClient, name, uriString, iconFileName, true)
         {
+            FeaturedSeriesPageUri = new Uri(featuredSeriesPageUri, UriKind.Absolute);
             SearchUriPattern = searchUriPattern;
             ReadUriPattern = $"{RootUri.ToString()}manga/{{0}}";
         }
 
         public override async Task<IReadOnlyList<ISeries>> GetSeriesAsync(CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(RootUri, RootUri, token);
+            var html = await WebClient.GetStringAsync(FeaturedSeriesPageUri, RootUri, token);
             if (html == null)
             {
                 return null;
