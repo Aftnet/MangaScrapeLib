@@ -77,9 +77,13 @@ namespace MangaScrapeLib.Test.Repository
             if (Repository.SupportsTags) Assert.True(!string.IsNullOrEmpty(selectedSeries.Tags));
 
             Assert.NotEmpty(chapters);
+            var readingOrder = 0;
             foreach (var i in chapters)
             {
                 CheckParsedStringValidity(i.Title, true);
+                Assert.Equal(readingOrder, i.ReadingOrder);
+                readingOrder++;
+
                 Assert.NotEmpty(i.Updated);
                 Assert.Same(selectedSeries, i.ParentSeries);
                 Assert.NotNull(i.FirstPageUri);
@@ -106,7 +110,7 @@ namespace MangaScrapeLib.Test.Repository
                 CheckParsedStringValidity(i.PageUri.ToString(), false);
 
                 Assert.Same(selectedChapter, i.ParentChapter);
-                Assert.Equal(ctr, i.PageNo);
+                Assert.Equal(ctr, i.PageNumber);
                 ctr++;
             }
         }

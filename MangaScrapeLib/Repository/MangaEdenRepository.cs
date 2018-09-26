@@ -42,7 +42,7 @@ namespace MangaScrapeLib.Repository
         private readonly Uri MangaIndexUri;
         private readonly string SearchLabelLanguageSuffix;
 
-        protected MangaEdenRepository(IWebClient webClient, string name, string mangaIndexUri, string searchLabelLanguageSuffix) : base(webClient, name, "http://www.mangaeden.com/", "MangaEden.png", true)
+        protected MangaEdenRepository(IWebClient webClient, string name, string mangaIndexUri, string searchLabelLanguageSuffix) : base(webClient, name, "http://www.mangaeden.com/", "MangaEden.png", false, true, true, true, true)
         {
             MangaIndexUri = new Uri(RootUri, mangaIndexUri);
             SearchLabelLanguageSuffix = searchLabelLanguageSuffix;
@@ -116,14 +116,14 @@ namespace MangaScrapeLib.Repository
 
             var table = document.QuerySelector("table");
             var rows = table.QuerySelectorAll("tr").Skip(1);
-            var output = rows.Select(d =>
+            var output = rows.Reverse().Select((d, e) =>
             {
                 var linknode = d.QuerySelector("a.chapterLink");
                 var titleNode = linknode.QuerySelector("b");
                 var dateNode = d.QuerySelector("td.chapterDate");
-                var chapter = new Chapter((Series)input, new Uri(RootUri, linknode.Attributes["href"].Value), titleNode.TextContent.Trim()) { Updated = dateNode.TextContent.Trim() };
+                var chapter = new Chapter((Series)input, new Uri(RootUri, linknode.Attributes["href"].Value), titleNode.TextContent.Trim(), e) { Updated = dateNode.TextContent.Trim() };
                 return chapter;
-            }).Reverse().ToArray();
+            }).ToArray();
 
             inputAsSeries.Updated = output.Last().Updated;
             return output;
@@ -173,7 +173,10 @@ namespace MangaScrapeLib.Repository
             var document = Parser.Parse(seriesPageHtml);
 
             var imgNode = document.QuerySelector("div.mangaImage2 img");
-            series.CoverImageUri = new Uri(RootUri, imgNode.Attributes["src"].Value);
+            if (imgNode != null)
+            {
+                series.CoverImageUri = new Uri(RootUri, imgNode.Attributes["src"].Value);
+            }
 
             var infoBoxNode = document.QuerySelectorAll("div.rightBox")[1];
             var headerNodes = infoBoxNode.QuerySelectorAll("h4");

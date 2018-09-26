@@ -7,7 +7,7 @@ namespace MangaScrapeLib.Test.Models
 {
     public class SeriesTest
     {
-        public static IRepository TargetRepository => Repositories.EatManga;
+        public static IRepository TargetRepository => Repositories.AllRepositories.First(d => d.RootUri.Host.Contains("eatmanga"));
         public const string ValidSeriesUri = "http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/";
         public const string ValidSeriesTitle = "SomeTitle";
 

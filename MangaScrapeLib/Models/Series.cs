@@ -62,7 +62,7 @@ namespace MangaScrapeLib.Models
             return output;
         }
 
-        public IChapter GetSingleChapterFromData(Uri firstPageUri, string title)
+        public IChapter GetSingleChapterFromData(Uri firstPageUri, string title, int readingOrder)
         {
             if (firstPageUri == null)
                 return null;
@@ -73,7 +73,7 @@ namespace MangaScrapeLib.Models
             if (firstPageUri.Host != SeriesPageUri.Host)
                 return null;
 
-            return new Chapter(this, firstPageUri, title);
+            return new Chapter(this, firstPageUri, title, readingOrder);
         }
     }
 }

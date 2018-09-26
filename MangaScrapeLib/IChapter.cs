@@ -8,6 +8,7 @@ namespace MangaScrapeLib
     public interface IChapter : IPathSuggester
     {
         string Title { get; }
+        int ReadingOrder { get; }
         string Updated { get; }
 
         ISeries ParentSeries { get; }

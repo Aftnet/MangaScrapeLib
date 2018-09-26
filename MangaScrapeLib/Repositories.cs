@@ -2,41 +2,43 @@
 using MangaScrapeLib.Repository;
 using MangaScrapeLib.Tools;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("MangaScrapeLib.Test")]
 
 namespace MangaScrapeLib
 {
     public static class Repositories
     {
-        public static IRepository EatManga { get; }
-        public static IRepository MangaDex { get; }
-        public static IRepository MangaEdenEn { get; }
-        public static IRepository MangaEdenIt { get; }
-        public static IRepository MangaKakalot { get; }
-        public static IRepository MangaNel { get; }
-        public static IRepository MangaStream { get; }
-        public static IRepository MangaSupa { get; }
-        public static IRepository SenManga { get; }
-
-        public static IRepository[] AllRepositories { get; }
+        private static IDictionary<string, IRepository> HostToRepoDictionary { get; } = new Dictionary<string, IRepository>();
+        public static IReadOnlyList<IRepository> AllRepositories { get; }
 
         static Repositories()
         {
             var client = new WebClient();
+            var allRepositories = new List<IRepository>();
 
-            EatManga = new EatMangaRepository(client);
-            MangaDex = new MangaDexRepository(client);
-            MangaEdenEn = new MangaEdenEnRepository(client);
-            MangaEdenIt = new MangaEdenItRepository(client);
-            MangaKakalot = new MangaKakalotRepository(client);
-            MangaNel = new MangaNelRepository(client);
-            MangaStream = new MangaStreamRepository(client);
-            MangaSupa = new MangaBatRepository(client);
-            SenManga = new SenMangaRepository(client);
+            void AddToDictionary(IRepository repo)
+            {
+                allRepositories.Add(repo);
 
-            AllRepositories = new IRepository[] { EatManga, MangaDex, MangaEdenEn, MangaEdenIt, MangaKakalot, MangaNel, MangaStream, MangaSupa, SenManga };
+                var key = repo.RootUri.Host;
+                if (!HostToRepoDictionary.ContainsKey(key))
+                {
+                    HostToRepoDictionary.Add(repo.RootUri.Host, repo);
+                }
+            }
+
+            AddToDictionary(new EatMangaRepository(client));
+            AddToDictionary(new MangaDexRepository(client));
+            AddToDictionary(new MangaEdenEnRepository(client));
+            AddToDictionary(new MangaEdenItRepository(client));
+            AddToDictionary(new MangaKakalotRepository(client));
+            AddToDictionary(new MangaNelRepository(client));
+            AddToDictionary(new MangaStreamRepository(client));
+            AddToDictionary(new MangaBatRepository(client));
+            AddToDictionary(new SenMangaRepository(client));
+
+            AllRepositories = allRepositories.OrderBy(d => d.Name).ToArray();
         }
 
         internal static IRepository DetermineOwnerRepository(Uri uri)
@@ -51,14 +53,16 @@ namespace MangaScrapeLib
                 return null;
             }
 
-            var repository = DetermineOwnerRepository(uri) as RepositoryBase;
-            if (repository == null)
+            if (HostToRepoDictionary.ContainsKey(uri.Host))
             {
-                return null;
+                if (HostToRepoDictionary[uri.Host] is RepositoryBase repository)
+                {
+                    var output = new Series(repository, uri, title);
+                    return output;
+                }
             }
 
-            var output = new Series(repository, uri, title);
-            return output;
+            return null;
         }
     }
 }
