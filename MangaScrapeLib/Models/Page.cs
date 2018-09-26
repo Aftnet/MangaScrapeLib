@@ -12,15 +12,15 @@ namespace MangaScrapeLib.Models
         public IChapter ParentChapter => ParentChapterInternal;
 
         public Uri PageUri { get; private set; }
-        public int PageNo { get; private set; }
+        public int PageNumber { get; private set; }
 
         public Uri ImageUri { get; internal set; }
 
-        internal Page(Chapter parent, Uri pageUri, int pageNo)
+        internal Page(Chapter parent, Uri pageUri, int pageNumber)
         {
             ParentChapterInternal = parent;
             PageUri = pageUri;
-            PageNo = pageNo;
+            PageNumber = pageNumber;
         }
 
         public Task<byte[]> GetImageAsync()
@@ -48,7 +48,7 @@ namespace MangaScrapeLib.Models
         {
             const string numberFormatString = "000";
             var parentSeries = ParentChapter.ParentSeries;
-            var output = string.Format("{0} P{1}", ParentChapter.Title, PageNo.ToString(numberFormatString));
+            var output = string.Format("{0} P{1}", ParentChapter.Title, PageNumber.ToString(numberFormatString));
             return output;
         }
     }

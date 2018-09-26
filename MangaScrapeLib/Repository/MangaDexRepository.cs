@@ -116,14 +116,14 @@ namespace MangaScrapeLib.Repository
 
             var table = document.QuerySelector("div.chapter-container");
             var rows = table.Children.Skip(1);
-            var output = rows.Select(d =>
+            var output = rows.Reverse().Select((d, e) =>
             {
                 d = d.QuerySelector("div div");
                 var titleNode = d.QuerySelector("div.col.row.no-gutters.pr-1 a");
                 var updateNode = d.QuerySelector("div.ml-1.order-lg-8");
-                var chapter = new Chapter((Series)input, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent.Trim()) { Updated = updateNode.TextContent.Trim() };
+                var chapter = new Chapter((Series)input, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent.Trim(), e) { Updated = updateNode.TextContent.Trim() };
                 return chapter;
-            }).Reverse().ToArray();
+            }).ToArray();
 
             inputAsSeries.Updated = output.Last().Updated;
             return output;

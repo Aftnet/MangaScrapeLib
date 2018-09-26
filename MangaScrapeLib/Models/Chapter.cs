@@ -14,13 +14,15 @@ namespace MangaScrapeLib.Models
 
         public Uri FirstPageUri { get; private set; }
         public string Title { get; private set; }
+        public int ReadingOrder { get; private set; }
         public string Updated { get; internal set; }
 
-        internal Chapter(Series parent, Uri firstPageUri, string title)
+        internal Chapter(Series parent, Uri firstPageUri, string title, int readingOrder)
         {
             ParentSeriesInternal = parent;
             FirstPageUri = firstPageUri;
             Title = title;
+            ReadingOrder = readingOrder;
             Updated = string.Empty;
         }
 

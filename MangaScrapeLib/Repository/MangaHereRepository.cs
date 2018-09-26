@@ -48,14 +48,14 @@ namespace MangaScrapeLib.Repository
             node = node.QuerySelector("div.detail_list ul");
             var nodes = node.QuerySelectorAll("a.color_0077");
 
-            var Output = nodes.Select(d =>
+            var Output = nodes.Reverse().Select((d, e) =>
             {
                 string Title = d.TextContent;
                 Title = Regex.Replace(Title, @"^[\r\n\s\t]+", string.Empty);
                 Title = Regex.Replace(Title, @"[\r\n\s\t]+$", string.Empty);
-                var Chapter = new Chapter((Series)input, new Uri(RootUri, d.Attributes["href"].Value), Title);
+                var Chapter = new Chapter((Series)input, new Uri(RootUri, d.Attributes["href"].Value), Title, e);
                 return Chapter;
-            }).Reverse().ToArray();
+            }).ToArray();
 
             return Output.ToArray();
         }

@@ -73,16 +73,16 @@ namespace MangaScrapeLib.Repository
 
             var listNode = document.QuerySelector("div#list_chapter div.chapter-list");
             var chapterNodes = listNode.QuerySelectorAll("div.row");
-            var output = chapterNodes.Select(d =>
+            var output = chapterNodes.Reverse().Select((d, e) =>
             {
                 var titleNode = d.QuerySelector("span:nth-child(1) a");
                 var dateNode = d.QuerySelector("span:nth-child(2)");
 
-                return new Chapter(inputAsSeries, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent)
+                return new Chapter(inputAsSeries, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent, e)
                 {
                     Updated = dateNode.TextContent
                 };
-            }).Reverse().ToArray();
+            }).ToArray();
 
             return output;
         }
@@ -241,16 +241,16 @@ namespace MangaScrapeLib.Repository
 
             var listNode = document.QuerySelector("div#chapter div.manga-info-chapter div.chapter-list");
             var chapterNodes = listNode.QuerySelectorAll("div.row");
-            var output = chapterNodes.Select(d =>
+            var output = chapterNodes.Reverse().Select((d, e) =>
             {
                 var titleNode = d.QuerySelector("span:nth-child(1) a");
                 var dateNode = d.QuerySelector("span:nth-child(3)");
 
-                return new Chapter(inputAsSeries, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent)
+                return new Chapter(inputAsSeries, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent, e)
                 {
                     Updated = dateNode.TextContent
                 };
-            }).Reverse().ToArray();
+            }).ToArray();
 
             return output;
         }

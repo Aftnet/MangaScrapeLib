@@ -48,13 +48,13 @@ namespace MangaScrapeLib.Repository
             var document = Parser.Parse(html);
             var tableNode = document.QuerySelector("table.table-striped") as AngleSharp.Dom.Html.IHtmlTableElement;
             var rows = tableNode.QuerySelectorAll("tr").Skip(1);
-            var output = rows.Select(d =>
+            var output = rows.Reverse().Select((d, e) =>
             {
                 var linkNode = d.QuerySelector("a");
                 var datenode = d.QuerySelectorAll("td").Skip(1);
-                var chapter = new Chapter((Series)input, new Uri(RootUri, linkNode.Attributes["href"].Value), linkNode.TextContent) { Updated = datenode.First().TextContent.Trim() };
+                var chapter = new Chapter((Series)input, new Uri(RootUri, linkNode.Attributes["href"].Value), linkNode.TextContent, e) { Updated = datenode.First().TextContent.Trim() };
                 return chapter;
-            }).Reverse().ToArray();
+            }).ToArray();
 
             return output;
         }

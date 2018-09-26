@@ -24,6 +24,6 @@ namespace MangaScrapeLib
         Task<IReadOnlyList<IChapter>> GetChaptersAsync();
         Task<IReadOnlyList<IChapter>> GetChaptersAsync(CancellationToken token);
 
-        IChapter GetSingleChapterFromData(Uri firstPageUri, string title);
+        IChapter GetSingleChapterFromData(Uri firstPageUri, string title, int readingOrder);
     }
 }

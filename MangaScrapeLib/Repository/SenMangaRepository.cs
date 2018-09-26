@@ -113,7 +113,7 @@ namespace MangaScrapeLib.Repository
             var chaptersNode = document.QuerySelector("div#content div.list div.group");
             nodes = chaptersNode.QuerySelectorAll("div.element");
 
-            var output = nodes.Select(d =>
+            var output = nodes.Reverse().Select((d, e) =>
             {
                 var titleNode = d.QuerySelector("div.title a");
                 var metaNode = d.QuerySelector("div.meta_r");
@@ -121,8 +121,8 @@ namespace MangaScrapeLib.Repository
                 var title = titleNode.Attributes["title"].Value;
                 var link = new Uri(RootUri, titleNode.Attributes["href"].Value);
                 var date = metaNode.TextContent;
-                return new Chapter(series, link, title) { Updated = date };
-            }).Reverse().ToArray();
+                return new Chapter(series, link, title, e) { Updated = date };
+            }).ToArray();
 
             series.Updated = output.Last().Updated;
             return output;

@@ -27,7 +27,7 @@ namespace MangaScrapeLib.Test.Models
         [MemberData(nameof(CreateFromDataWorksData))]
         public void CreateFromDataWorks(string uri, string title, bool shouldSucceed)
         {
-            var output = TestSeries.GetSingleChapterFromData(uri == null ? null : new Uri(uri), title);
+            var output = TestSeries.GetSingleChapterFromData(uri == null ? null : new Uri(uri), title, -1);
             if (shouldSucceed)
             {
                 Assert.NotNull(output);

@@ -7,7 +7,7 @@ namespace MangaScrapeLib
     public interface IPage : IPathSuggester
     {
         Uri ImageUri { get; }
-        int PageNo { get; }
+        int PageNumber { get; }
         Uri PageUri { get; }
         IChapter ParentChapter { get; }
 

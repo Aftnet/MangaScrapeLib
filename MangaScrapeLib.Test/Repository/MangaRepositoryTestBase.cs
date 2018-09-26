@@ -106,7 +106,7 @@ namespace MangaScrapeLib.Test.Repository
                 CheckParsedStringValidity(i.PageUri.ToString(), false);
 
                 Assert.Same(selectedChapter, i.ParentChapter);
-                Assert.Equal(ctr, i.PageNo);
+                Assert.Equal(ctr, i.PageNumber);
                 ctr++;
             }
         }
