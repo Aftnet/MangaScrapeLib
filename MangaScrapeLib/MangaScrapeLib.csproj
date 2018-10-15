@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFramework>netstandard1.3</TargetFramework>
     <Authors>Alberto Fustinoni</Authors>
     <Description>A library to scrape publicly available manga repositories</Description>
     <Company />

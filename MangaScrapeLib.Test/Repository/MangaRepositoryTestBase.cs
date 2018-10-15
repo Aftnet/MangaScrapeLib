@@ -80,7 +80,7 @@ namespace MangaScrapeLib.Test.Repository
             var readingOrder = 0;
             foreach (var i in chapters)
             {
-                CheckParsedStringValidity(i.Title, true);
+                CheckParsedStringValidity(i.Title, false);
                 Assert.Equal(readingOrder, i.ReadingOrder);
                 readingOrder++;
 
@@ -89,7 +89,7 @@ namespace MangaScrapeLib.Test.Repository
                 Assert.NotNull(i.FirstPageUri);
                 CheckParsedStringValidity(i.FirstPageUri.ToString(), true);
 
-                CheckParsedStringValidity(i.SuggestPath(RootDir), true);
+                CheckParsedStringValidity(i.SuggestPath(RootDir), false);
             }
         }
 
@@ -139,7 +139,7 @@ namespace MangaScrapeLib.Test.Repository
         public async Task SearchWorks(string searchQuery, bool requiresResults)
         {
             var searchResult = await Repository.SearchSeriesAsync(searchQuery, CTS.Token);
-            if(requiresResults)
+            if (requiresResults)
             {
                 Assert.NotEmpty(searchResult);
             }
@@ -199,7 +199,7 @@ namespace MangaScrapeLib.Test.Repository
         {
             Assert.False(string.IsNullOrEmpty(input));
             Assert.False(string.IsNullOrWhiteSpace(input));
-            if(shouldBeUnique)
+            if (shouldBeUnique)
             {
                 Assert.DoesNotContain(input, UniqueParsedValues);
                 UniqueParsedValues.Add(input);
