@@ -139,7 +139,7 @@ namespace MangaScrapeLib.Test.Repository
         public async Task SearchWorks(string searchQuery, bool requiresResults)
         {
             var searchResult = await Repository.SearchSeriesAsync(searchQuery, CTS.Token);
-            if(requiresResults)
+            if (requiresResults)
             {
                 Assert.NotEmpty(searchResult);
             }
@@ -199,7 +199,7 @@ namespace MangaScrapeLib.Test.Repository
         {
             Assert.False(string.IsNullOrEmpty(input));
             Assert.False(string.IsNullOrWhiteSpace(input));
-            if(shouldBeUnique)
+            if (shouldBeUnique)
             {
                 Assert.DoesNotContain(input, UniqueParsedValues);
                 UniqueParsedValues.Add(input);

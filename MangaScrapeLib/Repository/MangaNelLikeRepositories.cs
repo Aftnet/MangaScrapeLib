@@ -97,7 +97,7 @@ namespace MangaScrapeLib.Repository
 
             var document = Parser.Parse(html);
 
-            var listNode = document.QuerySelector("div.vung_doc");
+            var listNode = document.QuerySelector("div#vungdoc");
             var imageNodes = listNode.QuerySelectorAll("img");
             var output = imageNodes.Select((d, e) =>
             {
