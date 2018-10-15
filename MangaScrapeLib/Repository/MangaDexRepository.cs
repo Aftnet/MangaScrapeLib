@@ -13,8 +13,56 @@ namespace MangaScrapeLib.Repository
 {
     internal sealed class MangaDexRepository : RepositoryBase
     {
+        private const string ChaptersFilterLanguageCode = "gb";
+
+        private IReadOnlyList<string> Genres { get; } = new string[] { "4-Koma",
+            "Action", "Adventure", "Award Winning", "Comedy", "Cooking", "Doujinshi",
+            "Drama", "Ecchi", "Fantasy", "Gender Bender", "Harem", "Historical", "Horror", "Josei",
+            "Martial Arts", "Mecha", "Medical", "Music", "Mystery", "Oneshot", "Psychological",
+            "Romance", "School Life", "Sci-Fi", "Seinen", "Shoujo", "Shoujo Ai", "Shounen",
+            "Shounen Ai", "Slice of Life", "Smut", "Sports", "Supernatural", "Tragedy", "Webtoon",
+            "Yaoi", "Yuri", "[no chapters]", "Game", "Isekai" };
+
+        private class SeriesAPIResponse
+        {
+            public class SeriesInfo
+            {
+                [JsonProperty("cover_url")]
+                public string CoverUri { get; set; }
+                [JsonProperty("description")]
+                public string Description { get; set; }
+                [JsonProperty("title")]
+                public string Title { get; set; }
+                [JsonProperty("author")]
+                public string Author { get; set; }
+                [JsonProperty("genres")]
+                public int[] Genres { get; set; }
+            }
+
+            public class ChapterInfo
+            {
+                [JsonIgnore]
+                public int ID { get; set; }
+                [JsonProperty("volume")]
+                public string Volume { get; set; }
+                [JsonProperty("chapter")]
+                public string Chapter { get; set; }
+                [JsonProperty("title")]
+                public string Title { get; set; }
+                [JsonProperty("lang_code")]
+                public string LanguageCode { get; set; }
+                [JsonProperty("timestamp")]
+                public int TimeStamp { get; set; }
+            }
+
+            [JsonProperty("manga")]
+            public SeriesInfo Series { get; set; }
+            [JsonProperty("chapter")]
+            public Dictionary<int, ChapterInfo> Chapters { get; set; }
+        }
+
         [JsonObject]
-        private class ChapterEntry
+        private class ChapterAPIResponse
         {
             [JsonProperty("id")]
             public string ChapterId { get; set; }
@@ -94,38 +142,45 @@ namespace MangaScrapeLib.Repository
         internal override async Task<IReadOnlyList<IChapter>> GetChaptersAsync(ISeries input, CancellationToken token)
         {
             var inputAsSeries = (Series)input;
-            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri, token);
-            if (html == null)
+
+            var regex = new Regex(@"title/([^/]+)");
+            var seriesId = regex.Match(input.SeriesPageUri.ToString()).Groups[1].Value;
+            var apiUri = $"api/?id={Uri.EscapeDataString(seriesId)}&type=manga";
+
+            var json = await WebClient.GetStringAsync(new Uri(RootUri, apiUri), RootUri, token);
+            if (json == null)
             {
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var seriesInfo = JsonConvert.DeserializeObject<SeriesAPIResponse>(json);
+            inputAsSeries.Author = seriesInfo.Series.Author;
+            inputAsSeries.Description = seriesInfo.Series.Description;
+            inputAsSeries.CoverImageUri = new Uri(RootUri, seriesInfo.Series.CoverUri);
 
-            var infoNode = document.QuerySelector("div.card-body div.row.edit");
-            var imgNode = infoNode.QuerySelector("img.rounded");
-            inputAsSeries.CoverImageUri = new Uri(RootUri, imgNode.Attributes["src"].Value);
+            var seriesGenres = seriesInfo.Series.Genres.Select(d => (d > 0 && d < Genres.Count) ? Genres[d] : null).Where(d => d != null).ToArray();
+            inputAsSeries.Tags = seriesGenres.Any() ? string.Join(", ", seriesGenres) : "None";
 
-            var infoNodes = infoNode.QuerySelectorAll("div.col-xl-9 div.row.border-top");
-            var authorNode = infoNodes[0].QuerySelector("div a");
-            inputAsSeries.Author = authorNode.TextContent.Trim();
-            var tagNodes = infoNodes[2].QuerySelectorAll("a.genre");
-            inputAsSeries.Tags = string.Join(", ", tagNodes.Select(d => d.TextContent.Trim()));
-            var descriptionNode = infoNodes[6].QuerySelector("div.col-lg-9");
-            inputAsSeries.Description = descriptionNode.TextContent.Trim();
-
-            var table = document.QuerySelector("div.chapter-container");
-            var rows = table.Children.Skip(1);
-            var output = rows.Reverse().Select((d, e) =>
+            var chapters = seriesInfo.Chapters.Select(d =>
             {
-                d = d.QuerySelector("div div");
-                var titleNode = d.QuerySelector("div.col.row.no-gutters.pr-1 a");
-                var updateNode = d.QuerySelector("div.ml-1.order-lg-8");
-                var chapter = new Chapter((Series)input, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent.Trim(), e) { Updated = updateNode.TextContent.Trim() };
-                return chapter;
-            }).ToArray();
+                d.Value.ID = d.Key;
+                return d.Value;
+            }).Where(d => d.LanguageCode == ChaptersFilterLanguageCode).Reverse().ToArray();
 
-            inputAsSeries.Updated = output.Last().Updated;
+            var output = chapters.Select((d, e) =>
+                {
+                    var chapterUri = $"chapter/{d.ID}";
+                    var title = d.Title;
+                    if (string.IsNullOrEmpty(title) || string.IsNullOrWhiteSpace(title))
+                    {
+                        title = $"Chapter {e + 1}";
+                    }
+
+                    var updated = DateTimeOffset.FromUnixTimeSeconds(d.TimeStamp);
+                    var chapter = new Chapter(inputAsSeries, new Uri(RootUri, chapterUri), title, e) { Updated = updated.ToString("dd-MM-yyyy") };
+                    return chapter;
+                }).ToArray();
+
             return output;
         }
 
@@ -133,16 +188,15 @@ namespace MangaScrapeLib.Repository
         {
             var regex = new Regex(@"chapter/([^/]+)");
             var chapterId = regex.Match(input.FirstPageUri.ToString()).Groups[1].Value;
-            var apiUriBase = "https://mangadex.org/api/?id={0}&type=chapter";
-            var apiUri = new Uri(string.Format(apiUriBase, Uri.EscapeDataString(chapterId)));
+            var apiUri = $"api/?id={Uri.EscapeDataString(chapterId)}&type=chapter";
 
-            var json = await WebClient.GetStringAsync(apiUri, RootUri, token);
+            var json = await WebClient.GetStringAsync(new Uri(RootUri, apiUri), RootUri, token);
             if (json == null)
             {
                 return null;
             }
 
-            var chapterInfo = JsonConvert.DeserializeObject<ChapterEntry>(json);
+            var chapterInfo = JsonConvert.DeserializeObject<ChapterAPIResponse>(json);
             var imageUriFormat = @"{0}{1}/{2}";
             var output = chapterInfo.ImageFileNames.Select((d, e) => new Page((Chapter)input, input.FirstPageUri, e + 1)
             {
