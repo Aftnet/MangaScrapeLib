@@ -1,13 +1,13 @@
-﻿using MangaScrapeLib.Models;
-using MangaScrapeLib.Tools;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using MangaScrapeLib.Models;
+using MangaScrapeLib.Tools;
+using Newtonsoft.Json;
 
 namespace MangaScrapeLib.Repository
 {
@@ -47,7 +47,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var imageNode = document.QuerySelector("div.truyen_info_left span.info_image img");
             inputAsSeries.CoverImageUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
@@ -95,7 +99,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var listNode = document.QuerySelector("div#vungdoc");
             if (listNode == null)
@@ -152,7 +160,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var seriesNodes = document.QuerySelectorAll("div.itemupdate.first");
             var output = seriesNodes.Select(d =>
@@ -232,7 +244,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var imageNode = document.QuerySelector("div.manga-info-pic img");
             inputAsSeries.CoverImageUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
@@ -271,7 +287,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var listNode = document.QuerySelector("div#vungdoc");
             var imageNodes = listNode.QuerySelectorAll("img");

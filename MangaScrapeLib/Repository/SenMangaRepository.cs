@@ -1,11 +1,11 @@
-﻿using MangaScrapeLib.Models;
-using MangaScrapeLib.Tools;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MangaScrapeLib.Models;
+using MangaScrapeLib.Tools;
+using Newtonsoft.Json;
 
 namespace MangaScrapeLib.Repository
 {
@@ -45,7 +45,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var listNode = document.QuerySelector("ul.post-list");
             var titleNodes = listNode.QuerySelectorAll("li");
@@ -97,7 +101,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var series = input as Series;
 
@@ -136,7 +144,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var page = input as Page;
 
@@ -160,7 +172,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var chapter = input as Chapter;
 

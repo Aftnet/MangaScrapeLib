@@ -24,7 +24,7 @@ namespace MangaScrapeLib.Repository
 
         private string IconFileName { get; }
         private readonly Lazy<byte[]> icon;
-        public byte[] Icon { get { return icon.Value; } }
+        public byte[] Icon => icon.Value;
 
         public string Name { get; private set; }
         public Uri RootUri { get; private set; }

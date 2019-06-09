@@ -1,20 +1,20 @@
-﻿using MangaScrapeLib.Models;
-using MangaScrapeLib.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MangaScrapeLib.Models;
+using MangaScrapeLib.Tools;
 
 namespace MangaScrapeLib.Repository
 {
     internal sealed class EatMangaRepository : RepositoryBase
     {
-        private static readonly Uri MangaIndexUri = new Uri("http://eatmanga.com/Manga-Scan/");
+        private static Uri MangaIndexUri { get; } = new Uri("http://eatmanga.com/Manga-Scan/");
 
-        private static readonly string[] ImageIDs = { "#eatmanga_image_big", "#eatmanga_image" };
+        private static string[] ImageIDs { get; } = { "#eatmanga_image_big", "#eatmanga_image" };
 
-        private ISeries[] AllSeries = null;
+        private ISeries[] AllSeries { get; set; }
 
         public EatMangaRepository(IWebClient webClient) : base(webClient, "Eat Manga", "http://eatmanga.com/", "EatManga.png", false)
         {

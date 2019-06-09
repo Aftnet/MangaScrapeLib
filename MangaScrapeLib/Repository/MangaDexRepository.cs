@@ -1,13 +1,12 @@
-﻿using MangaScrapeLib.Models;
-using MangaScrapeLib.Tools;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using MangaScrapeLib.Models;
+using MangaScrapeLib.Tools;
+using Newtonsoft.Json;
 
 namespace MangaScrapeLib.Repository
 {
@@ -86,7 +85,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var table = document.QuerySelector("div#latest_update div.row");
             var items = table.QuerySelectorAll("div.col-md-6").ToArray();
@@ -115,7 +118,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var noResultsAlert = document.QuerySelector("div#content div.alert-info");
             if (noResultsAlert != null)
