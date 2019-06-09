@@ -1,18 +1,18 @@
-﻿using AngleSharp.Parser.Html;
-using MangaScrapeLib.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp.Html.Parser;
+using MangaScrapeLib.Tools;
 
 namespace MangaScrapeLib.Repository
 {
     internal abstract class RepositoryBase : IRepository
     {
-        protected readonly IWebClient WebClient;
+        protected IWebClient WebClient { get; }
 
         internal abstract Task<IReadOnlyList<IChapter>> GetChaptersAsync(ISeries input, CancellationToken token);
         internal abstract Task<IReadOnlyList<IPage>> GetPagesAsync(IChapter input, CancellationToken token);
@@ -20,9 +20,9 @@ namespace MangaScrapeLib.Repository
 
         private IReadOnlyList<ISeries> AvailableSeries { get; set; }
 
-        protected static readonly HtmlParser Parser = new HtmlParser();
+        protected static HtmlParser Parser { get; } = new HtmlParser();
 
-        private readonly string IconFileName;
+        private string IconFileName { get; }
         private readonly Lazy<byte[]> icon;
         public byte[] Icon { get { return icon.Value; } }
 
