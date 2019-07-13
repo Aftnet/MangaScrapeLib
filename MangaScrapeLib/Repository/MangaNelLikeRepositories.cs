@@ -55,7 +55,7 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var imageNode = document.QuerySelector("div.truyen_info_left span.info_image img");
+            var imageNode = document.QuerySelector("div.truyen_info_left img.info_image_manga");
             inputAsSeries.CoverImageUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
 
             var infoNode = document.QuerySelector("ul.truyen_info_right");
@@ -71,9 +71,9 @@ namespace MangaScrapeLib.Repository
                 inputAsSeries.Tags = "NA";
             }
 
-            var updatedNode = infoNode.QuerySelector("li:nth-child(6) em em");
-            inputAsSeries.Updated = updatedNode.TextContent;
-            var descriptionNode = document.QuerySelector("div#noidungm");
+            var updatedNode = infoNode.QuerySelector("li:nth-child(6)");
+            inputAsSeries.Updated = updatedNode.TextContent.Replace("Last updated :", string.Empty).Trim();
+            var descriptionNode = document.QuerySelector("div#contentm");
             inputAsSeries.Description = descriptionNode.TextContent.Trim();
             inputAsSeries.Description = Regex.Replace(inputAsSeries.Description, @"[ \t\r\n]+", " ");
 
