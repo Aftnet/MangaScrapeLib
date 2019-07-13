@@ -15,7 +15,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "https://manganelo.com/";
 
-        public MangaNelRepository(IWebClient webClient) : base(webClient, "Manga NEL", RepoRootUriString, "MangaNel.png", $"{RepoRootUriString}home", $"{RepoRootUriString}home_json_search")
+        public MangaNelRepository(IWebClient webClient) : base(webClient, "Manga NEL", RepoRootUriString, "MangaNel.png", RepoRootUriString, $"{RepoRootUriString}home_json_search")
         {
         }
     }
@@ -24,7 +24,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "http://mangakakalot.com/";
 
-        public MangaKakalotRepository(IWebClient webClient) : base(webClient, "MangaKakalot", RepoRootUriString, "MangaKakalot.png", RepoRootUriString, $"{RepoRootUriString}home_json_search")
+        public MangaKakalotRepository(IWebClient webClient) : base(webClient, "MangaKakalot", RepoRootUriString, "MangaKakalot.png", $"{RepoRootUriString}page", $"{RepoRootUriString}home_json_search")
         {
         }
     }
