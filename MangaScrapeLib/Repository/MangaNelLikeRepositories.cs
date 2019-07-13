@@ -33,7 +33,9 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "https://mangabat.com/";
 
-        public MangaBatRepository(IWebClient webClient) : base(webClient, "MangaBat", RepoRootUriString, "MangaBat.png", RepoRootUriString, $"{RepoRootUriString}getsearchstory")
+        protected override string CoverImgXpath => "a.tooltip img.cover";
+
+        public MangaBatRepository(IWebClient webClient) : base(webClient, "MangaBat", RepoRootUriString, "MangaBat.png", $"{RepoRootUriString}web", $"{RepoRootUriString}getsearchstory")
         {
         }
 
@@ -145,6 +147,8 @@ namespace MangaScrapeLib.Repository
 
         private static readonly string[] SupuriousTitleText = { "<span style=\"color: #FF530D;font-weight: bold;\">", "</span>" };
 
+        protected virtual string CoverImgXpath => "a.cover img";
+
         protected MangaNelLikeRepository(IWebClient webClient, string name, string uriString, string iconFileName, string featuredSeriesPageUri, string searchUriPattern) : base(webClient, name, uriString, iconFileName, true)
         {
             FeaturedSeriesPageUri = new Uri(featuredSeriesPageUri, UriKind.Absolute);
@@ -169,7 +173,7 @@ namespace MangaScrapeLib.Repository
             var seriesNodes = document.QuerySelectorAll("div.itemupdate.first");
             var output = seriesNodes.Select(d =>
             {
-                var coverNode = d.QuerySelector("a.cover img");
+                var coverNode = d.QuerySelector(CoverImgXpath);
                 var coverUri = new Uri(RootUri, coverNode.Attributes["src"].Value);
 
                 var titleNode = d.QuerySelector("ul li h3 a");
@@ -198,10 +202,10 @@ namespace MangaScrapeLib.Repository
             var content = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("searchword", query),
-                new KeyValuePair<string, string>("search_style", "tentruyen")
+                //new KeyValuePair<string, string>("search_style", "tentruyen")
             });
 
-            var response = await WebClient.PostAsync(content, new Uri(SearchUriPattern), RootUri, token);
+            var response = await WebClient.PostAsync(content, new Uri(SearchUriPattern), FeaturedSeriesPageUri, token);
             if (response == null)
             {
                 return null;
