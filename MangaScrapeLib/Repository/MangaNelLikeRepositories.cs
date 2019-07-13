@@ -22,7 +22,7 @@ namespace MangaScrapeLib.Repository
 
     internal class MangaKakalotRepository : MangaNelLikeRepository
     {
-        private const string RepoRootUriString = "http://mangakakalot.com/";
+        private const string RepoRootUriString = "https://mangakakalot.com/";
 
         public MangaKakalotRepository(IWebClient webClient) : base(webClient, "MangaKakalot", RepoRootUriString, "MangaKakalot.png", $"{RepoRootUriString}page", $"{RepoRootUriString}home_json_search")
         {
@@ -204,7 +204,7 @@ namespace MangaScrapeLib.Repository
                 new KeyValuePair<string, string>("searchword", query),
                 //new KeyValuePair<string, string>("search_style", "tentruyen")
             });
-
+            
             var response = await WebClient.PostAsync(content, new Uri(SearchUriPattern), FeaturedSeriesPageUri, token);
             if (response == null)
             {
