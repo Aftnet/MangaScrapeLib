@@ -24,8 +24,13 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
-            var tableNode = document.QuerySelector("table.table-striped") as AngleSharp.Dom.Html.IHtmlTableElement;
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
+            var tableNode = document.QuerySelector("table.table-striped") as AngleSharp.Html.Dom.IHtmlTableElement;
             var linkNodes = tableNode.QuerySelectorAll("strong a");
             var updateNodes = tableNode.QuerySelectorAll("a.chapter-link");
             var output = linkNodes.Zip(updateNodes, (d, e) =>
@@ -34,6 +39,7 @@ namespace MangaScrapeLib.Repository
                 var series = new Series(this, uri, d.TextContent) { Updated = e.TextContent };
                 return series;
             }).ToArray();
+
             return output;
         }
 
@@ -45,8 +51,13 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
-            var tableNode = document.QuerySelector("table.table-striped") as AngleSharp.Dom.Html.IHtmlTableElement;
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
+            var tableNode = document.QuerySelector("table.table-striped") as AngleSharp.Html.Dom.IHtmlTableElement;
             var rows = tableNode.QuerySelectorAll("tr").Skip(1);
             var output = rows.Reverse().Select((d, e) =>
             {
@@ -67,7 +78,12 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             var imageNode = document.QuerySelector("img#manga-page");
 
             var inputAsPage = (Page)input;
@@ -89,7 +105,12 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
+
             var listNode = document.QuerySelector("div.btn-reader-page ul.dropdown-menu");
 
             var linksNodes = listNode.QuerySelectorAll("a");

@@ -1,12 +1,12 @@
-﻿using MangaScrapeLib.Models;
-using MangaScrapeLib.Tools;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using MangaScrapeLib.Models;
+using MangaScrapeLib.Tools;
 
 namespace MangaScrapeLib.Repository
 {
@@ -26,7 +26,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var nodes = document.QuerySelectorAll("a.manga_info");
 
@@ -42,7 +46,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var node = document.QuerySelector("div.manga_detail");
             node = node.QuerySelector("div.detail_list ul");
@@ -68,7 +76,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var node = document.QuerySelector("section.readpage_top");
             node = node.QuerySelector("span.right select");
@@ -86,7 +98,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var node = document.QuerySelector("img#image");
             var imageUri = new Uri(node.Attributes["src"].Value);

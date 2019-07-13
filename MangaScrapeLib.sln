@@ -1,17 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{16219D45-0DFD-44E7-B945-52C15477D951}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		License.txt = License.txt
 		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MangaScrapeLib", "MangaScrapeLib\MangaScrapeLib.csproj", "{53F3DAFF-38E4-4430-B0FF-94936318E04D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MangaScrapeLib.Test", "MangaScrapeLib.Test\MangaScrapeLib.Test.csproj", "{248C5178-6D7D-4520-8AA7-EAE78128A4E0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MangaScrapeLib.Test", "MangaScrapeLib.Test\MangaScrapeLib.Test.csproj", "{248C5178-6D7D-4520-8AA7-EAE78128A4E0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

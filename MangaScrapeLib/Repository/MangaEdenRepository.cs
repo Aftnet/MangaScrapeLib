@@ -1,11 +1,11 @@
-﻿using MangaScrapeLib.Models;
-using MangaScrapeLib.Tools;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MangaScrapeLib.Models;
+using MangaScrapeLib.Tools;
+using Newtonsoft.Json;
 
 namespace MangaScrapeLib.Repository
 {
@@ -56,7 +56,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var table = document.QuerySelector("#mangaList");
             var rows = table.QuerySelectorAll("tr").Skip(1).ToArray();
@@ -111,8 +115,12 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            GetSeriesInfo(inputAsSeries, html);
-            var document = Parser.Parse(html);
+            await GetSeriesInfoAsync(inputAsSeries, html, token);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var table = document.QuerySelector("table");
             var rows = table.QuerySelectorAll("tr").Skip(1);
@@ -137,7 +145,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var selectNode = document.QuerySelector("select#pageSelect");
             var options = selectNode.QuerySelectorAll("option");
@@ -153,7 +165,11 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var document = Parser.Parse(html);
+            var document = await Parser.ParseDocumentAsync(html, token);
+            if (token.IsCancellationRequested)
+            {
+                return null;
+            }
 
             var imageNode = document.QuerySelector("img#mainImg");
             var imageUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
@@ -168,9 +184,13 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        private void GetSeriesInfo(Series series, string seriesPageHtml)
+        private async Task GetSeriesInfoAsync(Series series, string seriesPageHtml, CancellationToken token)
         {
-            var document = Parser.Parse(seriesPageHtml);
+            var document = await Parser.ParseDocumentAsync(seriesPageHtml, token);
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
 
             var imgNode = document.QuerySelector("div.mangaImage2 img");
             if (imgNode != null)
