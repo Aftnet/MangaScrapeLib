@@ -15,7 +15,7 @@ namespace MangaScrapeLib.Repository
     {
         private const string RepoRootUriString = "https://manganelo.com/";
 
-        public MangaNelRepository(IWebClient webClient) : base(webClient, "Manga NEL", RepoRootUriString, "MangaNel.png", RepoRootUriString, $"{RepoRootUriString}home_json_search")
+        public MangaNelRepository(IWebClient webClient) : base(webClient, "Manga NEL", RepoRootUriString, "MangaNel.png", RepoRootUriString, $"{RepoRootUriString}getstorysearchjson")
         {
         }
     }
@@ -147,7 +147,7 @@ namespace MangaScrapeLib.Repository
 
         private static readonly string[] SupuriousTitleText = { "<span style=\"color: #FF530D;font-weight: bold;\">", "</span>" };
 
-        protected virtual string CoverImgXpath => "a.cover img";
+        protected virtual string CoverImgXpath => "a.item-img img";
 
         protected MangaNelLikeRepository(IWebClient webClient, string name, string uriString, string iconFileName, string featuredSeriesPageUri, string searchUriPattern) : base(webClient, name, uriString, iconFileName, true)
         {
@@ -170,17 +170,17 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var seriesNodes = document.QuerySelectorAll("div.itemupdate.first");
+            var seriesNodes = document.QuerySelectorAll("div.content-homepage-item");
             var output = seriesNodes.Select(d =>
             {
                 var coverNode = d.QuerySelector(CoverImgXpath);
                 var coverUri = new Uri(RootUri, coverNode.Attributes["src"].Value);
 
-                var titleNode = d.QuerySelector("ul li h3 a");
+                var titleNode = d.QuerySelector("div h3.item-title a");
                 var uri = new Uri(RootUri, titleNode.Attributes["href"].Value);
                 var title = titleNode.TextContent;
 
-                var dateNode = d.QuerySelector("ul li:nth-child(2) i");
+                var dateNode = d.QuerySelector("div p.item-chapter i");
                 var date = dateNode != null ? dateNode.TextContent : "Unknown";
                 return new Series(Repositories.DetermineOwnerRepository(uri) as RepositoryBase, uri, title)
                 {
@@ -254,25 +254,25 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var imageNode = document.QuerySelector("div.manga-info-pic img");
+            var imageNode = document.QuerySelector("span.info-image img");
             inputAsSeries.CoverImageUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
 
-            var infoNode = document.QuerySelector("ul.manga-info-text");
-            var authorNode = infoNode.QuerySelector("li:nth-child(2) a");
+            var infoNode = document.QuerySelector("div.story-info-right");
+            var authorNode = infoNode.QuerySelector("tr:nth-child(1) td.table-value a");
             inputAsSeries.Author = authorNode.TextContent;
-            var updatedNode = infoNode.QuerySelector("li:nth-child(4)");
+            var updatedNode = infoNode.QuerySelector("div.story-info-right-extent span.stre-value");
             inputAsSeries.Updated = updatedNode.TextContent.Replace("Last updated : ", string.Empty);
-            var tagNodes = infoNode.QuerySelectorAll("li:nth-child(7) a");
+            var tagNodes = infoNode.QuerySelectorAll("tr:nth-child(3) td.table-value a");
             inputAsSeries.Tags = string.Join(", ", tagNodes.Select(d => d.TextContent).ToArray());
-            var descriptionNode = document.QuerySelector("div#noidungm");
+            var descriptionNode = document.QuerySelector("div.panel-story-info-description");
             inputAsSeries.Description = descriptionNode.TextContent.Trim();
 
-            var listNode = document.QuerySelector("div#chapter div.manga-info-chapter div.chapter-list");
-            var chapterNodes = listNode.QuerySelectorAll("div.row");
+            var listNode = document.QuerySelector("div.panel-story-chapter-list");
+            var chapterNodes = listNode.QuerySelectorAll("li.a-h");
             var output = chapterNodes.Reverse().Select((d, e) =>
             {
-                var titleNode = d.QuerySelector("span:nth-child(1) a");
-                var dateNode = d.QuerySelector("span:nth-child(3)");
+                var titleNode = d.QuerySelector("a");
+                var dateNode = d.QuerySelector("span.chapter-time");
 
                 return new Chapter(inputAsSeries, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent, e)
                 {
@@ -297,7 +297,7 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var listNode = document.QuerySelector("div#vungdoc");
+            var listNode = document.QuerySelector("div.container-chapter-reader");
             var imageNodes = listNode.QuerySelectorAll("img");
             var output = imageNodes.Select((d, e) =>
             {
