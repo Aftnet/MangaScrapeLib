@@ -10,7 +10,7 @@ namespace MangaScrapeLib.Models
 {
     internal class Series : ISeries
     {
-        public RepositoryBase ParentRepositoryInternal { get; private set; }
+        public RepositoryBase ParentRepositoryInternal { get; }
         public IRepository ParentRepository => ParentRepositoryInternal;
 
         public Uri SeriesPageUri { get; private set; }

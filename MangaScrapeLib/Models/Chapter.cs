@@ -9,7 +9,7 @@ namespace MangaScrapeLib.Models
 {
     internal class Chapter : IChapter
     {
-        internal Series ParentSeriesInternal { get; private set; }
+        internal Series ParentSeriesInternal { get; }
         public ISeries ParentSeries => ParentSeriesInternal;
 
         public Uri FirstPageUri { get; private set; }

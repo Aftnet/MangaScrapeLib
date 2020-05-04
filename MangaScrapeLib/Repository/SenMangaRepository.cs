@@ -93,7 +93,7 @@ namespace MangaScrapeLib.Repository
             }
         }
 
-        internal override async Task<IReadOnlyList<IChapter>> GetChaptersAsync(ISeries input, CancellationToken token)
+        internal override async Task<IReadOnlyList<IChapter>> GetChaptersAsync(Series input, CancellationToken token)
         {
             var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri, token);
             if (html == null)
@@ -107,16 +107,14 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var series = input as Series;
-
             var coverNode = document.QuerySelector("div.thumbnail img");
-            series.CoverImageUri = new Uri(RootUri, coverNode.Attributes["src"].Value);
+            input.CoverImageUri = new Uri(RootUri, coverNode.Attributes["src"].Value);
             var infoNode = document.QuerySelector("div.info ul.series-info");
             var nodes = infoNode.QuerySelectorAll("li");
 
-            series.Author = nodes[4].QuerySelector("a").TextContent;
-            series.Description = nodes[1].QuerySelector("span").TextContent;
-            series.Tags = string.Join(",", nodes[2].QuerySelectorAll("a").Select(d => d.TextContent));
+            input.Author = nodes[4].QuerySelector("a").TextContent;
+            input.Description = nodes[1].QuerySelector("span").TextContent;
+            input.Tags = string.Join(",", nodes[2].QuerySelectorAll("a").Select(d => d.TextContent));
 
             var chaptersNode = document.QuerySelector("div#content div.list div.group");
             nodes = chaptersNode.QuerySelectorAll("div.element");
@@ -129,14 +127,14 @@ namespace MangaScrapeLib.Repository
                 var title = titleNode.Attributes["title"].Value;
                 var link = new Uri(RootUri, titleNode.Attributes["href"].Value);
                 var date = metaNode.TextContent;
-                return new Chapter(series, link, title, e) { Updated = date };
+                return new Chapter(input, link, title, e) { Updated = date };
             }).ToArray();
 
-            series.Updated = output.Last().Updated;
+            input.Updated = output.Last().Updated;
             return output;
         }
 
-        internal override async Task<byte[]> GetImageAsync(IPage input, CancellationToken token)
+        internal override async Task<byte[]> GetImageAsync(Page input, CancellationToken token)
         {
             var html = await WebClient.GetStringAsync(input.PageUri, RootUri, token);
             if (html == null)
@@ -164,7 +162,7 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IReadOnlyList<IPage>> GetPagesAsync(IChapter input, CancellationToken token)
+        internal override async Task<IReadOnlyList<IPage>> GetPagesAsync(Chapter input, CancellationToken token)
         {
             var html = await WebClient.GetStringAsync(input.FirstPageUri, RootUri, token);
             if (html == null)

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using AngleSharp.Html.Parser;
+using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
 
 namespace MangaScrapeLib.Repository
@@ -14,9 +15,9 @@ namespace MangaScrapeLib.Repository
     {
         protected IWebClient WebClient { get; }
 
-        internal abstract Task<IReadOnlyList<IChapter>> GetChaptersAsync(ISeries input, CancellationToken token);
-        internal abstract Task<IReadOnlyList<IPage>> GetPagesAsync(IChapter input, CancellationToken token);
-        internal abstract Task<byte[]> GetImageAsync(IPage input, CancellationToken token);
+        internal abstract Task<IReadOnlyList<IChapter>> GetChaptersAsync(Series input, CancellationToken token);
+        internal abstract Task<IReadOnlyList<IPage>> GetPagesAsync(Chapter input, CancellationToken token);
+        internal abstract Task<byte[]> GetImageAsync(Page input, CancellationToken token);
 
         private IReadOnlyList<ISeries> AvailableSeries { get; set; }
 

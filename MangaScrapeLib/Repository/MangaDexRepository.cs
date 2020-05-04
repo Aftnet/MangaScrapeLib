@@ -146,10 +146,8 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<IReadOnlyList<IChapter>> GetChaptersAsync(ISeries input, CancellationToken token)
+        internal override async Task<IReadOnlyList<IChapter>> GetChaptersAsync(Series input, CancellationToken token)
         {
-            var inputAsSeries = (Series)input;
-
             var regex = new Regex(@"title/([^/]+)");
             var seriesId = regex.Match(input.SeriesPageUri.ToString()).Groups[1].Value;
             var apiUri = $"api/?id={Uri.EscapeDataString(seriesId)}&type=manga";
@@ -161,12 +159,12 @@ namespace MangaScrapeLib.Repository
             }
 
             var seriesInfo = JsonConvert.DeserializeObject<SeriesAPIResponse>(json);
-            inputAsSeries.Author = seriesInfo.Series.Author;
-            inputAsSeries.Description = seriesInfo.Series.Description;
-            inputAsSeries.CoverImageUri = new Uri(RootUri, seriesInfo.Series.CoverUri);
+            input.Author = seriesInfo.Series.Author;
+            input.Description = seriesInfo.Series.Description;
+            input.CoverImageUri = new Uri(RootUri, seriesInfo.Series.CoverUri);
 
             var seriesGenres = seriesInfo.Series.Genres.Select(d => (d > 0 && d < Genres.Count) ? Genres[d] : null).Where(d => d != null).ToArray();
-            inputAsSeries.Tags = seriesGenres.Any() ? string.Join(", ", seriesGenres) : "None";
+            input.Tags = seriesGenres.Any() ? string.Join(", ", seriesGenres) : "None";
 
             var chapters = seriesInfo.Chapters.Select(d =>
             {
@@ -184,14 +182,14 @@ namespace MangaScrapeLib.Repository
                     }
 
                     var updated = DateTimeOffset.FromUnixTimeSeconds(d.TimeStamp);
-                    var chapter = new Chapter(inputAsSeries, new Uri(RootUri, chapterUri), title, e) { Updated = updated.ToString("dd-MM-yyyy") };
+                    var chapter = new Chapter(input, new Uri(RootUri, chapterUri), title, e) { Updated = updated.ToString("dd-MM-yyyy") };
                     return chapter;
                 }).ToArray();
 
             return output;
         }
 
-        internal override async Task<IReadOnlyList<IPage>> GetPagesAsync(IChapter input, CancellationToken token)
+        internal override async Task<IReadOnlyList<IPage>> GetPagesAsync(Chapter input, CancellationToken token)
         {
             var regex = new Regex(@"chapter/([^/]+)");
             var chapterId = regex.Match(input.FirstPageUri.ToString()).Groups[1].Value;
@@ -213,7 +211,7 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override Task<byte[]> GetImageAsync(IPage input, CancellationToken token)
+        internal override Task<byte[]> GetImageAsync(Page input, CancellationToken token)
         {
             return WebClient.GetByteArrayAsync(input.ImageUri, input.PageUri, token);
         }
