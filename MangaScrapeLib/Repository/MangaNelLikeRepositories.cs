@@ -258,11 +258,11 @@ namespace MangaScrapeLib.Repository
             inputAsSeries.CoverImageUri = new Uri(RootUri, imageNode.Attributes["src"].Value);
 
             var infoNode = document.QuerySelector("div.story-info-right");
-            var authorNode = infoNode.QuerySelector("tr:nth-child(1) td.table-value a");
+            var authorNode = infoNode.QuerySelector("tr:nth-child(2) td.table-value a");
             inputAsSeries.Author = authorNode.TextContent;
             var updatedNode = infoNode.QuerySelector("div.story-info-right-extent span.stre-value");
             inputAsSeries.Updated = updatedNode.TextContent.Replace("Last updated : ", string.Empty);
-            var tagNodes = infoNode.QuerySelectorAll("tr:nth-child(3) td.table-value a");
+            var tagNodes = infoNode.QuerySelectorAll("tr:nth-child(4) td.table-value a");
             inputAsSeries.Tags = string.Join(", ", tagNodes.Select(d => d.TextContent).ToArray());
             var descriptionNode = document.QuerySelector("div.panel-story-info-description");
             inputAsSeries.Description = descriptionNode.TextContent.Trim();
