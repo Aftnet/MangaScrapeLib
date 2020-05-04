@@ -82,31 +82,9 @@ namespace MangaScrapeLib.Repository
             return output;
         }
 
-        internal override async Task<byte[]> GetImageAsync(Page input, CancellationToken token)
+        internal override Task<byte[]> GetImageAsync(Page input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.PageUri, input.ParentChapter.FirstPageUri, token);
-            if (html == null)
-            {
-                return null;
-            }
-
-            var document = await Parser.ParseDocumentAsync(html, token);
-            if (token.IsCancellationRequested)
-            {
-                return null;
-            }
-
-            var imageNode = document.QuerySelector("img#manga-page");
-
-            var inputAsPage = (Page)input;
-            inputAsPage.ImageUri = new Uri($"http:{imageNode.Attributes["src"].Value}");
-            var output = await WebClient.GetByteArrayAsync(inputAsPage.ImageUri, input.PageUri, token);
-            if (token.IsCancellationRequested)
-            {
-                return null;
-            }
-
-            return output;
+            return WebClient.GetByteArrayAsync(input.ImageUri, input.PageUri, token);
         }
 
         internal override async Task<IReadOnlyList<IPage>> GetPagesAsync(Chapter input, CancellationToken token)
@@ -123,40 +101,10 @@ namespace MangaScrapeLib.Repository
                 return null;
             }
 
-            var listNode = document.QuerySelector("div.btn-reader-page ul.dropdown-menu");
-
-            var linksNodes = listNode.QuerySelectorAll("a");
-
-            /* 
-             * Mangastream doesn't display all the pages in the Dropdown
-             * if the pages count exceeds a certain amount.
-             * Parsing the last item needs to be done to get the pages count accurately.
-             */
-            try
-            {
-                var lastLinkNode = linksNodes.Last();
-
-                var baseUri = new Uri(RootUri, lastLinkNode.Attributes["href"].Value);
-                if (!int.TryParse(baseUri.Segments.Last(), out int lastPageNumber))
-                {
-                    return new Page[0];
-                }
-
-                var baseUriString = baseUri.ToString();
-                var pageUris = Enumerable.Range(1, lastPageNumber).Select(d =>
-                {
-                    var pageUriString = baseUriString.Substring(0, baseUriString.LastIndexOf('/'));
-                    pageUriString = $"{pageUriString}/{d}";
-                    return new Uri(pageUriString);
-                }).ToArray();
-
-                var output = pageUris.Select((d, e) => new Page((Chapter)input, d, e + 1)).ToArray();
-                return output;
-            }
-            catch (InvalidOperationException)
-            {
-                return new Page[0];
-            }
+            var listNode = document.QuerySelector("div.reading-content");
+            var imageNodes = listNode.QuerySelectorAll("img");
+            var output = imageNodes.Select((d, e) => new Page(input, input.FirstPageUri, e + 1) { ImageUri = new Uri(RootUri, d.Attributes["src"].Value) }).ToArray();
+            return output;          
         }
     }
 }
