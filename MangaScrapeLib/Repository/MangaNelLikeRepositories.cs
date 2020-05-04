@@ -31,7 +31,7 @@ namespace MangaScrapeLib.Repository
 
     internal class MangaBatRepository : MangaNelLikeRepository
     {
-        private const string RepoRootUriString = "https://mangabat.com/";
+        private const string RepoRootUriString = "https://m.mangabat.com/";
 
         protected override string CoverImgXpath => "a.tooltip img.cover";
 
