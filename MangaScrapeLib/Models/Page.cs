@@ -8,7 +8,7 @@ namespace MangaScrapeLib.Models
 {
     internal class Page : IPage
     {
-        public Chapter ParentChapterInternal { get; private set; }
+        public Chapter ParentChapterInternal { get; }
         public IChapter ParentChapter => ParentChapterInternal;
 
         public Uri PageUri { get; private set; }
