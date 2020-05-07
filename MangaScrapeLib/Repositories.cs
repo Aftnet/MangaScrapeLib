@@ -37,6 +37,7 @@ namespace MangaScrapeLib
             AddToDictionary(new MangaStreamRepository(client));
             //AddToDictionary(new MangaBatRepository(client));
             //AddToDictionary(new SenMangaRepository(client));
+            AddToDictionary(new ReadmRepository(client));
 
             AllRepositories = allRepositories.OrderBy(d => d.Name).ToArray();
         }
