@@ -77,8 +77,10 @@ namespace MangaScrapeLib.Repository
             {
                 var titleNode = d.QuerySelector("div.post-title h3 a");
                 var updateNode = d.QuerySelector("div.chapter-item span.post-on");
+                var imageNode = d.QuerySelector("div a img");
                 var series = new Series(this, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent)
                 {
+                    CoverImageUri = new Uri(imageNode.Attributes["src"].Value, UriKind.Absolute),
                     Updated = updateNode.TextContent.Trim()
                 };
 
@@ -106,10 +108,12 @@ namespace MangaScrapeLib.Repository
             var authorNode = infoNode.QuerySelector("div.author-content a");
             var tagsNode = infoNode.QuerySelectorAll("div.genres-content a");
             var descriptionNode = document.QuerySelector("div.summary__content blockquote");
+            var imageNode = document.QuerySelector("div.summary_image a img");
 
             input.Author = authorNode.TextContent.Trim();
             input.Tags = string.Join(", ", tagsNode.Select(d => d.TextContent.Trim()));
             input.Description = descriptionNode.TextContent;
+            input.CoverImageUri = new Uri(imageNode.Attributes["src"].Value, UriKind.Absolute);
 
             var rows = document.QuerySelectorAll("li.wp-manga-chapter").Skip(1);
             var output = rows.Reverse().Select((d, e) =>
