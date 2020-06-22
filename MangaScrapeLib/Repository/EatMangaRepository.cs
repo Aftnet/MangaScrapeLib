@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp.Html.Dom;
+using AngleSharp.Dom;
 using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
 
@@ -43,14 +45,14 @@ namespace MangaScrapeLib.Repository
             var output = new List<Series>();
             foreach (var i in rows)
             {
-                var titleNode = i.QuerySelector("a");
+                var titleNode = i.QuerySelector<IHtmlAnchorElement>("a");
                 var dateNode = i.QuerySelector("span.badge");
                 if (titleNode == null || dateNode == null)
                 {
                     continue;
                 }
 
-                var seriesUri = new Uri(RootUri, titleNode.Attributes["href"].Value);
+                var seriesUri = new Uri(RootUri, titleNode.Href);
                 var series = new Series(this, seriesUri, titleNode.TextContent)
                 {
                     Updated = dateNode.TextContent
@@ -122,8 +124,8 @@ namespace MangaScrapeLib.Repository
 
             foreach (var i in ImageIDs)
             {
-                var node = document.QuerySelector(i);
-                var imgUri = node?.Attributes["src"].Value;
+                var node = document.QuerySelector<IHtmlImageElement>(i);
+                var imgUri = node?.Source;
 
                 if (imgUri != null)
                 {
