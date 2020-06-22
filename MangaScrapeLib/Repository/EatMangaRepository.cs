@@ -78,9 +78,9 @@ namespace MangaScrapeLib.Repository
             }
 
             var node = document.QuerySelector("#updates");
-            var nodes = node.QuerySelectorAll("li a");
+            var nodes = node.QuerySelectorAll<IHtmlAnchorElement>("li a");
             var timenodes = node.QuerySelectorAll("li span");
-            var output = nodes.Zip(timenodes, (d, e) => new Chapter((Series)input, new Uri(RootUri, d.Attributes["href"].Value), d.TextContent, -1) { Updated = e.TextContent.Trim() }).ToArray();
+            var output = nodes.Zip(timenodes, (d, e) => new Chapter((Series)input, new Uri(RootUri, d.Href), d.TextContent, -1) { Updated = e.TextContent.Trim() }).ToArray();
 
             //Eatmanga has dummy entries for not yet released chapters, prune them.
             output = output.Where(d => d.FirstPageUri.ToString().Contains("http://eatmanga.com/upcoming/") == false).Reverse().ToArray();
@@ -102,9 +102,9 @@ namespace MangaScrapeLib.Repository
             }
 
             var node = document.QuerySelector("#pages");
-            var nodes = node.QuerySelectorAll("option");
+            var nodes = node.QuerySelectorAll<IHtmlOptionElement>("option");
 
-            var output = nodes.Select((d, e) => new Page((Chapter)input, new Uri(RootUri, d.Attributes["value"].Value), e + 1)).OrderBy(d => d.PageNumber);
+            var output = nodes.Select((d, e) => new Page((Chapter)input, new Uri(RootUri, d.Value), e + 1)).OrderBy(d => d.PageNumber);
             return output.ToArray();
         }
 
