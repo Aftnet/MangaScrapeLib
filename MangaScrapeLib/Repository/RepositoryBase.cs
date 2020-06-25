@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp;
 using AngleSharp.Html.Parser;
 using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
@@ -14,6 +15,7 @@ namespace MangaScrapeLib.Repository
     internal abstract class RepositoryBase : IRepository
     {
         protected IWebClient WebClient { get; }
+        protected IBrowsingContext BrowsingContext { get; }
 
         internal abstract Task<IReadOnlyList<IChapter>> GetChaptersAsync(Series input, CancellationToken token);
         internal abstract Task<IReadOnlyList<IPage>> GetPagesAsync(Chapter input, CancellationToken token);
@@ -45,6 +47,7 @@ namespace MangaScrapeLib.Repository
         protected RepositoryBase(IWebClient webClient, string name, string uriString, string iconFileName, bool supportsCover, bool supportsAuthor, bool supportsLastUpdateTime, bool supportsTags, bool supportsDescription)
         {
             WebClient = webClient;
+            BrowsingContext = new BrowsingContext(Configuration.Default.WithDefaultLoader().WithDefaultCookies());
 
             Name = name;
             RootUri = new Uri(uriString, UriKind.Absolute);
