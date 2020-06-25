@@ -83,7 +83,7 @@ namespace MangaScrapeLib.Repository
                 return new ISeries[0];
             }
 
-            var output = searchResult.Manga.Select(d => new Series(this, new Uri(d.Url), d.Title) { CoverImageUri = new Uri(d.Image) }).ToArray();
+            var output = searchResult.Manga.Select(d => new Series(this, new Uri(RootUri, d.Url), d.Title) { CoverImageUri = new Uri(RootUri, d.Image) }).ToArray();
             return output;
         }
 

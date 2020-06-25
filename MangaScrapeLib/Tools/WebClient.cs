@@ -19,6 +19,7 @@ namespace MangaScrapeLib.Tools
             Client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0");
             Client.DefaultRequestHeaders.Add("Accept", "text/html, application/xhtml+xml, application/json, text/javascript, */*");
             Client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip, deflate");
+            Client.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
         }
 
         public async Task<string> GetStringAsync(Uri uri, Uri referrer, CancellationToken token)
