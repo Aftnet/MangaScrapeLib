@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp;
+using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
 using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
 using Newtonsoft.Json;
@@ -39,29 +42,22 @@ namespace MangaScrapeLib.Repository
 
         public override async Task<IReadOnlyList<ISeries>> GetSeriesAsync(CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(MangaIndexPage, RootUri, token);
-            if (html == null)
+            var document = await BrowsingContext.OpenAsync(MangaIndexPage.ToString(), token);
+            if (document == null || token.IsCancellationRequested)
             {
                 return null;
             }
 
-            var document = await Parser.ParseDocumentAsync(html, token);
-            if (token.IsCancellationRequested)
-            {
-                return null;
-            }
-
-            var listNode = document.QuerySelector("ul.post-list");
-            var titleNodes = listNode.QuerySelectorAll("li");
+            var titleNodes = document.QuerySelectorAll("li.series");
 
 
             var output = titleNodes.Select(d =>
             {
-                var node = d.QuerySelector("a");
-                var title = node.Attributes["title"].Value;
-                var link = new Uri(RootUri, node.Attributes["href"].Value);
-                var coverNode = node.QuerySelector("img");
-                var cover = new Uri(RootUri, coverNode.Attributes["src"].Value);
+                var node = d.QuerySelector<IHtmlAnchorElement>("p.title a");
+                var title = node.Text.Trim();
+                var link = new Uri(node.Href);
+                var coverNode = d.QuerySelector<IHtmlImageElement>("a.cover img");
+                var cover = new Uri(coverNode.Source);
 
                 ISeries series = new Series(this, link, title) { CoverImageUri = cover };
                 return series;
@@ -95,22 +91,15 @@ namespace MangaScrapeLib.Repository
 
         internal override async Task<IReadOnlyList<IChapter>> GetChaptersAsync(Series input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.SeriesPageUri, RootUri, token);
-            if (html == null)
+            var document = await BrowsingContext.OpenAsync(input.SeriesPageUri.ToString(), token);
+            if (document == null || token.IsCancellationRequested)
             {
                 return null;
             }
 
-            var document = await Parser.ParseDocumentAsync(html, token);
-            if (token.IsCancellationRequested)
-            {
-                return null;
-            }
-
-            var coverNode = document.QuerySelector("div.thumbnail img");
-            input.CoverImageUri = new Uri(RootUri, coverNode.Attributes["src"].Value);
-            var infoNode = document.QuerySelector("div.info ul.series-info");
-            var nodes = infoNode.QuerySelectorAll("li");
+            var coverNode = document.QuerySelector<IHtmlImageElement>("div.thumbnail img");
+            input.CoverImageUri = new Uri(coverNode.Source);
+            var nodes = document.QuerySelectorAll("div.info ul.series-info li");
 
             input.Author = nodes[4].QuerySelector("a").TextContent;
             input.Description = nodes[1].QuerySelector("span").TextContent;
