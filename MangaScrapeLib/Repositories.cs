@@ -28,8 +28,7 @@ namespace MangaScrapeLib
                 }
             }
 
-            //AddToDictionary(new EatMangaRepository(client));
-            //AddToDictionary(new MangaDexRepository(client));
+            AddToDictionary(new MangaDexRepository(client));
             AddToDictionary(new MangaEdenEnRepository(client));
             AddToDictionary(new MangaEdenItRepository(client));
             //AddToDictionary(new MangaKakalotRepository(client));
