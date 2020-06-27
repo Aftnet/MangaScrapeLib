@@ -12,10 +12,11 @@ namespace MangaScrapeLib.Repository
 {
     internal sealed class MangaHereRepository : RepositoryBase
     {
-        private static readonly Uri MangaIndexUri = new Uri("http://www.mangahere.co/mangalist/");
+        private Uri MangaIndexUri { get; }
 
-        public MangaHereRepository(WebClient webClient) : base(webClient, "Manga Here", "http://www.mangahere.co/", "MangaHere.png", false)
+        public MangaHereRepository(IWebClient webClient) : base(webClient, "Manga Here", "http://www.mangahere.cc/", "MangaHere.png", false)
         {
+            MangaIndexUri = new Uri(RootUri, "/directory");
         }
 
         public override async Task<IReadOnlyList<ISeries>> GetSeriesAsync(CancellationToken token)
