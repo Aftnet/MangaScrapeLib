@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Html.Dom;
+using AngleSharp.Io;
 using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
 using Newtonsoft.Json;
@@ -77,7 +78,7 @@ namespace MangaScrapeLib.Repository
                 var imageNode = d.QuerySelector<IHtmlImageElement>("div a img");
                 var series = new Series(this, new Uri(titleNode.Href), titleNode.TextContent)
                 {
-                    CoverImageUri = new Uri(imageNode.Source),
+                    //CoverImageUri = new Uri(imageNode.Source),
                     Updated = updateNode.TextContent.Trim()
                 };
 
