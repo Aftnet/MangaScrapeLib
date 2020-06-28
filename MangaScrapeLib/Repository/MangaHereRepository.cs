@@ -5,6 +5,9 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp;
+using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
 using MangaScrapeLib.Models;
 using MangaScrapeLib.Tools;
 
@@ -21,49 +24,51 @@ namespace MangaScrapeLib.Repository
 
         public override async Task<IReadOnlyList<ISeries>> GetSeriesAsync(CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(MangaIndexUri, RootUri, token);
-            if (html == null)
+            var document = await BrowsingContext.OpenAsync(MangaIndexUri.ToString(), token);
+            if (document == null || token.IsCancellationRequested)
             {
                 return null;
             }
 
-            var document = await Parser.ParseDocumentAsync(html, token);
-            if (token.IsCancellationRequested)
+            var nodes = document.QuerySelector("ul.manga-list-1-list").QuerySelectorAll("li");
+
+            var output = nodes.Select(d =>
             {
-                return null;
-            }
+                var linkNode = d.QuerySelector<IHtmlAnchorElement>("a");
+                var imgNode = linkNode.QuerySelector<IHtmlImageElement>("img");
+                return new Series(this, new Uri(linkNode.Href), linkNode.Title) { CoverImageUri = new Uri(imgNode.Source) };
+            }).OrderBy(d => d.Title).ToArray();
 
-            var nodes = document.QuerySelectorAll("a.manga_info");
-
-            var output = nodes.Select(d => new Series(this, new Uri(RootUri, d.Attributes["href"].Value), WebUtility.HtmlDecode(d.Attributes["rel"].Value))).OrderBy(d => d.Title);
-            return output.ToArray();
+            return output;
         }
 
         internal override async Task<IReadOnlyList<IChapter>> GetChaptersAsync(Series input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.SeriesPageUri, MangaIndexUri, token);
-            if (html == null)
+            var document = await BrowsingContext.OpenAsync(input.SeriesPageUri.ToString(), token);
+            if (document == null || token.IsCancellationRequested)
             {
                 return null;
             }
 
-            var document = await Parser.ParseDocumentAsync(html, token);
-            if (token.IsCancellationRequested)
-            {
-                return null;
-            }
+            var headerNode = document.QuerySelector("div.detail-info");
+            var coverNode = headerNode.QuerySelector<IHtmlImageElement>("img.detail-info-cover-img");
+            var authorNode = headerNode.QuerySelector<IHtmlAnchorElement>("p.detail-info-right-say a");
+            var descriptionNode = headerNode.QuerySelector("p.detail-info-right-content");
+            var tagNodes = headerNode.QuerySelectorAll<IHtmlAnchorElement>("p.detail-info-right-tag-list a");
+            var updateNode = document.QuerySelector("span.detail-main-list-title-right");
 
-            var node = document.QuerySelector("div.manga_detail");
-            node = node.QuerySelector("div.detail_list ul");
-            var nodes = node.QuerySelectorAll("a.color_0077");
+            input.CoverImageUri = new Uri(coverNode.Source);
+            input.Author = authorNode.Title;
+            input.Description = descriptionNode.TextContent;
+            input.Tags = string.Join(", ", tagNodes.Select(d => d.Title));
+            input.Updated = updateNode.TextContent.Replace("Last Updated: ", string.Empty).Trim();
 
-            var Output = nodes.Reverse().Select((d, e) =>
+            var chapterNodes = document.QuerySelectorAll<IHtmlAnchorElement>("ul.detail-main-list a");
+
+            var Output = chapterNodes.Reverse().Select((d, e) =>
             {
-                string Title = d.TextContent;
-                Title = Regex.Replace(Title, @"^[\r\n\s\t]+", string.Empty);
-                Title = Regex.Replace(Title, @"[\r\n\s\t]+$", string.Empty);
-                var Chapter = new Chapter((Series)input, new Uri(RootUri, d.Attributes["href"].Value), Title, e);
-                return Chapter;
+                var chUpdate = d.QuerySelector("p.title2");
+                return new Chapter(input, new Uri(d.Href), d.Title, e) { Updated = chUpdate.TextContent.Trim() };
             }).ToArray();
 
             return Output.ToArray();
