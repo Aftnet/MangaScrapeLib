@@ -1,12 +1,15 @@
-﻿using MangaScrapeLib.Models;
-using MangaScrapeLib.Tools;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using AngleSharp;
+using AngleSharp.Dom;
+using AngleSharp.Html.Dom;
+using MangaScrapeLib.Models;
+using MangaScrapeLib.Tools;
+using Newtonsoft.Json;
 
 namespace MangaScrapeLib.Repository
 {
@@ -60,14 +63,8 @@ namespace MangaScrapeLib.Repository
 
         public override async Task<IReadOnlyList<ISeries>> GetSeriesAsync(CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(MangaIndexUri, RootUri, token);
-            if (html == null)
-            {
-                return null;
-            }
-
-            var document = await Parser.ParseDocumentAsync(html, token);
-            if (token.IsCancellationRequested)
+            var document = await BrowsingContext.OpenAsync(MangaIndexUri.ToString(), token);
+            if (document == null || token.IsCancellationRequested)
             {
                 return null;
             }
@@ -75,12 +72,12 @@ namespace MangaScrapeLib.Repository
             var itemNodes = document.QuerySelectorAll("div.page-item-detail");
             var output = itemNodes.Select(d =>
             {
-                var titleNode = d.QuerySelector("div.post-title h3 a");
+                var titleNode = d.QuerySelector<IHtmlAnchorElement>("div.post-title h3 a");
                 var updateNode = d.QuerySelector("div.chapter-item span.post-on");
-                var imageNode = d.QuerySelector("div a img");
-                var series = new Series(this, new Uri(RootUri, titleNode.Attributes["href"].Value), titleNode.TextContent)
+                var imageNode = d.QuerySelector<IHtmlImageElement>("div a img");
+                var series = new Series(this, new Uri(titleNode.Href), titleNode.TextContent)
                 {
-                    CoverImageUri = new Uri(imageNode.Attributes["src"].Value, UriKind.Absolute),
+                    CoverImageUri = new Uri(imageNode.Source),
                     Updated = updateNode.TextContent.Trim()
                 };
 
@@ -92,14 +89,8 @@ namespace MangaScrapeLib.Repository
 
         internal override async Task<IReadOnlyList<IChapter>> GetChaptersAsync(Series input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.SeriesPageUri, MangaIndexUri, token);
-            if (html == null)
-            {
-                return null;
-            }
-
-            var document = await Parser.ParseDocumentAsync(html, token);
-            if (token.IsCancellationRequested)
+            var document = await BrowsingContext.OpenAsync(input.SeriesPageUri.ToString(), token);
+            if (document == null || token.IsCancellationRequested)
             {
                 return null;
             }
@@ -108,19 +99,19 @@ namespace MangaScrapeLib.Repository
             var authorNode = infoNode.QuerySelector("div.author-content a");
             var tagsNode = infoNode.QuerySelectorAll("div.genres-content a");
             var descriptionNode = document.QuerySelector("div.summary__content blockquote");
-            var imageNode = document.QuerySelector("div.summary_image a img");
+            var imageNode = document.QuerySelector<IHtmlImageElement>("div.summary_image a img");
 
             input.Author = authorNode.TextContent.Trim();
             input.Tags = string.Join(", ", tagsNode.Select(d => d.TextContent.Trim()));
             input.Description = descriptionNode.TextContent;
-            input.CoverImageUri = new Uri(imageNode.Attributes["src"].Value, UriKind.Absolute);
+            input.CoverImageUri = new Uri(imageNode.Source);
 
             var rows = document.QuerySelectorAll("li.wp-manga-chapter").Skip(1);
             var output = rows.Reverse().Select((d, e) =>
             {
-                var linkNode = d.QuerySelector("a");
+                var linkNode = d.QuerySelector<IHtmlAnchorElement>("a");
                 var datenode = d.QuerySelector("span i");
-                var chapter = new Chapter((Series)input, new Uri(RootUri, linkNode.Attributes["href"].Value), linkNode.TextContent.Trim(), e) { Updated = datenode.TextContent.Trim() };
+                var chapter = new Chapter((Series)input, new Uri(linkNode.Href), linkNode.TextContent.Trim(), e) { Updated = datenode.TextContent.Trim() };
                 return chapter;
             }).ToArray();
 
@@ -134,21 +125,15 @@ namespace MangaScrapeLib.Repository
 
         internal override async Task<IReadOnlyList<IPage>> GetPagesAsync(Chapter input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri, token);
-            if (html == null)
-            {
-                return null;
-            }
-
-            var document = await Parser.ParseDocumentAsync(html, token);
-            if (token.IsCancellationRequested)
+            var document = await BrowsingContext.OpenAsync(input.FirstPageUri.ToString(), token);
+            if (document == null || token.IsCancellationRequested)
             {
                 return null;
             }
 
             var listNode = document.QuerySelector("div.reading-content");
-            var imageNodes = listNode.QuerySelectorAll("img");
-            var output = imageNodes.Select((d, e) => new Page(input, input.FirstPageUri, e + 1) { ImageUri = new Uri(RootUri, d.Attributes["src"].Value) }).ToArray();
+            var imageNodes = listNode.QuerySelectorAll<IHtmlImageElement>("img");
+            var output = imageNodes.Select((d, e) => new Page(input, input.FirstPageUri, e + 1) { ImageUri = new Uri(d.Source) }).ToArray();
             return output;          
         }
     }
