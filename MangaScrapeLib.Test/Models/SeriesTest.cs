@@ -7,25 +7,25 @@ namespace MangaScrapeLib.Test.Models
 {
     public class SeriesTest
     {
-        public static IRepository TargetRepository => Repositories.AllRepositories.First(d => d.RootUri.Host.Contains("eatmanga"));
-        public const string ValidSeriesUri = "http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/";
-        public const string ValidSeriesTitle = "SomeTitle";
+        public static IRepository TargetRepository { get; } = Repositories.AllRepositories.First();
+        public static Uri ValidSeriesUri { get; } = new Uri(TargetRepository.RootUri, "some/path");
+        public static string ValidSeriesTitle { get; } = "SomeTitle";
 
         public static IEnumerable<object[]> CreateFromDataWorksData()
         {
             yield return new object[] { ValidSeriesUri, ValidSeriesTitle, true };
-            yield return new object[] { null, ValidSeriesTitle, false };
-            yield return new object[] { "http://omg.lol/", ValidSeriesTitle, false };
-            yield return new object[] { ValidSeriesUri, null, false };
+            yield return new object[] { default(Uri), ValidSeriesTitle, false };
+            yield return new object[] { new Uri("http://omg.lol/"), ValidSeriesTitle, false };
+            yield return new object[] { ValidSeriesUri, default(string), false };
             yield return new object[] { ValidSeriesUri, string.Empty, false };
             yield return new object[] { ValidSeriesUri, " ", false };
         }
 
         [Theory]
         [MemberData(nameof(CreateFromDataWorksData))]
-        public void CreateFromDataWorks(string uri, string title, bool shouldSucceed)
+        public void CreateFromDataWorks(Uri uri, string title, bool shouldSucceed)
         {
-            var output = Repositories.GetSeriesFromData(uri == null ? null : new Uri(uri), title);
+            var output = Repositories.GetSeriesFromData(uri, title);
             if (shouldSucceed)
             {
                 Assert.NotNull(output);

@@ -1,33 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace MangaScrapeLib.Test.Models
 {
     public class ChapterTest
     {
-        private static IRepository TargetRepository => Repositories.AllRepositories.First(d => d.RootUri.Host.Contains("eatmanga"));
-        private const string ValidChapterUri = "http://eatmanga.com/Manga-Scan/Yamada-kun-to-7-nin-no-Majo/testch/";
-        private const string ValidChapterTitle = "Test chapter";
+        public static Uri ValidChapterUri { get; } = new Uri(SeriesTest.ValidSeriesUri, "/chapter/path");
+        public static string ValidChapterTitle { get; } = "Test chapter";
 
-        private ISeries TestSeries = Repositories.GetSeriesFromData(new Uri(SeriesTest.ValidSeriesUri), "SomeTitle");
+        private static ISeries TestSeries { get; } = Repositories.GetSeriesFromData(SeriesTest.ValidSeriesUri, SeriesTest.ValidSeriesTitle);
 
         public static IEnumerable<object[]> CreateFromDataWorksData()
         {
             yield return new object[] { ValidChapterUri, ValidChapterTitle, true };
-            yield return new object[] { null, ValidChapterTitle, false };
-            yield return new object[] { "http://omg.lol/", ValidChapterTitle, false };
-            yield return new object[] { ValidChapterUri, null, false };
+            yield return new object[] { default(Uri), ValidChapterTitle, false };
+            yield return new object[] { new Uri("http://omg.lol/"), ValidChapterTitle, false };
+            yield return new object[] { ValidChapterUri, default(string), false };
             yield return new object[] { ValidChapterUri, string.Empty, false };
             yield return new object[] { ValidChapterUri, " ", false };
         }
 
         [Theory]
         [MemberData(nameof(CreateFromDataWorksData))]
-        public void CreateFromDataWorks(string uri, string title, bool shouldSucceed)
+        public void CreateFromDataWorks(Uri uri, string title, bool shouldSucceed)
         {
-            var output = TestSeries.GetSingleChapterFromData(uri == null ? null : new Uri(uri), title, -1);
+            var output = TestSeries.GetSingleChapterFromData(uri, title, -1);
             if (shouldSucceed)
             {
                 Assert.NotNull(output);

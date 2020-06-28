@@ -21,8 +21,8 @@
   </ItemGroup>
   
   <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="0.12.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="AngleSharp" Version="0.14.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
 </Project>

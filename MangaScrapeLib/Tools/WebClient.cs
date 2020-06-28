@@ -7,6 +7,8 @@ namespace MangaScrapeLib.Tools
 {
     internal class WebClient : IWebClient
     {
+        private const string XRequestedWithHeader = "X-Requested-With";
+
         protected static HttpClient Client { get; }
 
         static WebClient()
@@ -61,10 +63,13 @@ namespace MangaScrapeLib.Tools
             return output;
         }
 
-        public Task<HttpResponseMessage> PostAsync(HttpContent content, Uri uri, Uri referrer, CancellationToken token)
+        public async Task<HttpResponseMessage> PostAsync(HttpContent content, Uri uri, Uri referrer, CancellationToken token)
         {
             Client.DefaultRequestHeaders.Referrer = referrer;
-            return Client.PostAsync(uri, content, token);
+            Client.DefaultRequestHeaders.Add(XRequestedWithHeader, "XMLHttpRequest");
+            var result = await Client.PostAsync(uri, content, token);
+            Client.DefaultRequestHeaders.Remove(XRequestedWithHeader);
+            return result;
         }
     }
 }
