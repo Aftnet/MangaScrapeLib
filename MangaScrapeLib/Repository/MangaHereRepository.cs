@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -76,44 +77,30 @@ namespace MangaScrapeLib.Repository
 
         internal override async Task<IReadOnlyList<IPage>> GetPagesAsync(Chapter input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.FirstPageUri, input.ParentSeries.SeriesPageUri, token);
-            if (html == null)
+            var document = await BrowsingContext.OpenAsync(input.FirstPageUri.ToString(), token);
+            if (document == null || token.IsCancellationRequested)
             {
                 return null;
             }
 
-            var document = await Parser.ParseDocumentAsync(html, token);
-            if (token.IsCancellationRequested)
-            {
-                return null;
-            }
-
-            var node = document.QuerySelector("section.readpage_top");
-            node = node.QuerySelector("span.right select");
-            var nodes = node.QuerySelectorAll("option");
-
-            var Output = nodes.Select((d, e) => new Page((Chapter)input, new Uri(RootUri, d.Attributes["value"].Value), e + 1));
-            return Output.ToArray();
+            var chapterUriRoot = input.FirstPageUri.ToString().Replace("1.html", string.Empty);
+            var links = document.QuerySelectorAll<IHtmlAnchorElement>("div.pager-list-left span a");
+            var maxPage = links.Select(d => int.TryParse(d.Text, out int intVal) ? intVal : 0).Max();
+            var output = Enumerable.Range(1, maxPage).Select(d => new Page(input, new Uri($"{chapterUriRoot}{d}.html"), d)).ToArray();
+            return output;
         }
 
         internal override async Task<byte[]> GetImageAsync(Page input, CancellationToken token)
         {
-            var html = await WebClient.GetStringAsync(input.PageUri, input.ParentChapter.FirstPageUri, token);
-            if (html == null)
+            var document = await BrowsingContext.OpenAsync(input.PageUri.ToString(), token);
+            if (document == null || token.IsCancellationRequested)
             {
                 return null;
             }
 
-            var document = await Parser.ParseDocumentAsync(html, token);
-            if (token.IsCancellationRequested)
-            {
-                return null;
-            }
+            var node = document.QuerySelector<IHtmlImageElement>("img.reader-main-img");
+            input.ImageUri = new Uri(node.Source);
 
-            var node = document.QuerySelector("img#image");
-            var imageUri = new Uri(node.Attributes["src"].Value);
-
-            ((Page)input).ImageUri = new Uri(RootUri, imageUri);
             var output = await WebClient.GetByteArrayAsync(input.ImageUri, input.PageUri, token);
             if (token.IsCancellationRequested)
             {
